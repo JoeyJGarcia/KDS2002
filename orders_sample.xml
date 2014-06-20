@@ -1,0 +1,113 @@
+<!--
+*****************************************************
+****************** Developer Notes ******************
+*****************************************************
+
+How to translate shipping methods to shipping values.
+** These are only the shipping methods used by Kerusso **
+
+"First Class" = "11"
+"Priority Mail" = "8"
+"U.P.S. Next Day" = "4"
+"U.P.S.2nd DAY" = "9"
+"U.P.S.3rd Day" = "6"
+"U.P.S.Ground" = "3"
+"USPS International" = "10"
+
+
+These Product Codes will automaticially be modified if necessary.
+This is done to a programatically pre-select the product model from
+the drop-down list.
+
+Products that start with APTXXX will automaticially be changed to APTAXXX
+Products that start with BCCXXX will automaticially be changed to BCCAXXX
+Products that start with BNYXXX will automaticially be changed to BNYAXXX
+Products that start with FGWXXX will automaticially be changed to FGWCXXX
+Products that start with GSMXXX will automaticially be changed to GSMWXXX
+Products that start with ZHDXXX will automaticially be changed to ZHDAXXX
+Products that start with LSTXXX will automaticially be changed to LSTAXXX
+Products that start with YTCXXX will automaticially be changed to YTCAXXX
+Products that start with TSSXXX will automaticially be changed to TSSXXX
+Products that start with SJTXXX will automaticially be changed to SJTAXXX
+Products that start with BTAXXX will automaticially be changed to BTAAXXX
+Products that start with SWCXXX will automaticially be changed to SWCAXXX
+Products that start with YLSXXX will automaticially be changed to YLSAXXX
+Products that start with YHSXXX will automaticially be changed to YHSAXXX
+
+
+Optional Tags:
+<rushorder></rushorder>
+<comments></comments>
+
+
+To make an order a Rush Order use the value "yes" or "no" (without the quotes),
+no other values are recognized.
+
+
+-->
+
+
+<kerussoOrders>
+	<order>
+		<shippingInfo>
+			<customerName>John Doyle</customerName>
+			<addressInfo1>123 S 108 Ave</addressInfo1>
+			<addressInfo2>First Baptist Church</addressInfo2>
+			<city>Durango</city>
+			<state>Colorado</state>
+			<zipcode>38901</zipcode>
+			<country>United States</country>
+			<shippingMethod>United States Postal Service (1 x 0.4123lbs) (Priority)</shippingMethod>
+			<shippingMethodValue>8</shippingMethodValue>
+			<orderNumber>GN1323</orderNumber>
+			<rushorder>yes</rushorder>
+			<comments>this is a comments with special characters</comments>
+		</shippingInfo>
+		<productsInfo>
+			<product model='CATSP06'  quantity='1'  size='CAT - NA' />
+		</productsInfo>
+	</order>
+	<order>
+		<shippingInfo>
+			<customerName>Nora Smith</customerName>
+			<addressInfo1>2222 Peachtree Rd</addressInfo1>
+			<addressInfo2></addressInfo2>
+			<city>Atlanta</city>
+			<state>Georgia</state>
+			<zipcode>30309</zipcode>
+			<country>United States</country>
+			<shippingMethod>United States Postal Service (1 x 0.4123lbs) (Priority)</shippingMethod>
+			<shippingMethodValue>8</shippingMethodValue>
+			<orderNumber>GN1322</orderNumber>
+			<rushorder>no</rushorder>
+		</shippingInfo>
+		<productsInfo>
+			<product model='APTWNT'  quantity='2'  size='APT - LG' />
+			<product model='APTCOP'  quantity='3'  size='APT - LG' />
+			<product model='APTSSD'  quantity='1'  size='APT - LG' />
+			<product model='APTPDN'  quantity='4'  size='APT - LG' />
+			<product model='APTNGS'  quantity='1'  size='APT - LG' />
+		</productsInfo>
+	</order>
+	<order>
+		<shippingInfo>
+			<customerName>Yvette Steele</customerName>
+			<addressInfo1>54322 21st Ave SW</addressInfo1>
+			<addressInfo2></addressInfo2>
+			<city>Kansas City</city>
+			<state>Kansas</state>
+			<zipcode>43817</zipcode>
+			<country>United States</country>
+			<shippingMethod>United States Postal Service (1 x 0.4123lbs) (Priority)</shippingMethod>
+			<shippingMethodValue>8</shippingMethodValue>
+			<orderNumber>GN1321</orderNumber>
+			<rushorder>yes</rushorder>
+		</shippingInfo>
+		<productsInfo>
+			<product model='APTDHW'  quantity='2'  size='APT - XX' />
+			<product model='APTMMH'  quantity='1'  size='APT - 4X' />
+			<product model='APTCOP'  quantity='2'  size='APT - XX' />
+			<product model='APTSHZ'  quantity='2'  size='APT - 4X' />
+		</productsInfo>
+	</order>
+</kerussoOrders>
