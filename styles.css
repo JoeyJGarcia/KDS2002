@@ -1,0 +1,367 @@
+body
+{
+  font-family: Verdana, Arial, Helvetica;
+  color: Black;
+  background-color: White;
+}
+
+a:link
+{
+  color: Blue
+}
+
+a:visited
+{
+  color: Purple
+}
+
+a:active
+{
+  color: Red
+}
+
+a:hover
+{
+  color: Red
+}
+
+.userMsg {
+	background-color: #FFFFA0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+  	border: thin solid #5674BA;
+}
+
+.disabledText {color: #c0c0c0}
+
+.enabledText {color: #000000}
+
+.largeBoldText {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.largeBoldTextShaded {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  background-color: #E4E4EB;
+  border: thin solid #000000;
+}
+
+.largeBoldErrorText {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color:red;
+}
+
+.boldRedLargeText{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color:red;
+}
+
+.boldRedMediumText{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  color:red;
+}
+
+.mediumBoldText {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.mediumLargeBoldText {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.orderFormReturnAddress {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.orderFormCustomerAddress {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.orderFormHeading {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.orderFormProductText {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+table.mediumOutline, .mediumOutline {
+  border: solid black 3px;
+}
+
+table.thinOutline, .thinOutline {
+  border: solid black 1px;
+}
+
+.successHeader {
+    font-weight: bold;
+    color: #00CC00;
+    position: relative;
+    top: 50px
+}
+
+.failHeader {
+    font-weight: bold;
+    color: #FF0000;
+    position: relative;
+    top: 50px
+}
+
+.success {
+    font-weight: bold;
+    color: #00CC00;
+}
+
+.fail {
+    font-weight: bold;
+    color: #FF0000;
+}
+
+td.smallText{
+    font-size: 10px
+}
+
+.mediumText{
+    font-size: 12px
+}
+
+.smallText{
+    font-size: 10px
+}
+
+.smallRedText{
+    font-size: 10px;
+    color: #FF0000;
+}
+
+.labelSmallText{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 10px
+}
+
+.labelMediumText{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.th{
+  font-weight: bold;
+  font-size: 1em;
+  display: inline-table;
+  width:10%;
+  margin-right: 40px;
+}
+
+.tr{
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+
+.th:first-child{
+  margin-left: 40px;
+}
+
+.colspan2{
+  width: 40%;
+}
+
+tr.tableHeader, .tableHeader {
+    background: #5674BA;
+    color: #FFFFFF;
+}
+
+tr.tableFooter, .tableFooter {
+    background: #3E5485
+}
+
+tr.tableRowColor, .tableRowColor {
+    background-color: #E4E4EB
+}
+
+tr.tableRowColorLtYellow {
+    background-color: #FFFFA0
+}
+
+tr.tableRowColorGray {
+    background-color: #EDEDDC
+}
+
+
+tr.tableRowColorOdd, .tableRowColorOdd {
+    background-color: #EFEFF3
+}
+
+tr.tableRowColorEven, .tableRowColorEven {
+    background-color: #FFFFFF
+}
+
+tr.tableRowColorOdd_10 {
+    background-color: #EFEFF3;
+    font-size: 10pt;
+}
+
+tr.tableRowColorEven_10 {
+    background-color: #FFFFFF;
+    font-size: 10pt;
+}
+
+
+td.separator{
+    border-bottom: thin solid #000000
+}
+
+th.faqTitle{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFFFFF;
+  background-color: #5674BA;
+}
+
+th.faqText{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  color: #000000;
+  background-color: #EFEFF3;
+}
+
+th.newsHeader{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 24px;
+  color: #FFFFFF;
+  background-color: #5674BA;
+}
+
+th.newsTitle{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  color: #FFFFFF;
+  background-color: #5674BA;
+}
+
+th.newsText{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  color: #000000;
+  background-color: #EFEFF3;
+}
+
+th.newsDate{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  color: #FFFFFF;
+  background-color: #5674BA;
+}
+
+.Header{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bolder;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.Headerline{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bolder;
+  font-size: 18px;
+  color: #3E5485;
+}
+
+.actLikeLink{
+	cursor:pointer;	
+}
+
+span.nonStdSize{
+	color: #c0c0c0;
+}
+
+#showMyOrdersTable  tr.tableRowColor:hover{
+	background-color:yellow;
+}
+
+tr.hide{
+	display: none;
+}
+
+tr.show{
+	display: block;
+}
+
+.user_message{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bolder;
+  font-size: 14px;
+  color: #000;  
+  width: 100%;
+}
+
+.ajax_success{
+  color:#003300;
+  background-color: #66FF99;
+  border: 1px solid #000000;
+}
+
+.ajax_fail{
+  color:#990000;
+  background-color: #FF9999;
+  border: 1px solid #000000;
+}
+
+.table800{
+  width:800px;
+  margin: auto;
+}
+
+.table800 .tableHeader, .tableHeader{
+    padding: 5px;
+}
+
+.center{
+  text-align: center;
+}
+
+.tableTitle{
+  font-size: 18px;
+  font-weight: bold;
+  font-family:  Verdana, Arial, Helvetica;
+  padding: 10px 0;
+}
+
+.tableTitle .groupLabel{
+  margin-top: 50px;
+}
+
+.largeFont{
+  font-size: 24px;
+}

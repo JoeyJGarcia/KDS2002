@@ -1,0 +1,59 @@
+<kerussoOrders>
+  <order>
+    <shippingInfo>
+      <customerName>meci brown</customerName>
+      <addressInfo1>1201 w. California Ave. APT.F22 </addressInfo1>
+      <addressInfo2/>
+      <city>Ruston</city>
+      <state>Louisiana</state>
+      <zipcode>71270</zipcode>
+      <country>United States</country>
+      <shippingMethod>PRIORITY</shippingMethod>
+      <shippingMethodValue>8</shippingMethodValue>
+      <orderNumber>FT760</orderNumber>
+    </shippingInfo>
+    <productsInfo>
+      <product model="SJT1243" quantity="1" size="Size: S"/>
+    </productsInfo>
+  </order>
+  <order>
+    <shippingInfo>
+      <customerName>Joyce Ontiveros</customerName>
+      <addressInfo1>313 E. Buchanan St. </addressInfo1>
+      <addressInfo2/>
+      <city>Harlingen</city>
+      <state>Texas</state>
+      <zipcode>78550</zipcode>
+      <country>United States</country>
+      <shippingMethod>PRIORITY</shippingMethod>
+      <shippingMethodValue>8</shippingMethodValue>
+      <orderNumber>FT761</orderNumber>
+    </shippingInfo>
+    <productsInfo>
+      <product model="APT1003" quantity="1" size="Size: LG"/>
+      <product model="SWC1003" quantity="1" size=""/>
+    </productsInfo>
+  </order>
+  <order>
+    <shippingInfo>
+      <customerName>Tricia Brandt</customerName>
+      <addressInfo1>18847 S. 1700 Rd.</addressInfo1>
+      <addressInfo2/>
+      <city>Nevada</city>
+      <state>Missouri</state>
+      <zipcode>64772</zipcode>
+      <country>United States</country>
+      <shippingMethod>Free Shipping</shippingMethod>
+      <shippingMethodValue>8</shippingMethodValue>
+      <orderNumber>FT762</orderNumber>
+    </shippingInfo>
+    <productsInfo>
+      <product model="APTAPRL" quantity="1" size="Size: XL"/>
+      <product model="APT1126" quantity="1" size="Size: XL"/>
+      <product model="APT1129" quantity="1" size="Size: XL"/>
+      <product model="APT1198" quantity="1" size="Size: XL"/>
+      <product model="APT1174" quantity="1" size="Size: XL"/>
+      <product model="APT1234" quantity="1" size="Size: XL"/>
+    </productsInfo>
+  </order>
+</kerussoOrders>
