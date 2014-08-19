@@ -214,12 +214,12 @@ cal2TO.time_comp = false;
 		}
 
 
-		$arrRepGroupNames = array();
-		$rep_groups_sql = "SELECT * FROM rep_groups ";
-		$rep_groups_query = my_db_query($rep_groups_sql);
-		while( $rep_groups = my_db_fetch_array($rep_groups_query) ){
-		    $arrRepGroupNames[$rep_groups['rep_groups_id']] = $rep_groups['rep_groups_name'];
-		}
+        $arrRepGroupNames = array();
+        $rep_groups_sql = "SELECT * FROM rep_groups ";
+        $rep_groups_query = my_db_query($rep_groups_sql);
+        while( $rep_groups = my_db_fetch_array($rep_groups_query) ){
+            $arrRepGroupNames[$rep_groups['rep_groups_id']] = $rep_groups['rep_groups_name'];
+        }
 
 
             $arrWhereClause = split("#",$_POST['useWhereClause']);
@@ -284,9 +284,16 @@ cal2TO.time_comp = false;
         o.handling_fee AS Handling_Fee,
         o.shipping_charge AS Shipping_Fee,
         o.misc_fee AS Misc_Fee,
-        o.customer_invoice_number AS coID
-        FROM orders o, accounts a WHERE $whereClause
-        AND o.accounts_number=a.accounts_number ORDER BY oID ASC";
+        o.customer_invoice_number AS coID, 
+        o.rep1_code as REP1, 
+        o.rep2_code AS REP2, 
+        o.rep3_code AS REP3, 
+        o.rep4_code AS REP4, 
+        o.rep5_code AS REP5, 
+        o.rep6_code AS REP6
+        FROM orders o, accounts a
+        WHERE $whereClause AND o.accounts_number=a.accounts_number  
+        ORDER BY oID ASC";
 
 //echo $orderInfo_sql."<p>";
 
@@ -363,6 +370,12 @@ cal2TO.time_comp = false;
              $objOrder->setRep2Name( prepareDLOrdersText($arrRepGroupNames[$orderInfo['Rep']]) );
              $objOrder->setRep2Rate( prepareDLOrdersText($repRate) );
              $objOrder->setOrderDate( $theMonth."/".$theDay."/".$theYear );
+             $objOrder->setRep1( prepareDLOrdersText($orderInfo['REP1']) );
+             $objOrder->setRep2( prepareDLOrdersText($orderInfo['REP2']) );
+             $objOrder->setRep3( prepareDLOrdersText($orderInfo['REP3']) );
+             $objOrder->setRep4( prepareDLOrdersText($orderInfo['REP4']) );
+             $objOrder->setRep5( prepareDLOrdersText($orderInfo['REP5']) );
+             $objOrder->setRep6( prepareDLOrdersText($orderInfo['REP6']) );
 
 
 

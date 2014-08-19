@@ -118,8 +118,20 @@ if( $_POST['doAction'] == "addOrder" ){
                 `customer_invoice_number` , `purchase_date` , `accounts_number`,
                 `purchase_order_number` , `order_comments`, `order_status`,
                 `dropship_fee`,
-                `handling_fee`, `isRush`, `rush_fee`, `misc_desc` ) VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %d, %s, '".date("y-m-d h:i:s")."', %s, %s, %s, %d, %01.2f,%01.2f,%d, %d, %s)",
+                `handling_fee`, `isRush`, `rush_fee`, `misc_desc`, 
+                `rep1_name`, 
+                `rep1_code`, 
+                `rep2_name`, 
+                `rep2_code`, 
+                `rep3_name`, 
+                `rep3_code`, 
+                `rep4_name`, 
+                `rep4_code`, 
+                `rep5_name`, 
+                `rep5_code`, 
+                `rep6_name`, 
+                `rep6_code` ) VALUES
+                (%s, %s, %s, %s, %s, %s, %s, %s, %d, %s, '".date("y-m-d h:i:s")."', %s, %s, %s, %d, %01.2f,%01.2f,%d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 "'".str_replace(",","",mysql_real_escape_string($_POST['customer_name']))."'",
                 "'".str_replace(",","",mysql_real_escape_string($_POST['customer_address1']))."'",
                 "'".str_replace(",","",mysql_real_escape_string($customer_address2_checked))."'",
@@ -134,7 +146,19 @@ if( $_POST['doAction'] == "addOrder" ){
                 "'".mysql_real_escape_string($_POST['purchase_order_number'])."'",
                 "'".str_replace(",","",mysql_real_escape_string($order_comments_checked))."'",
                 $fees['order_status_id'],
-                $arrFees['Drop Ship'],$arrFees['Handling'], $isRush,$rushFee,"''");
+                $arrFees['Drop Ship'],$arrFees['Handling'], $isRush,$rushFee,"''",
+                "'".mysql_real_escape_string($_POST['rep1_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep1_code'])."'",
+                "'".mysql_real_escape_string($_POST['rep2_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep2_code'])."'",
+                "'".mysql_real_escape_string($_POST['rep3_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep3_code'])."'",
+                "'".mysql_real_escape_string($_POST['rep4_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep4_code'])."'",
+                "'".mysql_real_escape_string($_POST['rep5_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep5_code'])."'",
+                "'".mysql_real_escape_string($_POST['rep6_name'])."'",
+                "'".mysql_real_escape_string($_POST['rep6_code'])."'");
 
                   my_db_query($ord_add_sql);
 

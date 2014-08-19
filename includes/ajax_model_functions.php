@@ -78,4 +78,21 @@ function updatePriceLevelDiscount($table_id, $column_name, $value){
 	return  my_db_affected_rows($query);	
 }
 
+function getReps($accounts_number) {
+	$sql = "SELECT * FROM `kerussod_kdsdb`.`reps` WHERE accounts_number = '" . $accounts_number . "' ORDER BY accounts_company_name";
+	$query = my_db_query($sql);
+	
+	$temp = array();
+	while($reps = my_db_fetch_array($query) ){
+		$temp['field_rep'] = $reps["field_rep"];
+		$temp['inside_rep'] = $reps["inside_rep"];
+		$temp['field_group'] = $reps["field_group"];
+		$temp['national_group'] = $reps["national_group"];
+		$temp['national_rep'] = $reps["national_rep"];
+		$temp['sales_mgr'] = $reps["sales_mgr"];
+		$temp['accounts_company_name'] = $reps["accounts_company_name"];
+		$temp['accounts_number'] = $reps["accounts_number"];
+	}
+	return  $temp;
+}
 ?>

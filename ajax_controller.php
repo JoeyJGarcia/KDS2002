@@ -96,6 +96,19 @@ if($action == "send_email"){
 	}
 	$arrResponse["onhand"] =   getQuantityOnHand2($_POST['size'], $_POST['model']);
 	echo json_encode($arrResponse);
+} elseif ($action == 'get_reps') { 
+	
+	$results = getReps($_GET['accounts_number']);
+
+	if ($results == null) {
+		$arrResponse["status"] = 'failure';
+		$arrResponse["results"] =  '{}';
+	} else {
+		$arrResponse["status"] = 'success';
+		$arrResponse["results"] =  $results;
+	}
+	
+	echo json_encode($arrResponse);
 } else {
 	echo "Unknown Action";
 }

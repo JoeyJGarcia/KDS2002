@@ -5,6 +5,7 @@
     var $shippingText,$shippingValue,$orderNumber,$comments,$isRush,$clientPrefix;
     var $clientEmail, $orderDate, $paymentMethod, $repID, $PONumber, $intlPhone;
     var $dropShipID, $dropShipFee, $rushFee, $accountNumber, $rep2Name, $rep2Rate;
+    var $rep1, $rep2, $rep3, $rep4, $rep5, $rep6;
     var $arrProducts = array();
 
     function Order() {
@@ -229,6 +230,54 @@
 		return $this->clientPrefix;
 	}
 
+	function setRep1($value){
+		$this->rep1 = my_unescape_string($value);
+	}
+
+	function getRep1(){
+		return $this->rep1;
+	}
+
+	function setRep2($value){
+		$this->rep2 = my_unescape_string($value);
+	}
+
+	function getRep2(){
+		return $this->rep2;
+	}
+
+	function setRep3($value){
+		$this->rep3 = my_unescape_string($value);
+	}
+
+	function getRep3(){
+		return $this->rep3;
+	}
+
+	function setRep4($value){
+		$this->rep4 = my_unescape_string($value);
+	}
+
+	function getRep4(){
+		return $this->rep4;
+	}
+
+	function setRep5($value){
+		$this->rep5 = my_unescape_string($value);
+	}
+
+	function getRep5(){
+		return $this->rep5;
+	}
+
+	function setRep6($value){
+		$this->rep6 = my_unescape_string($value);
+	}
+
+	function getRep6(){
+		return $this->rep6;
+	}
+
 
 	function toString(){
 		echo  "====================================================<br>";
@@ -276,7 +325,13 @@
     "\t<DROP_SHIP_ID>". $this->getDropShipID() ."</DROP_SHIP_ID>\n".
     "\t<SHIP_ID>". $this->getAccountNumber() ."</SHIP_ID>\n".
     "\t<CONSUMER></CONSUMER>\n".
-    "\t<REP2>". $this->getRep2Name() ."</REP2>\n".
+    "\t<REP1>". $this->getRep1() ."</REP1>\n".
+    "\t<REP2>". $this->getRep2() ."</REP2>\n".
+    "\t<REP3>". $this->getRep3() ."</REP3>\n".
+    "\t<REP4>". $this->getRep4() ."</REP4>\n".
+    "\t<REP5>". $this->getRep5() ."</REP5>\n".
+    "\t<REP6>". $this->getRep6() ."</REP6>\n".
+    "\t<REPGROUP>". $this->getRep2Name() ."</REPGROUP>\n".
     "\t<REP2RATE>". $this->getRep2Rate() ."</REP2RATE>\n".
     "\t<ITEMS>\n";
 
