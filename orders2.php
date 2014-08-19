@@ -77,6 +77,54 @@ if( isset($_POST['accounts_number']) ){
 	$accounts_number = $_POST['accounts_number'];
 }
 
+if( isset($_POST['rep1_name']) ){
+	$rep1_name = $_POST['rep1_name'];
+}
+
+if( isset($_POST['rep1_code']) ){
+	$rep1_code = $_POST['rep1_code'];
+}
+
+if( isset($_POST['rep2_name']) ){
+	$rep2_name = $_POST['rep2_name'];
+}
+
+if( isset($_POST['rep2_code']) ){
+	$rep2_code = $_POST['rep2_code'];
+}
+
+if( isset($_POST['rep3_name']) ){
+	$rep3_name = $_POST['rep3_name'];
+}
+
+if( isset($_POST['rep3_code']) ){
+	$rep3_code = $_POST['rep3_code'];
+}
+
+if( isset($_POST['rep4_name']) ){
+	$rep4_name = $_POST['rep4_name'];
+}
+
+if( isset($_POST['rep4_code']) ){
+	$rep4_code = $_POST['rep4_code'];
+}
+
+if( isset($_POST['rep5_name']) ){
+	$rep5_name = $_POST['rep5_name'];
+}
+
+if( isset($_POST['rep5_code']) ){
+	$rep5_code = $_POST['rep5_code'];
+}
+
+if( isset($_POST['rep6_name']) ){
+	$rep6_name = $_POST['rep6_name'];
+}
+
+if( isset($_POST['rep6_code']) ){
+	$rep6_code = $_POST['rep6_code'];
+}
+
 
 
 ?>
@@ -502,15 +550,38 @@ if( !isset($action)){
                           'text' => $ord_countries['countries_name']);
     }
 
+    $arrRepCodes = array();
+    $rep_codes_sql = "SELECT * FROM rep_codes";
+    $rep_codes_query = my_db_query($rep_codes_sql);
+    while( $rep_codes = my_db_fetch_array($rep_codes_query) ){
+        $arrRepCodes[$rep_codes['rep_name']] = $rep_codes['rep_code'];
+    }
 
-?>
-<?php echo my_draw_form('add_order',my_href_link('orders2.php', 'action=ord_add','POST',' id="add_order"'));?>
+    $arrReps = array();
+    $reps_sql = "SELECT * FROM reps r WHERE r.accounts_number = " . $_SESSION['client_account_number'];
+    $reps_query = my_db_query($reps_sql);
+    $reps = my_db_fetch_array($reps_query);
 
-<?php echo my_draw_hidden_field('order_size','1','id=\'order_size\'');?>
-<?php echo my_draw_hidden_field('accounts_number',$_SESSION['client_account_number']);?>
-<?php
+echo my_draw_form('add_order',my_href_link('orders2.php', 'action=ord_add','POST',' id="add_order"'));
+
 $po_number = strtoupper($_SESSION['client_prefix']).date("mdyHis");
 echo my_draw_hidden_field('purchase_order_number',$po_number);
+echo my_draw_hidden_field('order_size','1','id=\'order_size\'');
+echo my_draw_hidden_field('accounts_number',$_SESSION['client_account_number']);
+
+echo my_draw_hidden_field('rep1_name',$reps['field_rep']);
+echo my_draw_hidden_field('rep1_code',$arrRepCodes[$reps['field_rep']]);
+echo my_draw_hidden_field('rep2_name',$reps['inside_rep']);
+echo my_draw_hidden_field('rep2_code',$arrRepCodes[$reps['inside_rep']]);
+echo my_draw_hidden_field('rep3_name',$reps['field_group']);
+echo my_draw_hidden_field('rep3_code',$arrRepCodes[$reps['field_group']]);
+echo my_draw_hidden_field('rep4_name',$reps['national_group']);
+echo my_draw_hidden_field('rep4_code',$arrRepCodes[$reps['national_group']]);
+echo my_draw_hidden_field('rep5_name',$reps['national_rep']);
+echo my_draw_hidden_field('rep5_code',$arrRepCodes[$reps['national_rep']]);
+echo my_draw_hidden_field('rep6_name',$reps['sales_mgr']);
+echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
+
 ?>
 
 
@@ -767,10 +838,27 @@ if( $action == 'ord_mod_start' ){
                 `customer_zip` , `customer_country` , `customer_country_number` , `customer_shipping_method` ,
                 `customer_shipping_id` ,
                 `customer_invoice_number` , `purchase_date` , `accounts_number`,
-                `purchase_order_number` , `order_comments`, `order_status`,
+                `purchase_order_number` , 
+                `order_comments`, 
+                `order_status`,
                 `dropship_fee`,
-                `handling_fee`, `isRush`, `rush_fee`, `misc_desc` ) VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %d, %s, %d, %s, '".date("y-m-d h:i:s")."', %s, %s, %s, %d, %01.2f,%01.2f,%d, %d, %s)",
+                `handling_fee`, 
+                `isRush`, 
+                `rush_fee`, 
+                `misc_desc`,
+                `rep1_name`, 
+                `rep1_code`, 
+                `rep2_name`, 
+                `rep2_code`, 
+                `rep3_name`, 
+                `rep3_code`, 
+                `rep4_name`, 
+                `rep4_code`, 
+                `rep5_name`, 
+                `rep5_code`, 
+                `rep6_name`, 
+                `rep6_code`) VALUES
+                (%s, %s, %s, %s, %s, %s, %s, %s, %d, %s, %d, %s, '".date("y-m-d h:i:s")."', %s, %s, %s, %d, %01.2f,%01.2f,%d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 "'".str_replace(",","",mysql_real_escape_string($customer_name))."'",
                 "'".str_replace(",","",mysql_real_escape_string($customer_address1))."'",
                 "'".str_replace(",","",mysql_real_escape_string($customer_address2))."'",
@@ -787,7 +875,23 @@ if( $action == 'ord_mod_start' ){
                 "'".mysql_real_escape_string($purchase_order_number)."'",
                 "'".str_replace(",","",mysql_real_escape_string($order_comments))."'",
                 $fees['order_status_id'],
-                $arrFees['Drop Ship'],$arrFees['Handling'], $isRush,$rushFee,"''");
+                $arrFees['Drop Ship'],
+                $arrFees['Handling'], 
+                $isRush,
+                $rushFee,
+                "''",
+                "'".mysql_real_escape_string($rep1_name)."'",
+                "'".mysql_real_escape_string($rep1_code)."'",
+                "'".mysql_real_escape_string($rep2_name)."'",
+                "'".mysql_real_escape_string($rep2_code)."'",
+                "'".mysql_real_escape_string($rep3_name)."'",
+                "'".mysql_real_escape_string($rep3_code)."'",
+                "'".mysql_real_escape_string($rep4_name)."'",
+                "'".mysql_real_escape_string($rep4_code)."'",
+                "'".mysql_real_escape_string($rep5_name)."'",
+                "'".mysql_real_escape_string($rep5_code)."'",
+                "'".mysql_real_escape_string($rep6_name)."'",
+                "'".mysql_real_escape_string($rep6_code)."'" );
 
 //echo $ord_add_sql ."<br><br>";
 

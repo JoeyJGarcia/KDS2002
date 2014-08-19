@@ -35,6 +35,17 @@ class Form{
 		$formTag = my_draw_form("frmAdd_$orderNum",my_href_link("bulk_orders_process.php",
 		"action=add_order"));
 
+	    $arrRepCodes = array();
+	    $rep_codes_sql = "SELECT * FROM rep_codes";
+	    $rep_codes_query = my_db_query($rep_codes_sql);
+	    while( $rep_codes = my_db_fetch_array($rep_codes_query) ){
+	        $arrRepCodes[$rep_codes['rep_name']] = $rep_codes['rep_code'];
+	    }
+
+	    $arrReps = array();
+	    $reps_sql = "SELECT * FROM reps r WHERE r.accounts_number = " . $_SESSION['client_account_number'];
+	    $reps_query = my_db_query($reps_sql);
+	    $reps = my_db_fetch_array($reps_query);
 
 		$customerName = $this->order->getCustomerName();
 		$address1 = $this->order->getAddress1();
@@ -50,6 +61,19 @@ class Form{
 		$isRushOrder = ( $this->order->isRush() == "yes" )?" CHECKED ":"";
 		$comments = $this->order->getComments();
 		$intl_phone = $this->order->getIntlPhone();
+
+		$rep1_name = $reps['field_rep'];
+		$rep1_code = $arrRepCodes[$reps['field_rep']];
+		$rep2_name = $reps['inside_rep'];
+		$rep2_code = $arrRepCodes[$reps['inside_rep']];
+		$rep3_name = $reps['field_group'];
+		$rep3_code = $arrRepCodes[$reps['field_group']];
+		$rep4_name = $reps['national_group'];
+		$rep4_code = $arrRepCodes[$reps['national_group']];
+		$rep5_name = $reps['national_rep'];
+		$rep5_code = $arrRepCodes[$reps['national_rep']];
+		$rep6_name = $reps['sales_mgr'];
+		$rep6_code = $arrRepCodes[$reps['sales_mgr']];
 
 
     if( strlen($shippingID) == 0){
@@ -71,6 +95,19 @@ class Form{
 		<input type="hidden" name="order_size" value="$productCount"/>
 		<input type="hidden" name="accounts_number" value="$acctNumber"/>
 		<input type="hidden" name="purchase_order_number" value="$po_number"/>
+
+		<input type="hidden" name="rep1_name" value="$rep1_name"/>
+		<input type="hidden" name="rep1_code" value="$rep1_code"/>
+		<input type="hidden" name="rep2_name" value="$rep2_name"/>
+		<input type="hidden" name="rep2_code" value="$rep2_code"/>
+		<input type="hidden" name="rep3_name" value="$rep3_name"/>
+		<input type="hidden" name="rep3_code" value="$rep3_code"/>
+		<input type="hidden" name="rep4_name" value="$rep4_name"/>
+		<input type="hidden" name="rep4_code" value="$rep4_code"/>
+		<input type="hidden" name="rep5_name" value="$rep5_name"/>
+		<input type="hidden" name="rep5_code" value="$rep5_code"/>
+		<input type="hidden" name="rep6_name" value="$rep6_name"/>
+		<input type="hidden" name="rep6_code" value="$rep6_code"/>
 
 
 		<table align="center">

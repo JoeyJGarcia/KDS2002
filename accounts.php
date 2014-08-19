@@ -397,7 +397,9 @@ echo my_draw_pull_down_menu('user_level', $arrUserLevels, '0');
 	$rep_groups_default = my_db_fetch_array($rep_groups_default_query);
 	
 	if($_SESSION['userlevel'] == 'super' ){
-		echo my_draw_pull_down_menu('accounts_rep_group', $arrRepGroups, $rep_groups_default['rep_groups_id'])."*";	
+		// echo my_draw_pull_down_menu('accounts_rep_group', $arrRepGroups, $rep_groups_default['rep_groups_id'])."*";	
+        echo $arrRepGroupNames[$rep_groups_default['rep_groups_id']];
+        echo my_draw_hidden_field('accounts_rep_group', $rep_groups_default['rep_groups_id']);  
 	}else{
 		echo $arrRepGroupNames[$rep_group];
 		echo my_draw_hidden_field('accounts_rep_group', $rep_group);  
