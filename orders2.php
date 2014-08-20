@@ -585,7 +585,7 @@ echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
 ?>
 
 
-<table width=600px align="center" border=0  class="thinOutline" cellspacing=0>
+<table width=800px align="center" border=0  class="thinOutline" cellspacing=0>
 <tr class="tableHeader">
     <td class="mediumBoldText" colspan=2 align=center>S H I P P I N G  &nbsp;&nbsp; I N F O R M A T A T I O N</td>
 </tr>
@@ -653,7 +653,7 @@ echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
 
 <div id="statusMsg"></div>
 
-<table width=600px align="center" border=0  class="thinOutline" cellspacing=0 id="productTable" name="productTable">
+<table width=800px align="center" border=0  class="thinOutline" cellspacing=0 id="productTable" name="productTable">
 <THEAD>
 <tr class="tableHeader">
 <td colspan=4 class="mediumBoldText" align="center">
