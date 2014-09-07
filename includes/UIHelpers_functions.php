@@ -814,4 +814,78 @@
 		return;
 	}
 
+	function startsWith($haystack, $needle) {
+		$length = strlen($needle);
+		return (substr($haystack, 0, $length) === $needle);
+	}
+
+	function exactMatch($haystack, $needle) {
+		return $haystack === $needle;
+	}
+
+	function applyFixedPrice($rs, $price) {
+		$arrRetVal["price"] = $rs["discount_value"];
+		$arrRetVal["msg"] = "Discounted Price";
+
+		return $arrRetVal;
+	}
+
+	function applyPercentOff($rs, $price) {
+		$temp = (100 - intval($rs["discount_value"]))/100;
+		$arrRetVal["price"] = money_format('%i', intval($price) * $temp);
+		$arrRetVal["msg"] = intval($rs["discount_value"]) . "% off";
+
+		return $arrRetVal;
+	}
+
+
+	function applyDiscount($rs, $price, $productModel) {
+		$arrRetVal["price"] = $price;
+
+		if ($rs["apply_method"] === "STARTS-WITH") {
+			if (startsWith($productModel, $rs["discount_pattern"])) {
+				if ($rs["discount_type"] === "AMOUNT") {
+					$arrRetVal = applyFixedPrice($rs, $price);
+				} elseif ($rs["discount_type"] === "PERCENT") {
+					$arrRetVal = applyPercentOff($rs, $price);
+				}
+			}
+		} elseif ($rs["apply_method"] === "EXACT-MATCH") {
+			if (exactMatch($productModel, $rs["discount_pattern"])) {
+				if ($rs["discount_type"] === "AMOUNT") {
+					$arrRetVal = applyFixedPrice($rs, $price);
+				} elseif ($rs["discount_type"] === "PERCENT") {
+					$arrRetVal = applyPercentOff($rs, $price);
+				}
+			}
+		}
+
+		return $arrRetVal;
+	}
+
+	function checkForDiscount($arrRequest) {
+		$arrRetVal = array();
+		$arrRetVal["price"] = $arrRequest["price"];
+
+		$sql = "select * from discounts where 1 order by discount_id";
+		$query = my_db_query($sql);
+		while ($rs = my_db_fetch_array($query)) {
+			$arrRetVal["price"] = $arrRequest["price"];
+			if ($rs["by_account_number"] == $arrRequest["account_number"]) {
+				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
+			} elseif ($rs["by_price_level"] != $arrRequest["priceLvl"]) {
+				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
+			} else {
+				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
+			}
+
+			if ($arrRetVal["price"] != $arrRequest["price"]) {
+				break;
+			} else {
+				$arrRetVal = array();
+			}
+		}
+
+		return $arrRetVal;
+	}
 	?>
