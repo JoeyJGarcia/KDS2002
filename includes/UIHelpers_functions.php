@@ -816,11 +816,11 @@
 
 	function startsWith($haystack, $needle) {
 		$length = strlen($needle);
-		return (substr($haystack, 0, $length) === $needle);
+		return (strtolower(substr($haystack, 0, $length)) === strtolower($needle));
 	}
 
 	function exactMatch($haystack, $needle) {
-		return $haystack === $needle;
+		return strtolower($haystack) === strtolower($needle);
 	}
 
 	function applyFixedPrice($rs, $price) {
@@ -866,16 +866,18 @@
 	function checkForDiscount($arrRequest) {
 		$arrRetVal = array();
 		$arrRetVal["price"] = $arrRequest["price"];
+		$junk = "";
 
-		$sql = "select * from discounts where 1 order by discount_id";
+		$sql = "SELECT * FROM discounts WHERE 1 ORDER BY rules_order";
 		$query = my_db_query($sql);
 		while ($rs = my_db_fetch_array($query)) {
 			$arrRetVal["price"] = $arrRequest["price"];
-			if ($rs["by_account_number"] == $arrRequest["account_number"]) {
+
+			if ($rs["limit_by"] == "ACCOUNT" && $rs["by_account_number"] == $arrRequest["accounts_number"]) {
 				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
-			} elseif ($rs["by_price_level"] != $arrRequest["priceLvl"]) {
+			} elseif ($rs["limit_by"] == "PRICE_LEVEL" && $rs["by_price_level"] == $arrRequest["priceLvl"]) {
 				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
-			} else {
+			} elseif ($rs["limit_by"] == "NONE") {
 				$arrRetVal = applyDiscount($rs, $arrRequest["price"], $arrRequest["productModel"]);
 			}
 
@@ -887,5 +889,10 @@
 		}
 
 		return $arrRetVal;
+	}
+
+	function updateRulesOrder($discId, $rulesOrder) {
+		$sql = "UPDATE discounts SET rules_order = $rulesOrder where discount_id=".$discId;
+		return my_db_query($sql);
 	}
 	?>

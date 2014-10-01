@@ -7,36 +7,41 @@ require('includes/application_top.php');
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-  <title>Kerusso Drop Ship - Manage Discounts</title>
-  <link rel="stylesheet" href="styles.css" type="text/css"/>
-  <style>
-  .disabled {
-    background-color: rgb(0, 0, 0, .2);
-    color: grey; 
-  }
+    <title>Kerusso Drop Ship - Manage Promotions</title>
+    <link rel="stylesheet" href="styles.css" type="text/css"/>
+    <link rel="stylesheet" href="includes/js/jquery-ui-1.11.1/jquery-ui.css">
+    <link rel="stylesheet" href="includes/js/jquery-ui-1.11.1/themes/smoothness/jquery-ui.css">
 
-  .hidden{
-    display: none;
-  }
-  </style>
-<script type="text/javascript"  src="includes/js/jquery_latest.js"></script>
-<script language="javascript1.2">
-    function confirmDelete(){
-        if(confirm("You are about to make a deletion, continue?")){
-            return true;
-        }else{
-            return false;
+    <style>
+        .disabled {
+            background-color: rgb(0, 0, 0, .2);
+            color: grey; 
         }
-    }
 
-    function toggleDiscount(selEl) {
-        var $selEl = jQuery(selEl),
-            selIdx = $selEl[0].selectedIndex,
-            discType = $selEl[0].value,
-            $amtInpEl = jQuery(document.getElementById("amount_off")),
-            $pctInpEl = jQuery(document.getElementById("percent_off")),
-            $amtDiv = jQuery(document.getElementById("amount_off_div")),
-            $pctDiv = jQuery(document.getElementById("percent_off_div"));
+        .hidden{
+            display: none;
+        }
+    </style>
+    <script src="includes/js/jquery-1.11.1.min.js"></script>
+    <script src="includes/js/jquery-ui-1.11.1/jquery-ui.min.js"></script>
+    <script language="JavaScript" src="sortable.js"></script>
+    <script language="javascript1.2">
+        function confirmDelete(){
+            if(confirm("You are about to make a deletion, continue?")){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        function toggleDiscount(selEl) {
+            var $selEl = jQuery(selEl),
+                selIdx = $selEl[0].selectedIndex,
+                discType = $selEl[0].value,
+                $amtInpEl = jQuery(document.getElementById("amount_off")),
+                $pctInpEl = jQuery(document.getElementById("percent_off")),
+                $amtDiv = jQuery(document.getElementById("amount_off_div")),
+                $pctDiv = jQuery(document.getElementById("percent_off_div"));
 
             if (discType === 'AMOUNT') {
                 $amtDiv.show();
@@ -63,9 +68,96 @@ require('includes/application_top.php');
                 $amtDiv.hide();
             }
 
-    }
-</script>
-<script language="JavaScript" src="debugInfo.js"></script>
+        }
+
+        function showMessage(msg, status) {
+            var $msgDiv = $('.messageDiv');
+            $msgDiv.addClass(status);
+            $msgDiv.text(msg).show().fadeOut(3000);
+        }
+
+        function showUpdateButton() {
+            var $btnDiv = $('#buttonID');
+
+            $btnDiv.visible();
+
+            $('#update-button').on('click', function(){
+                $btnDiv.invisible();
+                updateRulesOrder();
+            });
+        }
+
+        function updateRulesOrder() {
+            var payload,
+                msg = {},
+                status = {},
+                $rulesOrders = [],
+                rules = {},
+                qs = '',
+                i = 0;
+
+            msg.success = 'Promotions reorder was successfully saved.';
+            msg.fail = 'Promotions reorder was not save.';
+            status.success = 'success';
+            status.fail = 'fail';
+
+            $rulesOrders = $('input.sort-order');
+
+            for(; i < $rulesOrders.length; i++) {
+                rules = {};
+                rules.discountId = $rulesOrders[i].name.replace('sort-', '');
+                rules.rulesOrder = $rulesOrders[i].value;
+
+                qs = '&discountId=' + rules.discountId + '&rulesOrder=' + rules.rulesOrder;
+
+                payload = {
+                    type: "POST",
+                    url: "/ajax_controller.php?action=update_rules_order" + qs
+                };
+                $.ajax(payload).done(function(response){
+                    response = $.parseJSON(response);
+
+                    if (response.results) {
+                        showMessage(msg.success, status.success);
+                    } else {
+                        showMessage(msg.fail, status.fail);
+                    }
+                });
+            }
+            
+
+        }
+
+        (function($){
+            function renumberPromos() {
+                $('.sort-order').each(function(idx, el){
+                    var count = idx + 1;
+                    el.value = count;
+                    el.previousElementSibling.innerText = count;
+                });
+            }
+
+            $(document).ready(function($){
+                $('#sortable').sortable({
+                    stop: function(){ renumberPromos(); }
+                });
+                $('#sortable').sortable({
+                    update: function(){showUpdateButton();}
+                });
+            });
+            $.fn.invisible = function() {
+                return this.each(function() {
+                    $(this).css("visibility", "hidden");
+                });
+            };
+            $.fn.visible = function() {
+                return this.each(function() {
+                    $(this).css("visibility", "visible");
+                });
+            };
+        })(jQuery)        
+    </script>
+    <script language="JavaScript" src="debugInfo.js"></script>
 </head>
 
 <body>
@@ -84,10 +176,10 @@ require('navigation.php');
     </tr>
 </table>
 
-
 <br />
 <br />
-
+<div class="messageWrapper"><div class="messageDiv"></div></div>
+<div id="buttonID" class="buttonWrapper"><div class="buttonDiv">When done reordering the rules click to save changes. </div><a href="" onclick="return false;" class="save-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span id="update-button" class="ui-button-text">Save Changes</span></a></div>
 
 
 <?php
@@ -105,8 +197,8 @@ if( $_GET['action'] == 'add_start' ){?>
 </tr>
 
 <tr class="tableRowColor">
-<td align=right class="mediumBoldText">Discount Name:</td>
-<td class="smallText"><?php echo my_draw_input_field('discount_name','','size=30'); ?></td>
+<td align=right class="mediumBoldText">Promotion Name:</td>
+<td class="smallText"><?php echo my_draw_input_field('discount_name','','size=40'); ?></td>
 </tr>
 
 <?php
@@ -121,7 +213,7 @@ if( $_GET['action'] == 'add_start' ){?>
 
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Category Pattern:</td>
-<td class="smallText"><?php echo my_draw_input_field('discount_pattern','','size=10'); ?> <div class="disabled">Example: APT or YTC1228</div></td>
+<td class="smallText"><?php echo my_draw_input_field('discount_pattern','','size=10'); ?> <span style="margin-left: 10px;" class="disabled smallText">[Example: APT or YTC1228]</span></td>
 </tr>
 <?php
     $arrDiscountTypes[] = array('id' => '0','text' => 'Select Discount Type');
@@ -136,7 +228,7 @@ if( $_GET['action'] == 'add_start' ){?>
 <tr class="tableRowColor">
 <td></td>
 <td>
-    <div id="amount_off_div" style=" display: none;" class="disc-amount">Amount: <input id="amount_off" type="text" name="amount_off" value="0" size="2" disabled='true' /></div>
+    <div id="amount_off_div" style=" display: none;" class="disc-amount">Amount: <input id="amount_off" type="text" name="amount_off" value="0" size="2" disabled='true' /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
     <div id="percent_off_div" style="display: none;" class="disc-percent">Percent: <input id="percent_off" type="text" name="percent_off" value="0" size="2" disabled='true' /></div>
 </td>
 </tr>
@@ -148,7 +240,7 @@ Optional: Apply Only to Specific Clients, Choose One
 </tr>
 
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="none" checked="checked"></span> <span style="width: 120px; float:right;">No Limitation:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="NONE" checked="checked"></span> <span style="width: 120px; float:right;">No Limitation:</span></td>
 <td class="smallText">Apply Promotions To All Clients</td>
 </tr>
 
@@ -162,7 +254,7 @@ Optional: Apply Only to Specific Clients, Choose One
     $arrApplyPLvls[] = array('id' => '6','text' => '6');
 ?>
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="price_level"></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL"></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
 <td class="smallText"><?php echo my_draw_pull_down_menu('by_price_level',$arrApplyPLvls); ?></td>
 </tr>
 
@@ -177,8 +269,8 @@ Optional: Apply Only to Specific Clients, Choose One
 
 
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="account"></span> <span style="width: 120px; float:right;">By Account:</span></td>
-<td class="smallText"><?php echo my_draw_pull_down_menu('by_account_number',$arrAccounts); ?><span style="margin-left: 20px;" class="disabled">[username / account number]</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="ACCOUNT"></span> <span style="width: 120px; float:right;">By Account:</span></td>
+<td class="smallText"><?php echo my_draw_pull_down_menu('by_account_number',$arrAccounts); ?><span style="margin-left: 10px;" class="disabled">[username / account number]</span></td>
 </tr>
 
 <tr class="tableFooter">
@@ -213,8 +305,8 @@ Optional: Apply Only to Specific Clients, Choose One
 </tr>
 
 <tr class="tableRowColor">
-<td align=right class="mediumBoldText">Discount Name:</td>
-<td class="smallText"><?php echo my_draw_input_field('discount_name',$discounts_mod['discount_name'],'size=30'); ?></td>
+<td align=right class="mediumBoldText">Promotion Name:</td>
+<td class="smallText"><?php echo my_draw_input_field('discount_name',$discounts_mod['discount_name'],'size=40'); ?></td>
 </tr>
 
 <?php
@@ -229,7 +321,7 @@ Optional: Apply Only to Specific Clients, Choose One
 
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Category Pattern:</td>
-<td class="smallText"><?php echo my_draw_input_field('discount_pattern',$discounts_mod['discount_pattern'],'size=10'); ?> <div class="disabled">Example: APT or YTC1228</div></td>
+<td class="smallText"><?php echo my_draw_input_field('discount_pattern',$discounts_mod['discount_pattern'],'size=10'); ?> <span style="margin-left: 10px;" class="disabled smallText">[Example: APT or YTC1228]</span></td>
 </tr>
 <?php
     $arrDiscountTypes[] = array('id' => '0','text' => 'Select Discount Type');
@@ -254,7 +346,7 @@ Optional: Apply Only to Specific Clients, Choose One
         echo "0";
     }
     ?>" 
-    size="2" <?php if($discounts_mod['discount_type'] == "PERCENT") { echo "disabled='true'"; } ?> /></div>
+    size="4" <?php if($discounts_mod['discount_type'] == "PERCENT") { echo "disabled='true'"; } ?> /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
     <div id="percent_off_div" 
     class="disc-percent <?php if($discounts_mod['discount_type'] == "AMOUNT") echo "disabled hidden"; ?>">Percent: <input id="percent_off" 
     type="text" name="percent_off" 
@@ -277,11 +369,11 @@ Optional: Apply Only to Specific Clients, Choose One
 
 <?php
 
-    if ($discounts_mod['by_price_level'] != "") {
+    if ($discounts_mod['limit_by'] == "PRICE_LEVEL") {
         $priceLevelSelected = " checked=\"checked\" ";
         $accountSelected = "";
         $noLimitationSelected = "";
-    } elseif ($discounts_mod['by_account'] != "0") {
+    } elseif ($discounts_mod['limit_by'] == "ACCOUNT") {
         $priceLevelSelected = "";
         $accountSelected = " checked=\"checked\" ";
         $noLimitationSelected = "";
@@ -300,12 +392,12 @@ Optional: Apply Only to Specific Clients, Choose One
     $arrApplyPLvls[] = array('id' => '6','text' => '6');
 ?>
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="none" <?=$noLimitationSelected?> ></span> <span style="width: 120px; float:right;">No Limitation:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="NONE" <?=$noLimitationSelected?> ></span> <span style="width: 120px; float:right;">No Limitation:</span></td>
 <td class="smallText">Apply Promotions To All Clients</td>
 </tr>
 
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="price_level" <?=$priceLevelSelected?> ></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL" <?=$priceLevelSelected?> ></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
 <td class="smallText"><?php echo my_draw_pull_down_menu('by_price_level',$arrApplyPLvls, $discounts_mod['by_price_level']); ?></td>
 </tr>
 
@@ -320,8 +412,8 @@ Optional: Apply Only to Specific Clients, Choose One
 
 
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="account" <?=$accountSelected?> ></span> <span style="width: 120px; float:right;">By Account No.:</span></td>
-<td class="smallText"><?php echo my_draw_pull_down_menu('by_account_number',$arrAccounts, $discounts_mod['by_account_number']); ?><span style="margin-left: 20px;" class="disabled">[username / account number]</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="ACCOUNT" <?=$accountSelected?> ></span> <span style="width: 120px; float:right;">By Account No.:</span></td>
+<td class="smallText"><?php echo my_draw_pull_down_menu('by_account_number',$arrAccounts, $discounts_mod['by_account_number']); ?><span style="margin-left: 10px;" class="disabled">[username / account number]</span></td>
 </tr>
 
 <tr class="tableFooter">
@@ -352,10 +444,10 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountValue = $amountOff;
         }
 
-        if ($_POST['limit_by'] == 'price_level') {
+        if ($_POST['limit_by'] == 'PRICE_LEVEL') {
             $byPriceLevel = $_POST['by_price_level'];
             $byAccountNumber = "";
-        } elseif ($_POST['limit_by'] == 'account')  {
+        } elseif ($_POST['limit_by'] == 'ACCOUNT')  {
             $byAccountNumber=  $_POST['by_account_number'];
             $byPriceLevel = "";
         } else {
@@ -375,12 +467,12 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . " for product models that are exactly " . strtoupper($_POST['discount_pattern']);
         }
 
-        if ($_POST['limit_by'] == 'account') {
+        if ($_POST['limit_by'] == 'ACCOUNT') {
             $accounts_sql = "SELECT * FROM accounts WHERE accounts_number = '" . $byAccountNumber . "'";
             $accounts_query = my_db_query($accounts_sql);
             $accounts = my_db_fetch_array($accounts_query);
             $discountDesc = $discountDesc . ", applied to account " . $accounts['accounts_username'] . "/". $byAccountNumber . ".";
-        } elseif ($_POST['limit_by'] == 'price_level') {
+        } elseif ($_POST['limit_by'] == 'PRICE_LEVEL') {
             $discountDesc = $discountDesc . ", applied to Price Level ".$byPriceLevel . " clients.";
         } else {
             $discountDesc = $discountDesc . ", applied to all clients.";
@@ -388,16 +480,17 @@ Optional: Apply Only to Specific Clients, Choose One
 
         $discounts_add_sql = sprintf("INSERT INTO `discounts` (
         `discount_name`,`discount_type`, `discount_pattern`, 
-        `discount_value`, `apply_method`, `by_price_level`, 
-        `by_account_number`, `discount_description`, `enabled` ) 
-        VALUES ('%s', '%s', '%s', %01.2f, '%s', '%s', '%s', '%s', %d)", 
+        `discount_value`, `apply_method`, `by_price_level`, `by_account_number`,  
+        `limit_by`, `discount_description`, `enabled` ) 
+        VALUES ('%s', '%s', '%s', %01.2f, '%s', '%s', '%s', '%s', '%s', %d)", 
         mysql_real_escape_string($_POST['discount_name']),
         mysql_real_escape_string($_POST['discount_type']),
         mysql_real_escape_string(strtoupper($_POST['discount_pattern'])),
         $discountValue,
         $_POST['apply_method'],
-        $byPriceLevel,
-        $byAccountNumber,
+        $_POST['by_price_level'],
+        $_POST['by_account_number'],
+        $_POST['limit_by'],
         mysql_real_escape_string($discountDesc),
         1);
        
@@ -439,10 +532,10 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountValue = $amountOff;
         }
 
-        if ($_POST['limit_by'] == 'price_level') {
+        if ($_POST['limit_by'] == 'PRICE_LEVEL') {
             $byPriceLevel = $_POST['by_price_level'];
             $byAccountNumber = "";
-        } elseif ($_POST['limit_by'] == 'account')  {
+        } elseif ($_POST['limit_by'] == 'ACCOUNT')  {
             $byAccountNumber=  $_POST['by_account_number'];
             $byPriceLevel = "";
         } else {
@@ -462,12 +555,12 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . " for product models that are exactly " . strtoupper($_POST['discount_pattern']);
         }
 
-        if ($_POST['limit_by'] == 'account') {
+        if ($_POST['limit_by'] == 'ACCOUNT') {
             $accounts_sql = "SELECT * FROM accounts WHERE accounts_number = '" . $byAccountNumber . "'";
             $accounts_query = my_db_query($accounts_sql);
             $accounts = my_db_fetch_array($accounts_query);
             $discountDesc = $discountDesc . ", applied to account " . $accounts['accounts_username'] . "/". $byAccountNumber . ".";
-        } elseif ($_POST['limit_by'] == 'price_level') {
+        } elseif ($_POST['limit_by'] == 'PRICE_LEVEL') {
             $discountDesc = $discountDesc . ", applied to Price Level ".$byPriceLevel . " clients.";
         } else {
             $discountDesc = $discountDesc . ", applied to all clients.";
@@ -478,8 +571,9 @@ Optional: Apply Only to Specific Clients, Choose One
             "',`discount_pattern` = '".$_POST['discount_pattern'].
             "',`discount_value` = ".$discountValue.
             ",`apply_method` = '".$_POST['apply_method'].
-            "',`by_price_level` = '".$byPriceLevel.
-            "',`by_account_number` = '".$byAccountNumber.
+            "',`by_price_level` = '".$_POST['by_price_level'].
+            "',`by_account_number` = '".$_POST['by_account_number'].
+            "',`limit_by` = '".$_POST['limit_by'].
             "',`discount_description` = '".$discountDesc.
             "',`enabled` = 1".
             " WHERE `discount_id`=".$_GET['discountId'];
@@ -495,51 +589,63 @@ Optional: Apply Only to Specific Clients, Choose One
 //****************************** MAIN PAGE ********************************
 //*************************************************************************
 ?>
-    <table width=800 align="center" border=0 cellspacing=0>
+    <table width=900 align="center" border=0 cellspacing=0>
     <tr><td align=right>
     <a href="<?php echo my_href_link('promotions.php', 'action=add_start'); ?>"><?php echo my_image(DIR_WS_IMAGES.'btnAdd.gif','Add New Discount'); ?></a>
     </td></tr>
     </table>
 
+<ul id="sortable" style="width: 900px; margin: auto;">
+    <li class="ui-state-default ui-state-disabled">
+        <div class="sortable-tr promo-header" style="padding: 10px;">
+            <div class="sortable-th promo-sort">Sort</div>
+            <div class="sortable-th promo-actions">Actions</div>
+            <div class="sortable-th promo-name">Promo Name</div>
+            <div class="sortable-th promo-desc">Promo Description</div>
+        </div>
+    </li>
 
-    <table width=900 border=0 align=center cellspacing=0 class="thinOutline">
-    <tr class="tableHeader">
-        <th width=10 colspan=2 valign=bottom>Actions</th>
-        <th width=200 >Promo Name</th>
-        <th colspan=4 >Promo Description</th>
-    </tr>
 
 <?php
 
-    $discounts_view_sql = "SELECT * FROM discounts WHERE 1 ORDER BY discount_name";
+    $discounts_view_sql = "SELECT * FROM discounts WHERE 1 ORDER BY rules_order";
     $discounts_view_query = my_db_query($discounts_view_sql);
     $count = 0;
     $bgcolor = "#FFFFFF";
     while($discounts_view = my_db_fetch_array($discounts_view_query)){
 
         $bgcolor = ( fmod($count,2)==0 )? "tableRowColorEven" : "tableRowColorOdd";
-?>
-    <tr class="<?php echo $bgcolor; ?>">
-    <?php
-        echo "<td align=center><a href=\"". my_href_link('promotions.php',
-        'action=mod_start&discountId='. $discounts_view['discount_id']). '">' .
-        my_image(DIR_WS_IMAGES.'btnModify.gif','Modify Discount') ."</a></td>";
-
-        echo "<td align=center><a href=\"". my_href_link('promotions.php','action=del&discountId='.
-        $discounts_view['discount_id']). '" onClick="return confirmDelete()">' .
-        my_image(DIR_WS_IMAGES.'btnDelete.gif','Delete Discount') ."</a></td>";
-    ?>
-
-    <th align=center><?php echo $discounts_view['discount_name']; ?></th>
-    <td align=left colspan=4><?php echo $discounts_view['discount_description']; ?></td>
-    </tr>
-<?php 
         $count++;
-    } 
-}
 ?>
-    </table>
+    <li class="ui-state-default <?php echo $bgcolor; ?>" style="background: none;">
+        <div class="sortable-tr">
+            <div class="sortable-td promo-sort">
+            <div class="sort-order-display"><?=$count?></div>
+            <input name="sort-<?=$discounts_view['discount_id']?>" class="sort-order" type="hidden" value="<?=$count?>"></div>
+        <?php
+            echo "<div class=\"sortable-td promo-actions\"><a href=\"". my_href_link('promotions.php',
+            'action=mod_start&discountId='. $discounts_view['discount_id']). '">' .
+            my_image(DIR_WS_IMAGES.'btnModify.gif','Modify Discount') ."</a>";
 
-</form>
+            echo "<a href=\"". my_href_link('promotions.php','action=del&discountId='.
+            $discounts_view['discount_id']). '" onClick="return confirmDelete()" style="margin-left: 20px;">' .
+            my_image(DIR_WS_IMAGES.'btnDelete.gif','Delete Discount') ."</a></div>";
+        ?>
+
+        <div class="sortable-td promo-name"><?php echo $discounts_view['discount_name']; ?></div>
+        <div class="sortable-td promo-desc"><?php echo $discounts_view['discount_description']; ?></div>
+        </div>
+    </li>
+<?php 
+    } 
+?>
+
+    </ul>
+<div style="margin: auto; width: 50%; color: #aaa;">[Sort promo rules by click and dragging rules to new row positions]</div>
+<input name="promo-count" type="hidden" value="<?=$count?>">
+
+<?php
+}
+?></form>
 </body>
 </html>

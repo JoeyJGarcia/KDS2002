@@ -113,11 +113,15 @@ if($action == "send_email"){
 	$arrResponse["status"] = 'success';
 	$arrResponse["row"] = $_GET['row'];
 	$arrResponse["priceLvl"] = $_GET['priceLvl'];
-	$arrResponse["acctNumber"] = $_GET['acctNumber'];
+	$arrResponse["accounts_number"] = $_GET['accounts_number'];
 	$arrResponse["productModel"] = $_GET['product_code'];
 	$arrResponse["results"] =  getPriceBySize($_GET['accounts_number'], $_GET['product_code'], $_GET['product_size']);
 	$arrResponse["price"] =  $arrResponse["results"];
 	$arrResponse["discount"] =  checkForDiscount($arrResponse);
+	echo json_encode($arrResponse);
+} elseif ($action == 'update_rules_order') { 
+	$arrResponse["status"] = 'success';
+	$arrResponse["results"] = updateRulesOrder($_GET['discountId'], $_GET['rulesOrder']);
 	echo json_encode($arrResponse);
 } else {
 	echo "Unknown Action";

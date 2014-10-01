@@ -134,9 +134,9 @@ if( isset($_POST['rep6_code']) ){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 <head>
-  <title>Kerusso Drop Ship - Order Entry</title>
-  <link rel="stylesheet" href="styles.css" type="text/css"/>
-  <script language="JavaScript" src="debugInfo.js"></script>
+	<title>Kerusso Drop Ship - Order Entry</title>
+	<link rel="stylesheet" href="styles.css" type="text/css"/>
+	<script language="JavaScript" src="debugInfo.js"></script>
 </head>
 
 <style type="text/css">
@@ -972,9 +972,9 @@ if( $action == 'ord_mod_start' ){
                 "'".mysql_real_escape_string($rep6_name)."'",
                 "'".mysql_real_escape_string($rep6_code)."'" );
 
-//echo $ord_add_sql ."<br><br>";
+	//echo $ord_add_sql ."<br><br>";
 
-//echo "accounts_number: ".$accounts_number ."<br><br>";
+	//echo "accounts_number: ".$accounts_number ."<br><br>";
 
                   my_db_query($ord_add_sql);
 
@@ -1016,16 +1016,6 @@ if( $action == 'ord_mod_start' ){
                     "'".mysql_real_escape_string(trim($arrInventory[$_POST['product_name_'.$i]]))."'",
 					"'".$productModel."'",
 					$_POST['product_price_'.$i] );
-if( $_SESSION['userlevel'] == 'super'){
-//	echo "-------------------------------------<br>";
-//	echo "Debug Info for Super Users <br>";
-//	echo "-------------------------------------<br>";
-//	echo "Old System Price: " . getPriceBySize($_POST['accounts_number'],$productModel, $arrSizes[$_POST['product_size_'.$i]]);
-}
-//echo $ord_add_product_sql;
-
-                    //my_db_query($ord_add_product_sql);
-
                 }
 
 

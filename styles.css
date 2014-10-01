@@ -365,3 +365,93 @@ tr.show{
 .largeFont{
   font-size: 24px;
 }
+
+.messageDiv{
+  margin: 0 auto;
+  font-size: 1.5em;
+}
+.messageDiv.success{
+  color: rgb(45, 160, 82);
+}
+.messageDiv.fail{
+  color: rgb(175, 17, 17);
+}
+.messageWrapper{
+  width: 100%; 
+  text-align:center; 
+  display: inline-block; 
+  height: 1.5em;
+}
+.buttonWrapper {
+  visibility: hidden; 
+  text-align: center;
+}
+.buttonDiv {
+  display: inline-block; 
+  margin-right: 20px; 
+  font-size: 24px;
+}
+.save-button {
+  font-size: 14px;
+}
+// Sortable Rows
+.sortable-tr.promo-header {
+  padding: 10px;
+}
+.sortable-tr {
+  width: 100%;
+  padding: 0 10px;
+}
+.sortable-td, .sortable-th {
+  display: inline-block;
+  padding: 0;
+  width:15%;
+  text-align: center;
+}
+.sortable-th {
+  font-weight: bold;
+}
+.ui-state-default.ui-state-disabled {
+  opacity: 1.00;
+  background-color: #5674BA;
+  color: #fff;
+}
+.ui-state-default {
+  border: 1px solid #748c9e;
+  background-color: #f0f6fa;
+}
+.sortable-td.promo-desc,
+.sortable-th.promo-desc{
+  width: 66%;
+  text-align: left;
+}
+.sortable-td.promo-sort{
+  text-align: left;
+  font-size: 2em;
+}
+
+.sortable-td.promo-sort,
+.sortable-th.promo-sort {
+   width: 1%; 
+}
+
+.sortable-td.promo-name{
+  font-weight: 800;
+  font-size: 0.9em;
+}
+
+.sortable-td.promo-desc{
+  vertical-align: top;
+  font-size: 0.9em;
+}
+
+#sortable { list-style-type: none; margin: 0; padding: 0; zoom: 1; }
+#sortable lis { margin: 0 5px 3px 5px; padding: 3px; }
+
+.tableRowColorOdd {
+    background-color: #EFEFF3 !important;
+}
+
+.tableRowColorEven {
+    background-color: #FFFFFF !important;
+}
