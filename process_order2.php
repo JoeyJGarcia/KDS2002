@@ -482,7 +482,8 @@ cal2SHIPDATE.time_comp = false;
     	$startLoc = (strpos($varSize, "-"))? strpos($varSize, "-")+1: strlen($varSize);
     	$generic_size = trim(substr($varSize, $startLoc));
 
-    	$product_price = getPriceBySize($customerNo, $product_code, $generic_size);
+        $product_price = getPriceBySize($customerNo, $product_code, $generic_size);
+        //$product_price = $order_products['order_product_charge'];
 
 if($debug){
 ?>

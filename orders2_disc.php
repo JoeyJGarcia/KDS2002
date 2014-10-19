@@ -231,9 +231,9 @@ function getProductPrice(el) {
 					$spnPriceEl = jQuery(document.getElementById('span_price_'+data.row)),
 					$productMsgEl = jQuery(document.getElementById('product_msg_'+data.row));
 
-				if (typeof data.discount !== 'undefined' && 
-					typeof data.discount.msg !== 'undefined' &&
-					typeof data.discount.price !== 'undefined') {
+				if (typeof data.discount !== 'undefined' && data.discount !== null && 
+					typeof data.discount.msg !== 'undefined' && data.discount.msg !== null &&
+					typeof data.discount.price !== 'undefined' && data.discount.price !== null) {
 
 					$inpPriceEl[0].value = data.discount.price;
 					$spnPriceEl.text(data.discount.price);
@@ -972,7 +972,6 @@ if( $action == 'ord_mod_start' ){
                 "'".mysql_real_escape_string($rep6_name)."'",
                 "'".mysql_real_escape_string($rep6_code)."'" );
 
-	//echo $ord_add_sql ."<br><br>";
 
 	//echo "accounts_number: ".$accounts_number ."<br><br>";
 
@@ -1016,6 +1015,10 @@ if( $action == 'ord_mod_start' ){
                     "'".mysql_real_escape_string(trim($arrInventory[$_POST['product_name_'.$i]]))."'",
 					"'".$productModel."'",
 					$_POST['product_price_'.$i] );
+
+                     my_db_query($ord_add_product_sql);
+	//echo $ord_add_product_sql ."<br><br>";
+
                 }
 
 

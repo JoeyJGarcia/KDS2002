@@ -70,10 +70,11 @@ require('includes/application_top.php');
 
         }
 
-        function showMessage(msg, status) {
-            var $msgDiv = $('.messageDiv');
+        function showMessage(msg, status, duration) {
+            var $msgDiv = $('.messageDiv'),
+            fadeDuration = duration || 3000;
             $msgDiv.addClass(status);
-            $msgDiv.text(msg).show().fadeOut(3000);
+            $msgDiv.text(msg).show().fadeOut(fadeDuration);
         }
 
         function showUpdateButton() {
@@ -155,7 +156,34 @@ require('includes/application_top.php');
                     $(this).css("visibility", "visible");
                 });
             };
-        })(jQuery)        
+        })(jQuery)    
+
+
+        function submitPromo(){
+            var promoReady = false,
+                form = document.forms[0],
+                applyMethod = form["apply_method"].value,
+                discountType = form["discount_type"].value,
+                discountName = form["discount_name"].value,
+                discountPattern = form["discount_pattern"].value;
+
+                if (typeof applyMethod === 'string' && applyMethod == "0") {
+                    showMessage("You need to select an Apply Method to continue.", "fail", 5000)
+                    return false;
+                } else if (typeof discountType === 'string' && discountType == "0") {
+                    showMessage("You need to select a Discount Type to continue.", "fail", 5000)
+                    return false;
+                } else if (typeof discountName === 'string' && discountName == "") {
+                    showMessage("You need to add a Discount Name to continue.", "fail", 5000)
+                    return false;
+                } else if (typeof discountPattern === 'string' && discountPattern == "") {
+                    showMessage("You need to select a Category Pattern to continue.", "fail", 5000)
+                    return false;
+                } else {
+                    form.submit();
+                }
+
+        }    
     </script>
     <script language="JavaScript" src="debugInfo.js"></script>
 </head>
@@ -228,8 +256,22 @@ if( $_GET['action'] == 'add_start' ){?>
 <tr class="tableRowColor">
 <td></td>
 <td>
-    <div id="amount_off_div" style=" display: none;" class="disc-amount">Amount: <input id="amount_off" type="text" name="amount_off" value="0" size="2" disabled='true' /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
+    <div id="amount_off_div" style=" display: none;" class="disc-amount">Amount: <input id="amount_off" type="text" name="amount_off" value="<?=sprintf("%01.2f", "0")?>" size="5" disabled='true' /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
     <div id="percent_off_div" style="display: none;" class="disc-percent">Percent: <input id="percent_off" type="text" name="percent_off" value="0" size="2" disabled='true' /></div>
+</td>
+</tr>
+
+<tr class="tableRowColor">
+<td align=right class="mediumBoldText">Size Upcharges: </td>
+<td class="smallText">
+<?php
+    $sizeUpcharge_2X = sprintf("%01.2f", "0");
+    $sizeUpcharge_3X = sprintf("%01.2f", "0");
+    $sizeUpcharge_4X = sprintf("%01.2f", "0");
+?>
+    <div class="promo--size-upcharges">2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
+    <div class="promo--size-upcharges">3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
+    <div class="promo--size-upcharges">4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
 </td>
 </tr>
 
@@ -260,6 +302,7 @@ Optional: Apply Only to Specific Clients, Choose One
 
 <?php
     $arrAccounts = array();
+    $arrAccounts[] = array('id' => '0','text' => 'Acct No./Username');
     $accounts_sql = "SELECT * FROM accounts WHERE 1 ORDER BY accounts_username";
     $accounts_query = my_db_query($accounts_sql);
     while($accounts = my_db_fetch_array($accounts_query)){
@@ -277,7 +320,7 @@ Optional: Apply Only to Specific Clients, Choose One
     <td colspan="2" align="CENTER">
         <a href="<?php echo my_href_link('promotions.php'); ?>"><?php echo my_image(DIR_WS_IMAGES.'btnCancel.gif','Cancel'); ?></a>
         <?php echo my_image_submit('spacer.gif','','10','1'); ?>
-        <?php echo my_image_submit('btnSubmit.gif','Submit Modification'); ?>
+        <a href="#" onclick="submitPromo();return false"><img src="images/btnSubmit.gif" border="0"></a>
     </td>
 </tr>
 
@@ -343,7 +386,7 @@ Optional: Apply Only to Specific Clients, Choose One
     if($discounts_mod['discount_type'] == "AMOUNT") { 
         echo $discounts_mod['discount_value']; 
     } else {
-        echo "0";
+        echo sprintf("%01.2f", "0");
     }
     ?>" 
     size="4" <?php if($discounts_mod['discount_type'] == "PERCENT") { echo "disabled='true'"; } ?> /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
@@ -352,12 +395,27 @@ Optional: Apply Only to Specific Clients, Choose One
     type="text" name="percent_off" 
     value="<?php 
     if($discounts_mod['discount_type'] == "PERCENT") { 
-        echo intval($discounts_mod['discount_value']); 
+        echo floatval($discounts_mod['discount_value']); 
     } else {
         echo "0";
     }
     ?>" 
     size="2" <?php if($discounts_mod['discount_type'] == "AMOUNT") { echo "disabled='true'"; } ?> /></div>
+</td>
+</tr>
+
+<tr class="tableRowColor">
+<td align=right class="mediumBoldText">Size Upcharges:</td>
+<td class="smallText">
+<?php
+    $arrSizeUpcharges = explode("#", $discounts_mod['size_upcharge']);
+    $sizeUpcharge_2X = ($arrSizeUpcharges[0] == null) ? sprintf("%01.2f", "0") : sprintf("%01.2f", $arrSizeUpcharges[0]);
+    $sizeUpcharge_3X = ($arrSizeUpcharges[1] == null) ? sprintf("%01.2f", "0") : sprintf("%01.2f", $arrSizeUpcharges[1]);
+    $sizeUpcharge_4X = ($arrSizeUpcharges[2] == null) ? sprintf("%01.2f", "0") : sprintf("%01.2f", $arrSizeUpcharges[2]);
+?>
+    <div class="promo--size-upcharges">2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
+    <div class="promo--size-upcharges">3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
+    <div class="promo--size-upcharges">4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
 </td>
 </tr>
 
@@ -403,6 +461,7 @@ Optional: Apply Only to Specific Clients, Choose One
 
 <?php
     $arrAccounts = array();
+    $arrAccounts[] = array('id' => '0','text' => 'Acct No./Username');
     $accounts_sql = "SELECT * FROM accounts WHERE 1 ORDER BY accounts_username";
     $accounts_query = my_db_query($accounts_sql);
     while($accounts = my_db_fetch_array($accounts_query)){
@@ -420,7 +479,7 @@ Optional: Apply Only to Specific Clients, Choose One
     <td colspan="2" align="CENTER">
         <a href="<?php echo my_href_link('promotions.php'); ?>"><?php echo my_image(DIR_WS_IMAGES.'btnCancel.gif','Cancel'); ?></a>
         <?php echo my_image_submit('spacer.gif','','10','1'); ?>
-        <?php echo my_image_submit('btnSubmit.gif','Submit Modification'); ?>
+        <a href="#" onclick="submitPromo();return false"><img src="images/btnSubmit.gif" border="0"></a>
     </td>
 </tr>
 
@@ -478,16 +537,32 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . ", applied to all clients.";
         }
 
+        if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
+            $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
+        }
+        if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
+            $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
+        }
+        if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
+            $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+        }
+
+        $sizeUpcharge  = sprintf("%01.2f", $_POST['sizeUpcharge_2X']) . "#";
+        $sizeUpcharge .= sprintf("%01.2f", $_POST['sizeUpcharge_3X']) . "#";
+        $sizeUpcharge .= sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+
         $discounts_add_sql = sprintf("INSERT INTO `discounts` (
         `discount_name`,`discount_type`, `discount_pattern`, 
-        `discount_value`, `apply_method`, `by_price_level`, `by_account_number`,  
+        `discount_value`, `apply_method`, `size_upcharge`,
+        `by_price_level`, `by_account_number`,  
         `limit_by`, `discount_description`, `enabled` ) 
-        VALUES ('%s', '%s', '%s', %01.2f, '%s', '%s', '%s', '%s', '%s', %d)", 
+        VALUES ('%s', '%s', '%s', %01.2f, '%s', '%s', '%s', '%s', '%s', '%s', %d)", 
         mysql_real_escape_string($_POST['discount_name']),
         mysql_real_escape_string($_POST['discount_type']),
         mysql_real_escape_string(strtoupper($_POST['discount_pattern'])),
         $discountValue,
         $_POST['apply_method'],
+        $sizeUpcharge,
         $_POST['by_price_level'],
         $_POST['by_account_number'],
         $_POST['limit_by'],
@@ -566,11 +641,26 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . ", applied to all clients.";
         }
 
+        if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
+            $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
+        }
+        if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
+            $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
+        }
+        if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
+            $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+        }
+
+        $sizeUpcharge  = sprintf("%01.2f", $_POST['sizeUpcharge_2X']) . "#";
+        $sizeUpcharge .= sprintf("%01.2f", $_POST['sizeUpcharge_3X']) . "#";
+        $sizeUpcharge .= sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+
         $discounts_mod_sql ="UPDATE `discounts` SET `discount_name` = '".$_POST['discount_name'].
             "',`discount_type` = '".$_POST['discount_type'].
             "',`discount_pattern` = '".$_POST['discount_pattern'].
             "',`discount_value` = ".$discountValue.
             ",`apply_method` = '".$_POST['apply_method'].
+            "',`size_upcharge`= '".$sizeUpcharge.
             "',`by_price_level` = '".$_POST['by_price_level'].
             "',`by_account_number` = '".$_POST['by_account_number'].
             "',`limit_by` = '".$_POST['limit_by'].

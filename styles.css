@@ -455,3 +455,11 @@ tr.show{
 .tableRowColorEven {
     background-color: #FFFFFF !important;
 }
+
+.promo--size-upcharges {
+    display: inline-block;
+}
+
+.promo--size-upcharges:first-child {
+    margin-left: 10px;
+}
