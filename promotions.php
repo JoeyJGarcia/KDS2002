@@ -42,6 +42,7 @@ require('includes/application_top.php');
                 $pctInpEl = jQuery(document.getElementById("percent_off")),
                 $amtDiv = jQuery(document.getElementById("amount_off_div")),
                 $pctDiv = jQuery(document.getElementById("percent_off_div"));
+                $sizeUpCharge = jQuery(document.getElementById("size_upcharge"));
 
             if (discType === 'AMOUNT') {
                 $amtDiv.show();
@@ -51,6 +52,7 @@ require('includes/application_top.php');
                 $pctDiv.addClass("disabled");
                 $amtDiv.removeClass("disabled");
                 $pctDiv.hide();
+                $sizeUpCharge.show();
             } else if (discType === 'PERCENT') {
                 $pctDiv.show();
                 $amtInpEl.attr("disabled","true");
@@ -59,6 +61,7 @@ require('includes/application_top.php');
                 $amtDiv.addClass("disabled");
                 $pctDiv.removeClass("disabled");
                 $amtDiv.hide();
+                $sizeUpCharge.hide();
             } else {
                 $pctInpEl.attr("disabled","true");
                 $amtInpEl.attr("disabled","true");                
@@ -66,6 +69,7 @@ require('includes/application_top.php');
                 $amtDiv.addClass("disabled");
                 $pctDiv.hide();
                 $amtDiv.hide();
+                $sizeUpCharge.hide();
             }
 
         }
@@ -161,11 +165,13 @@ require('includes/application_top.php');
 
         function submitPromo(){
             var promoReady = false,
+                formIsReady = true,
                 form = document.forms[0],
                 applyMethod = form["apply_method"].value,
                 discountType = form["discount_type"].value,
                 discountName = form["discount_name"].value,
-                discountPattern = form["discount_pattern"].value;
+                discountPattern = form["discount_pattern"].value,
+                amountOff = form["amount_off"].value;
 
                 if (typeof applyMethod === 'string' && applyMethod == "0") {
                     showMessage("You need to select an Apply Method to continue.", "fail", 5000)
@@ -178,6 +184,9 @@ require('includes/application_top.php');
                     return false;
                 } else if (typeof discountPattern === 'string' && discountPattern == "") {
                     showMessage("You need to select a Category Pattern to continue.", "fail", 5000)
+                    return false;
+                } else if (discountType === 'AMOUNT' && amountOff == "0.00") {
+                    showMessage("You need to enter an amount off value to continue.", "fail", 5000)
                     return false;
                 } else {
                     form.submit();
@@ -257,11 +266,11 @@ if( $_GET['action'] == 'add_start' ){?>
 <td></td>
 <td>
     <div id="amount_off_div" style=" display: none;" class="disc-amount">Amount: <input id="amount_off" type="text" name="amount_off" value="<?=sprintf("%01.2f", "0")?>" size="5" disabled='true' /><span style="margin-left: 10px;" class="disabled smallText">[no dollar symbol]</span></div>
-    <div id="percent_off_div" style="display: none;" class="disc-percent">Percent: <input id="percent_off" type="text" name="percent_off" value="0" size="2" disabled='true' /></div>
+    <div id="percent_off_div" style="display: none;" class="disc-percent">Percent: <input id="percent_off" type="text" name="percent_off" value="0" size="2" disabled='true' /><span style="margin-left: 10px;" class="disabled smallText">[no percent symbol]</span></div>
 </td>
 </tr>
 
-<tr class="tableRowColor">
+<tr id="size_upcharge" class="tableRowColor" style=" display: none;">
 <td align=right class="mediumBoldText">Size Upcharges: </td>
 <td class="smallText">
 <?php
@@ -269,9 +278,9 @@ if( $_GET['action'] == 'add_start' ){?>
     $sizeUpcharge_3X = sprintf("%01.2f", "0");
     $sizeUpcharge_4X = sprintf("%01.2f", "0");
 ?>
-    <div class="promo--size-upcharges">2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
-    <div class="promo--size-upcharges">3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
-    <div class="promo--size-upcharges">4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
+    <div class="promo--size-upcharges" >2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
+    <div class="promo--size-upcharges" >3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
+    <div class="promo--size-upcharges" >4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
 </td>
 </tr>
 
@@ -404,7 +413,7 @@ Optional: Apply Only to Specific Clients, Choose One
 </td>
 </tr>
 
-<tr class="tableRowColor">
+<tr id="size_upcharge" class="tableRowColor">
 <td align=right class="mediumBoldText">Size Upcharges:</td>
 <td class="smallText">
 <?php
@@ -413,9 +422,9 @@ Optional: Apply Only to Specific Clients, Choose One
     $sizeUpcharge_3X = ($arrSizeUpcharges[1] == null) ? sprintf("%01.2f", "0") : sprintf("%01.2f", $arrSizeUpcharges[1]);
     $sizeUpcharge_4X = ($arrSizeUpcharges[2] == null) ? sprintf("%01.2f", "0") : sprintf("%01.2f", $arrSizeUpcharges[2]);
 ?>
-    <div class="promo--size-upcharges">2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
-    <div class="promo--size-upcharges">3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
-    <div class="promo--size-upcharges">4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
+    <div id="upsize-2x" class="promo--size-upcharges">2X: <?php echo my_draw_input_field('sizeUpcharge_2X',$sizeUpcharge_2X,'size=4'); ?></div>
+    <div id="upsize-3x" class="promo--size-upcharges">3X: <?php echo my_draw_input_field('sizeUpcharge_3X',$sizeUpcharge_3X,'size=4'); ?></div>
+    <div id="upsize-4x" class="promo--size-upcharges">4X: <?php echo my_draw_input_field('sizeUpcharge_4X',$sizeUpcharge_4X,'size=4'); ?></div>
 </td>
 </tr>
 
@@ -537,14 +546,20 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . ", applied to all clients.";
         }
 
-        if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
-            $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
-        }
-        if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
-            $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
-        }
-        if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
-            $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+        if ($_POST['discount_type'] == "AMOUNT") {
+            if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
+                $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
+            }
+            if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
+                $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
+            }
+            if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
+                $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+            }
+            if ($_POST['sizeUpcharge_2X'] == "0.00" &&
+                $_POST['sizeUpcharge_3X'] == "0.00") {
+                $discountDesc .=  ", ***NO Size upcharges***.";
+            }
         }
 
         $sizeUpcharge  = sprintf("%01.2f", $_POST['sizeUpcharge_2X']) . "#";
@@ -641,14 +656,21 @@ Optional: Apply Only to Specific Clients, Choose One
             $discountDesc = $discountDesc . ", applied to all clients.";
         }
 
-        if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
-            $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
-        }
-        if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
-            $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
-        }
-        if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
-            $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+
+        if ($_POST['discount_type'] == "AMOUNT") {
+            if ( floatval($_POST['sizeUpcharge_2X']) > 0 ) {
+                $discountDesc .=  " +2X = " . sprintf("%01.2f", $_POST['sizeUpcharge_2X']);
+            }
+            if ( floatval($_POST['sizeUpcharge_3X']) > 0 ) {
+                $discountDesc .=  ", +3X = " . sprintf("%01.2f", $_POST['sizeUpcharge_3X']);
+            }
+            if ( floatval($_POST['sizeUpcharge_4X']) > 0 ) {
+                $discountDesc .=  ", +4X = " . sprintf("%01.2f", $_POST['sizeUpcharge_4X']);
+            }
+            if ($_POST['sizeUpcharge_2X'] == "0.00" &&
+                $_POST['sizeUpcharge_3X'] == "0.00") {
+                $discountDesc .=  ", ***NO Size upcharges.***";
+            }
         }
 
         $sizeUpcharge  = sprintf("%01.2f", $_POST['sizeUpcharge_2X']) . "#";

@@ -908,7 +908,11 @@
 
 			if (strpos($retVal,"#") !== false) {
 				$arrTemp = explode("#", $retVal);
-				$arrRetVal["price"] = $arrTemp[0];
+				if($rs["discount_type"] == "AMOUNT") {
+					$arrRetVal["price"] = number_format(addSizeUpcharges($arrTemp[0], $prodSize, $rs["size_upcharge"]), 2);
+				} else {
+					$arrRetVal["price"] = $arrTemp[0];
+				}
 				$arrRetVal["msg"] = $arrTemp[1];
 				break;
 			}
