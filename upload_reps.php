@@ -85,7 +85,12 @@ if ($_GET['action'] == 'upload_customer_reps_list') {
                         $insert_query = my_db_query($insert_sql);
                     }
                 } else {
-                    echo "Skipped row $row because of wrong number of fields.<br>";
+                    $tmpl = "INSERT INTO `reps`(`accounts_number`, `accounts_company_name`, `field_rep`, `inside_rep`, `field_group`, `national_group`, `national_rep`, `sales_mgr`) VALUES (%d,'%s','%s','%s','%s','%s','%s','%s')";
+                    $insert_sql = sprintf($tmpl, $data[0],  addslashes($data[1]), addslashes($data[2]), addslashes($data[3]), addslashes($data[4]), addslashes($data[5]), addslashes($data[6]), addslashes($data[7]));
+                    echo "Skipped row $row because of wrong number of fields. <br>";
+                    echo "Should be $fieldCount, found $num.  Typical number of columns in the CSV are about 8.<br>";
+                    echo "Query: " . $insert_sql . "<br>";
+                    echo "---------------------------------------------------------------------<br>";
                 }
 
                 $row++;
@@ -155,11 +160,20 @@ if ($_GET['action'] == 'upload_customer_reps_list') {
 echo my_draw_form('customer_rep_list',my_href_link('upload_reps.php', 'action=upload_customer_reps_list'),"POST", "enctype='multipart/form-data' ");
 ?>
 
-
-<div style="width: 300px; display: table; margin: auto; background-color: #ddd; padding: 10px;" class="">
+<div style="width: 500px; display: table; margin: auto; background-color: #ddd; padding: 10px;" class="">
+  <div style="width: 100%; display: table-cell; margin: auto; background-color: #E5AAAA; padding: 10px;" class="">
+    <div style="font-weight: bold;">IMPORTANT:</div> 
+    <ul>
+    <li> You need to upload BOTH CSV files!  
+    <li> Also, files must be true Comma Separated Value files, not Tab Separated.  
+    </ul>
+    <div style="font-size: 12px;">
+        If you get errors then open the csv in a text editor like NotePad (not Excel) to make sure you see the commas in between the values.
+    </div>
+  </div>
 
   <div style="display: table-row; width:100%" class="mediumBoldText">
-    Browse&nbsp;to&nbsp;upload&nbsp;your&nbsp;WebCustomerRepLists.csv&nbsp;file.
+    <p>Browse&nbsp;to&nbsp;upload&nbsp;your&nbsp;WebCustomerRepLists.csv&nbsp;file.
   </div>
   <div style="display: table-row;" class="largeBoldText">
     <div style="display:table-cell; width: 20%;">

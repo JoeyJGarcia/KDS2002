@@ -57,6 +57,7 @@ Super Admin Links
      <td align=left class="mediumBoldText" valign="top">
          <ul>
             <li><a href="<?php echo my_href_link('orders2.php'); ?>">Enter Order</a>
+            <li><a href="<?php echo my_href_link('orders2_disc.php'); ?>">Enter Order V2 (Beta)</a>
             <li><a href="<?php echo my_href_link('bulk_orders.php'); ?>">Enter Bulk Orders</a>
             <?php if($_SERVER['SERVER_NAME'] == 'localhost') {?>
             <li><a href="<?php echo my_href_link('bulk_orders3.php'); ?>">Enter Bulk Orders v2 - beta</a>
@@ -163,6 +164,7 @@ Super Admin Links
         <li><a href="<?php echo my_href_link('products_customer_prices.php'); ?>">Manage Customer Prices</a>
         <li><a href="<?php echo my_href_link('price_level_discounts.php'); ?>">Manage Price Level Discounts</a>
         <li><a href="<?php echo my_href_link('price_levels.php'); ?>">Manage Price Levels</a>
+        <li><a href="<?php echo my_href_link('promotions.php'); ?>">Manage Promotions</a>
         <?php } ?>
     </ul>
     </td>

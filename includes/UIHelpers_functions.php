@@ -814,4 +814,117 @@
 		return;
 	}
 
+	function startsWith($haystack, $needle) {
+		$length = strlen($needle);
+		return (strtolower(substr($haystack, 0, $length)) == strtolower($needle));
+	}
+
+	function exactMatch($haystack, $needle) {
+		return strtolower($haystack) == strtolower($needle);
+	}
+
+	function applyFixedPrice($discountValue, $price) {
+		$newPrice = $discountValue;
+		$discountMsg = "Discounted Price";
+
+		return $newPrice . "#" . $discountMsg;
+	}
+
+	function applyPercentOff($discountValue, $price) {
+		$temp = (100 - intval($discountValue))/100;
+		$newPrice = money_format('%i', floatval($price) * $temp);
+		$discountMsg = intval($discountValue) . "% off";
+
+		return $newPrice . "#" . $discountMsg;
+	}
+
+
+	function applyDiscount($rs, $price, $prodModel) {
+		$discountType = $rs["discount_type"];
+		$discountPattern = $rs["discount_pattern"];
+		$discountValue = $rs["discount_value"];
+		$applyMethod = $rs["apply_method"];		$retVal = "default";
+
+		if ($applyMethod == "STARTS-WITH") {
+			if (startsWith($prodModel, $discountPattern)) {
+				if ($discountType == "AMOUNT") {
+					$retVal = applyFixedPrice($discountValue, $price);
+				} elseif ($discountType == "PERCENT") {
+					$retVal = applyPercentOff($discountValue, $price);
+				}
+			}
+		} elseif ($applyMethod == "EXACT-MATCH") {
+			if (exactMatch($prodModel, $discountPattern)) {
+				if ($discountType == "AMOUNT") {
+					$retVal = applyFixedPrice($discountValue, $price);
+				} elseif ($discountType == "PERCENT") {
+					$retVal = applyPercentOff($discountValue, $price);
+				}
+			}
+		}
+
+		return $retVal;
+	}
+
+	function addSizeUpcharges($price, $size, $sizeUpcharges) {
+		$arrSizeUpcharges = explode("#", $sizeUpcharges);
+
+		if ($size == "2X") {
+			$price = floatval($price) + floatval($arrSizeUpcharges[0]);
+		} elseif ($size == "3X") {
+			$price = floatval($price) + floatval($arrSizeUpcharges[1]);
+		} elseif ($size == "4X") { 
+			$price = floatval($price) + floatval($arrSizeUpcharges[2]);
+		}
+
+		return $price;
+	}
+
+	function checkForDiscount($arrRequest) {
+		$price = $arrRequest["price"];
+		$acctNumber = $arrRequest["accounts_number"];
+		$prodSize = $arrRequest["product_size"];
+		$priceLvl = $arrRequest["priceLvl"];
+		$prodModel = $arrRequest["productModel"];
+		$arrRetVal = array();
+		$debugValue = "";
+
+		$sql = "SELECT * FROM discounts WHERE 1 ORDER BY rules_order";
+		$query = my_db_query($sql);
+		while ($rs = my_db_fetch_array($query)) {
+
+
+			if ($rs["limit_by"] == "ACCOUNT" && $rs["by_account_number"] == $acctNumber) {
+				$retVal = applyDiscount($rs, $price, $prodModel);
+				$debugValue = 1;
+			} elseif ($rs["limit_by"] == "PRICE_LEVEL" && $rs["by_price_level"] == $priceLvl) {
+				$retVal = applyDiscount($rs, $price, $prodModel);
+				$debugValue = 2;
+			} elseif ($rs["limit_by"] == "NONE") {
+				$retVal = applyDiscount($rs, $price, $prodModel);
+				$debugValue = 3;
+			}
+
+
+			if (strpos($retVal,"#") !== false) {
+				$arrTemp = explode("#", $retVal);
+				if($rs["discount_type"] == "AMOUNT") {
+					$arrRetVal["price"] = number_format(addSizeUpcharges($arrTemp[0], $prodSize, $rs["size_upcharge"]), 2);
+				} else {
+					$arrRetVal["price"] = $arrTemp[0];
+				}
+				$arrRetVal["msg"] = $arrTemp[1];
+				break;
+			}
+		}
+
+		$arrRetVal["debugVal"] = $debugValue;
+
+		return $arrRetVal;
+	}
+
+	function updateRulesOrder($discId, $rulesOrder) {
+		$sql = "UPDATE discounts SET rules_order = $rulesOrder where discount_id=".$discId;
+		return my_db_query($sql);
+	}
 	?>

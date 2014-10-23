@@ -134,9 +134,9 @@ if( isset($_POST['rep6_code']) ){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 <head>
-  <title>Kerusso Drop Ship - Order Entry</title>
-  <link rel="stylesheet" href="styles.css" type="text/css"/>
-  <script language="JavaScript" src="debugInfo.js"></script>
+	<title>Kerusso Drop Ship - Order Entry</title>
+	<link rel="stylesheet" href="styles.css" type="text/css"/>
+	<script language="JavaScript" src="debugInfo.js"></script>
 </head>
 
 <style type="text/css">
@@ -196,6 +196,55 @@ function trim(stringToTrim) {
 	return stringToTrim.replace(/^\s+|\s+$/g,"");
 }
 
+function clearPriceInfo(index) {
+	$priceInpElement = jQuery(document.getElementById('product_price_' + index));
+	$priceSpnElement = jQuery(document.getElementById('span_price_' + index));
+	$productMsgEl = jQuery(document.getElementById('product_msg_'+index));
+	$priceInpElement.text("");
+	$priceSpnElement.text("");
+	$productMsgEl.text("");
+}
+
+function getProductPrice(el) {
+
+	var $el = jQuery(el),
+		url = "http://www.kerussods.com/ajax_controller.php?action=get_product_price_v1&kdssid=<?php echo $_GET['kdssid'];?>",
+		accountId = document.getElementById('accounts_number').value,
+		rowNum = $el[0].dataset['index'],
+		priceLvl = '<?=$_SESSION['price_level']?>',
+		$productElement = jQuery(document.getElementById('product_name_' + rowNum)),
+		prodSelIndx = $productElement[0].selectedIndex,
+		sizeSelIndx = $el[0].selectedIndex,
+		sizeText = $el[0][sizeSelIndx].text,
+		productCode = $productElement[0][prodSelIndx].value,
+		productModel = jQuery.trim($productElement[0][prodSelIndx].text.split('/')[0]);
+		
+		url += "&product_size="+sizeText+"&product_code="+productModel+"&accounts_number="+accountId;
+		clearPriceInfo(rowNum);
+
+		jQuery.ajax({
+			url: url,
+			dataType: 'json',
+			data: {row: rowNum, acctNumber: accountId, priceLvl: priceLvl},
+			success: function(data){
+				var $inpPriceEl = jQuery(document.getElementById('product_price_'+data.row)),
+					$spnPriceEl = jQuery(document.getElementById('span_price_'+data.row)),
+					$productMsgEl = jQuery(document.getElementById('product_msg_'+data.row));
+
+				if (typeof data.discount !== 'undefined' && data.discount !== null && 
+					typeof data.discount.msg !== 'undefined' && data.discount.msg !== null &&
+					typeof data.discount.price !== 'undefined' && data.discount.price !== null) {
+
+					$inpPriceEl[0].value = data.discount.price;
+					$spnPriceEl.text(data.discount.price);
+					$productMsgEl.text(data.discount.msg);
+				} else {
+					$inpPriceEl[0].value = data.results;
+					$spnPriceEl.text(data.results);
+				}
+				
+			}});
+}
 
 function setOnHand(){
 	var sizeText = null;
@@ -249,7 +298,7 @@ var product_code = trim(formElement.options[selectIndex].text.substring(0,endLoc
 var index = formElement.name.substring(formElement.name.lastIndexOf("_")+1);
 var spanOnhandId = "onhand_"+index;
 dojo.byId(spanOnhandId).innerHTML = "";
-
+clearPriceInfo(index);
 dojo.xhrGet({
     <?php if($_SERVER['SERVER_NAME'] == 'localhost') {?>
 		url:"http://localhost/kds/ajax_controller.php?action=get_sizes&pCode="+product_code+"&kdssid=<?php echo $_GET['kdssid'];?>",
@@ -267,9 +316,8 @@ dojo.xhrGet({
 		var selProductName = ioArgs.args.content.productName;
 		var selSizes = dojo.byId(selSizeName);
 		selSizes.disabled=false;
-//		selSizes.setAttribute("onChange","setOnHand('"+ioArgs.args.content.index+"','"+ioArgs.args.content.product_code+"')");
 		//Added to make work in IE
-		selSizes.onchange=function(){setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code);};
+		selSizes.onchange=function(){getProductPrice(this);setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code);};
 
 
 		for(i=selSizes.options.length; i>0; i--){
@@ -303,6 +351,7 @@ dojo.xhrGet({
 
 		if(request.arrSizes.length == 1){
 			setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code,"NA");//Used for NA sizes
+			getProductPrice(document.getElementById('product_size_' + ioArgs.args.content.index));
 		}
 
 	},
@@ -440,14 +489,23 @@ function addItemRow(){
 	var tbod = dojo.byId("productTable").tBodies[0];
 	var newRow = document.createElement("TR");
 	var tdQuantity = document.createElement("TD");
+	var tdX = document.createElement("TD");
+	var tdMsg = document.createElement("TD");
 	var tdOnHand = document.createElement("TD");
+	var tdPrice = document.createElement("TD");
 	var tdSize = document.createElement("TD");
 	var tdProducts = document.createElement("TD");
-	var productsSelectNode = prodTable.tBodies[0].rows[0].cells[3].childNodes[0].cloneNode(true);
+	var productsSelectNode = prodTable.tBodies[0].rows[0].cells[5].childNodes[0].cloneNode(true);
 	var newRowNum = prodTable.rows.length-2;
 
 	var order_size = dojo.byId("order_size");
 	order_size.value = newRowNum + 1;
+
+	tdX.setAttribute("align","center");
+	tdX.innerText = " x ";
+
+	tdMsg.setAttribute("align","center");
+	tdMsg.setAttribute("id","product_msg_"+newRowNum);
 
 	productsSelectNode.setAttribute("name","product_name_"+newRowNum);
 	productsSelectNode.setAttribute("id","product_name_"+newRowNum);
@@ -464,6 +522,17 @@ function addItemRow(){
 	textQuantity.setAttribute("size","2");
 	tdQuantity.appendChild(textQuantity);
 
+	var spanPrice = document.createElement("SPAN");
+	var hidPrice = document.createElement("INPUT");
+	hidPrice.setAttribute("type", "hidden");
+	hidPrice.setAttribute("id","product_price_"+newRowNum);
+	hidPrice.setAttribute("name","product_price_"+newRowNum);
+	hidPrice.setAttribute("value","");
+	spanPrice.setAttribute("id","span_price_"+newRowNum);
+	tdPrice.setAttribute("align","center");
+	tdPrice.appendChild(spanPrice);
+	tdPrice.appendChild(hidPrice);
+
 	var spanOnHand = document.createElement("SPAN");
 	spanOnHand.setAttribute("id","onhand_"+newRowNum);
 	tdOnHand.setAttribute("align","center");
@@ -473,7 +542,8 @@ function addItemRow(){
 	selectSize.setAttribute("id","product_size_"+newRowNum);
 	selectSize.setAttribute("name","product_size_"+newRowNum);
 	selectSize.setAttribute("disabled","true");
-	selectSize.setAttribute("onChange","setOnHand("+newRowNum+")");
+	selectSize.setAttribute("data-index",newRowNum);
+	selectSize.setAttribute("onChange","getProductPrice(this);setOnHand("+newRowNum+")");
 	var sizeOption = document.createElement("OPTION");
 	sizeOption.value = "0";
 	sizeOption.text = "Select Size";
@@ -482,9 +552,12 @@ function addItemRow(){
 	tdSize.setAttribute("align","center");
 
 	newRow.appendChild(tdQuantity);
+	newRow.appendChild(tdX);
+	newRow.appendChild(tdPrice);
 	newRow.appendChild(tdSize);
 	newRow.appendChild(tdOnHand);
 	newRow.appendChild(tdProducts);
+	newRow.appendChild(tdMsg);
 	tbod.appendChild(newRow);
 
 }
@@ -562,12 +635,12 @@ if( !isset($action)){
     $reps_query = my_db_query($reps_sql);
     $reps = my_db_fetch_array($reps_query);
 
-echo my_draw_form('add_order',my_href_link('orders2.php', 'action=ord_add','POST',' id="add_order"'));
+echo my_draw_form('add_order',my_href_link('orders2_disc.php', 'action=ord_add','POST',' id="add_order"'));
 
 $po_number = strtoupper($_SESSION['client_prefix']).date("mdyHis");
 echo my_draw_hidden_field('purchase_order_number',$po_number);
 echo my_draw_hidden_field('order_size','1','id=\'order_size\'');
-echo my_draw_hidden_field('accounts_number',$_SESSION['client_account_number']);
+echo my_draw_hidden_field('accounts_number',$_SESSION['client_account_number'],' id="accounts_number"');
 
 echo my_draw_hidden_field('rep1_name',$reps['field_rep']);
 echo my_draw_hidden_field('rep1_code',$arrRepCodes[$reps['field_rep']]);
@@ -656,16 +729,19 @@ echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
 <table width=800px align="center" border=0  class="thinOutline" cellspacing=0 id="productTable" name="productTable">
 <THEAD>
 <tr class="tableHeader">
-<td colspan=4 class="mediumBoldText" align="center">
+<td colspan=7 class="mediumBoldText" align="center">
 P R O D U C T S
 </td>
 </tr>
 
 <tr class="tableRowColor">
     <td align=center class="mediumBoldText" >Quantity</td>
+    <td align="center" class="mediumBoldText" ></td>
+    <td align="center" class="mediumBoldText" >Price</td>
     <td align="center" class="mediumBoldText" >Size</td>
     <td align="center" class="mediumBoldText" >On-Hand&nbsp;</td>
     <td align="center" class="mediumBoldText" >Product Code / Name</td>
+    <td align="center" class="mediumBoldText" >Messages</td>
 </tr>
 </THEAD>
 <TBODY>
@@ -682,9 +758,12 @@ $arrSizes[] = array('id' => 0,
 ?>
 <tr class="tableRowColor">
     <td align="center" class="mediumBoldText"><?php echo my_draw_input_field('product_quantity_'.$i,'','size=2'); ?></td>
-    <td align="center"><?php echo my_draw_pull_down_menu('product_size_'.$i,$arrSizes,'','disabled=true id=\'product_size_'.$i.'\' '); ?></td>
+    <td align="center"> x </td>
+    <td align="center"><span id="span_price_<?php echo $i;?>"></span><input type="hidden" value="" id="product_price_0" name="product_price_0"></td>
+    <td align="center"><?php echo my_draw_pull_down_menu('product_size_'.$i,$arrSizes,'','disabled=true id=\'product_size_'.$i.'\' data-index=\''.$i.'\' '); ?></td>
     <td align="center"><span id="onhand_<?php echo $i;?>"></span></td>
     <td align="center" ><?php echo my_draw_pull_down_menu('product_name_'.$i,$arrInventory,'',"onChange='setSize(this)' id=\"product_name_$i\""); ?></td>
+    <td align="center" id="product_msg_0"></td>
 </tr>
 <?php
 }
@@ -700,7 +779,7 @@ $arrSizes[] = array('id' => 0,
 
 
 <br/><br/><br/>
-<table width=600px align="center" border=0  class="thinOutline" cellspacing=0>
+<table width=800px align="center" border=0  class="thinOutline" cellspacing=0>
 <tr class="tableHeader">
 <td colspan=3 class="mediumBoldText" align="center">
 C O M M E N T S
@@ -709,7 +788,7 @@ C O M M E N T S
 
 <tr class="tableRowColor">
 <td colspan=3 align="center">
-<?php echo my_draw_textarea_field('order_comments','soft','40','5','','id="commentsArea"'); ?>
+<?php echo my_draw_textarea_field('order_comments','soft','80','5','','id="commentsArea"'); ?>
 </td>
 </tr>
 
@@ -893,9 +972,8 @@ if( $action == 'ord_mod_start' ){
                 "'".mysql_real_escape_string($rep6_name)."'",
                 "'".mysql_real_escape_string($rep6_code)."'" );
 
-//echo $ord_add_sql ."<br><br>";
 
-//echo "accounts_number: ".$accounts_number ."<br><br>";
+	//echo "accounts_number: ".$accounts_number ."<br><br>";
 
                   my_db_query($ord_add_sql);
 
@@ -936,14 +1014,10 @@ if( $action == 'ord_mod_start' ){
                     "'".strtoupper($category . " - " .mysql_real_escape_string($arrSizes[$_POST['product_size_'.$i]]))."'",
                     "'".mysql_real_escape_string(trim($arrInventory[$_POST['product_name_'.$i]]))."'",
 					"'".$productModel."'",
-					getPriceBySize($_POST['accounts_number'],$productModel, $arrSizes[$_POST['product_size_'.$i]]) );
-if( $_SESSION['userlevel'] == 'super'){
-//	echo "-------------------------------------<br>";
-//	echo "Debug Info for Super Users <br>";
-//	echo "-------------------------------------<br>";
-//	echo "Old System Price: " . getPriceBySize($_POST['accounts_number'],$productModel, $arrSizes[$_POST['product_size_'.$i]]);
-}
-                    my_db_query($ord_add_product_sql);
+					$_POST['product_price_'.$i] );
+
+                     my_db_query($ord_add_product_sql);
+	//echo $ord_add_product_sql ."<br><br>";
 
                 }
 
@@ -954,7 +1028,7 @@ if( $_SESSION['userlevel'] == 'super'){
                     echo "<div align=center class=\"success\">Order
                     Submitted Successfully for ".$_POST['customer_name']." ".$_POST['orderNum'];
                     echo "<div align=center class=\"smallText\">A copy will be emailed to you for your records</div>";
-                    echo "<br><br><br><br> <a href=\"".my_href_link('orders2.php')."\">Submit another order?</a></div>";
+                    echo "<br><br><br><br> <a href=\"".my_href_link('orders2_disc.php')."\">Submit another order?</a></div>";
 
 
                     my_mail_order($ord_add_insert_id,$_SESSION['client_account_number']);
