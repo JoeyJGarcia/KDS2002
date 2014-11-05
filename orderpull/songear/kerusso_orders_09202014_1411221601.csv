@@ -1,0 +1,2 @@
+company_id,order_id,date_purchased,customers_email_address,name,delivery_address_1,delivery_address_2,delivery_city,delivery_state,delivery_zipcode,country,design_description,sku,size,product_quantity,gift_message,Insured_Order,shipping_method,
+"SonGear","116325","09/20/2014","","Dorothy Gillaspie","5219 NW Bluff Dr","","Parkville","MO","64152","United States","Angel's Wings Multi-Strand Bracelet","MSFB103","","2","","No","1STM"
