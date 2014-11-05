@@ -29,4 +29,5 @@ define('STORE_SESSIONS', '');
 
 // leave empty '' for default handler or set to 'mysql'
 
+
 ?>

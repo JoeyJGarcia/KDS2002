@@ -750,8 +750,7 @@ P R O D U C T S
 
 $order_size = 1;
 
-$arrSizes[] = array('id' => 0,
-	                'text' => "Select size");
+$arrSizes[] = array('id' => 0, 'text' => "Select size");
 
 
     for($i=0; $i<$order_size;$i++){
@@ -878,12 +877,10 @@ if( $action == 'ord_mod_start' ){
                 $fees = my_db_fetch_array($new_order_id_query);
 
                 $arrShipping = array();
-                $arrShippingAlias = array();
                 $shipping_sql = "SELECT * FROM shipping ";
                 $shipping_query = my_db_query($shipping_sql);
                 while($shipping = my_db_fetch_array($shipping_query)){
                     $arrShipping[$shipping['shipping_id']]= $shipping['shipping_name'];
-                    $arrShippingAlias[$shipping['shipping_id']]= $shipping['shipping_alias'];
                 }
 
 

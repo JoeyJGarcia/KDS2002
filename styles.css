@@ -310,7 +310,7 @@ span.nonStdSize{
 	background-color:yellow;
 }
 
-tr.hide{
+tr.hide, .hide{
 	display: none;
 }
 
@@ -347,7 +347,7 @@ tr.show{
     padding: 5px;
 }
 
-.center{
+.center, .align-center{
   text-align: center;
 }
 
@@ -462,4 +462,8 @@ tr.show{
 
 .promo--size-upcharges:first-child {
     margin-left: 10px;
+}
+
+.border-bottom-gray {
+    border-bottom: 1px solid gray;
 }

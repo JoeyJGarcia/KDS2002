@@ -25,7 +25,6 @@ if($action == "send_email"){
 					
 	echo $returnValue;
 }elseif($action == "get_allsizes"){
-
 	$returnValue = getAllProductSizesArray($_GET['pCode'], true);
 	
 	echo $returnValue;
@@ -123,6 +122,12 @@ if($action == "send_email"){
 } elseif ($action == 'update_rules_order') { 
 	$arrResponse["status"] = 'success';
 	$arrResponse["results"] = updateRulesOrder($_GET['discountId'], $_GET['rulesOrder']);
+	echo json_encode($arrResponse);
+} elseif ($action == 'get_sizes_v1') {
+	$arrResponse["status"] = 'success';
+	$arrResponse["row"] = $_GET['row'];
+	$arrResponse["productModel"] = $_GET['product_code'];
+	$arrResponse["sizes"] = getProductSizeArray($_GET['product_code'], false, $returnAll);
 	echo json_encode($arrResponse);
 } else {
 	echo "Unknown Action";
