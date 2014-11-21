@@ -147,7 +147,7 @@ if ($handle) {
                 //echo $html;
                 $handle2 = fopen($orderFile, "w");
                 $fwrite_status = fwrite($handle2, $html);
-                fclose($handle);
+                fclose($handle2);
             } else {
                 trigger_error('XSL transformation failed.', E_USER_ERROR);
             } // if

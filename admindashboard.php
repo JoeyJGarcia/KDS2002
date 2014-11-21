@@ -56,7 +56,6 @@ Super Admin Links
 <tr>
      <td align=left class="mediumBoldText" valign="top">
          <ul>
-            <li><a href="<?php echo my_href_link('orders2.php'); ?>">Enter Order</a>
             <li><a href="<?php echo my_href_link('orders2_disc.php'); ?>">Enter Order (New Version)</a>
             <li><a href="<?php echo my_href_link('bulk_orders.php'); ?>">Enter Bulk Orders</a>
             <?php if($_SERVER['SERVER_NAME'] == 'localhost') {?>
@@ -77,7 +76,6 @@ Super Admin Links
         }
         ?>
 
-        <li><a href="<?php echo my_href_link('process_order2.php') ."\">". $new_orders_num; ?>Process Orders </a>
         <li><a href="<?php echo my_href_link('process_order3.php') ."\">". $new_orders_num; ?>Process Orders (New Version)</a>
         <li><a href="<?php echo my_href_link('summary_sheet.php') ."\">"; ?>Summary Sheet</a>
         <li><a href="<?php echo my_href_link('state_mapping.php'); ?>">State Mappings</a>

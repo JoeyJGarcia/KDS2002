@@ -9,7 +9,7 @@
 <table border=0 width=50% align="center" cellpadding=10>
 <tr>
      <td align=center class="mediumBoldText" valign="top">
-        <a href="<?php echo my_href_link('orders2.php'); ?>">Enter Order</a>
+        <a href="<?php echo my_href_link('orders2_disc.php'); ?>">Enter Order</a>
      </td>
      <td align=center class="mediumBoldText" valign="top">
         <a href="<?php echo my_href_link('bulk_orders.php'); ?>">Enter Bulk Orders</a>

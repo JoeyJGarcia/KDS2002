@@ -851,11 +851,15 @@ cal2SHIPDATE.time_comp = false;
     	$startLoc = (strpos($varSize, "-"))? strpos($varSize, "-")+1: strlen($varSize);
     	$generic_size = trim(substr($varSize, $startLoc));
 
-        if ($_GET['usePromo']  == 1) {
-            $product_price = $order_products['order_product_charge'];
-        } else {
-            $product_price = getPriceBySize($customerNo, $order_products['order_product_model'], $generic_size);
-        }
+        //NOTE: Using this method to utilize the Promotions feature
+        $product_price = $order_products['order_product_charge'];
+        //$product_price = getPriceBySize($customerNo, $order_products['order_product_model'], $generic_size);
+
+        // if ($_GET['usePromo']  == 1) {
+        //     $product_price = $order_products['order_product_charge'];
+        // } else {
+        //     $product_price = getPriceBySize($customerNo, $order_products['order_product_model'], $generic_size);
+        // }
 
         $bgcolor = ( fmod($counter,2)==0 )? "tableRowColorEven" : "tableRowColorOdd";
 ?>

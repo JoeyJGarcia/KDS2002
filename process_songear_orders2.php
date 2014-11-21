@@ -10,7 +10,6 @@ $newOrderStatus = 10;
 $orderCount = 0;
 $csvfile = null;
 $accountNumber = null;
-$accountPriceLvl = null;
 $arrOrderIds = array();
 $output = "";
 $ignoreFile = false; //If for some reason there is a file that can't be deleted, just ignore it.
@@ -49,7 +48,6 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 	$d = 'orderpull/' . $client_folders['accounts_folder_name'];
 	$accountNumber = $client_folders['accounts_number'];
 	$clientPrefix = $client_folders['accounts_prefix'];
-	$accountPriceLvl = $client_folders['accounts_price_level'];
 
 	$arrReps = array();
 	$reps_sql = "SELECT * FROM reps r WHERE r.accounts_number = " . $accountNumber;
@@ -59,11 +57,26 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 	foreach(array_diff(scandir($d), array('.','..')) as $f) {
 		if(is_file($d.'/'.$f)) {
 			$csvfile = $d.'/'.$f;
+	
+			if (($handle = fopen($csvfile, "r")) !== FALSE) {
+				$row = 
+				while (($csvLine = fgetcsv($handle, 0, ",")) !== FALSE) {
+					$arrLines[] = $csvLine;
+				}
+
+				fclose($handle);
+				if (unlink ($csvfile)) {
+					$output .= "<br> Attempt to deleted the CSV file was successful";
+				} else {
+					$output .= "<br> Attempt to deleted the CSV file has failed";
+				}
+			}
+
 			$arrLines = file($d.'/'.$f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 			$output .= "Processing file: " . $d.$f . "   at   ". date("y-m-d h:i:s") ."<br>";
 			$output .= "CSV File has ".count($arrLines)." rows (including the header row)";
 
-			for($i = $startRow; $i < count($arrLines); $i++) {
+			for ($i = $startRow; $i < count($arrLines); $i++) {
 				$arrLine = explode(",", $arrLines[$i]);
 
 				$ord_add_sql = "";
@@ -198,19 +211,8 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 
 
 				if (!$ignoreFile && isset($ord_add_insert_id)) {
-					$arrPriceRequest = array();
-					$arrPriceRequest["price"] = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
-					$arrPriceRequest["product_size"] = $product_size_adjusted;
-					$arrPriceRequest["productModel"] = $csv['product_model'];
-					$arrPriceRequest["priceLvl"] = $accountPriceLvl;
-					$arrPriceRequest["accounts_number"] = $accountNumber; 
-					$arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
-
-					if ( isset($arrPriceRequest["discount"]) && strlen($arrPriceRequest["discount"]) > 0) {
-						$productPrice = $arrPriceRequest["discount"];
-					} else {
-						$productPrice = $arrPriceRequest["price"];
-					} 
+					$productPrice = 0;
+					$productPrice = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
 
 					$ord_product_add_sql = sprintf("INSERT INTO orders_products (
 						order_id, order_product_quantity, order_product_size, 
@@ -236,31 +238,23 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 					$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). "<br>";
 				}
 
-			}			
+			}	
 		}
 	}
 
-	if (!$ignoreFile && $orderCount > 0) {
-		$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
-		chmod($csvfile, 0777);
-		
-		
-		for($i = 0; $i < count($arrOrderIds); $i++) {
-			my_mail_order($arrOrderIds[$i], $accountNumber);
-		}
-
-		if (unlink ($csvfile)) {
-			$output .= "<br> Attempt to deleted the CSV file was successful";
-		} else {
-			$output .= "<br> Attempt to deleted the CSV file has failed";
-		}
-
-	    $headers  = 'MIME-Version: 1.0' . "\r\n";
-	    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-		mail("haciendadad@yahoo.com","FTP Order Processed",$output,$headers);
+if (!$ignoreFile && $orderCount > 0) {
+	$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
+	
+	
+	for($i = 0; $i < count($arrOrderIds); $i++) {
+		my_mail_order($arrOrderIds[$i], $accountNumber);
 	}
+
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
+	mail("haciendadad@yahoo.com","FTP Order Processed",$output,$headers)
+}
 
 
 }
-
 ?>
