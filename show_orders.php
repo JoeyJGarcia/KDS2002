@@ -459,7 +459,7 @@ Kerusso&nbsp;Sales&nbsp;Id:
     </td>
     <td> = &nbsp;$<?php echo number_format($product_fee * $order_products['order_product_quantity'], 2, '.', ''); ?></td>
     <td><?php echo $order_products['order_product_size']; ?></td>
-    <td><?php echo $order_products['order_product_name']; ?></td>
+    <td><?php echo stripslashes($order_products['order_product_name']); ?></td>
     <td><?php echo $order_products['order_product_status']; ?></td>
 </tr>
 
@@ -508,7 +508,7 @@ Kerusso&nbsp;Sales&nbsp;Id:
     $count++;
 ?>
 <tr class="<?php echo $bgcolor; ?>">
-    <td align=center class="mediumText"><?php echo $order_history['order_history_date']; ?></td>
+    <td align=center class="mediumText" style="width: 100px;"><?php echo $order_history['order_history_date']; ?></td>
     <td align=center class="mediumText">
     <?php
         if( $order_history['order_history_is_notified']== 1 ){

@@ -50,7 +50,7 @@ echo $rowNum . ") " . $products2_sql . "<br>";
 $aff_rows = 0;
 foreach($sql as $current_sql) {
 	$query = mysql_query($current_sql); 
-	$aff_rows = $aff_rows + my_db_affected_rows($query);
+	//$aff_rows = $aff_rows + my_db_affected_rows($query);
 }
 
 echo "Feed file used:  " . $productFeed . "<br>";

@@ -811,7 +811,7 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
         `accounts_phone` , `accounts_fax` , `accounts_email` , `accounts_url` , `accounts_poc` , `accounts_folder_name` ,
         `accounts_username` , `accounts_prefix` , `accounts_number`,`accounts_term_code`, `accounts_ship_id`, 
         `accounts_rep_group`, `accounts_dropship_fee`, `accounts_handling_fee` ) VALUES 
-        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %f, %f)", 
+        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %f, %f)", 
         $_POST['accounts_company_name'], $_POST['accounts_address1'], $_POST['accounts_address2'], 
         $_POST['accounts_city'], $_POST['accounts_state'], $_POST['accounts_zip'], $_POST['accounts_country'], 
         $_POST['accounts_phone'], $_POST['accounts_fax'], $_POST['accounts_email'], $_POST['accounts_url'], $_POST['accounts_poc'],

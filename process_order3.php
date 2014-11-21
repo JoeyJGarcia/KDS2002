@@ -843,8 +843,9 @@ cal2SHIPDATE.time_comp = false;
     $counter = 0;
     $customerNo = $order_info['accounts_number'];
     while( $order_products = my_db_fetch_array($order_products_query) ){
-
-        $arrProductSizes = getProductSizeArray($order_products['order_product_model']);
+        $arrTemp1[0] = array('id' => '0','text' => 'Select Size');
+        $arrTemp2 = getProductSizeArray($order_products['order_product_model']);
+        $arrProductSizes = array_merge($arrTemp1, $arrTemp2);
 
     	$varSize = $order_products['order_product_size'];
     	$startLoc = (strpos($varSize, "-"))? strpos($varSize, "-")+1: strlen($varSize);
