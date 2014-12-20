@@ -205,11 +205,12 @@ if( $_POST['doAction'] == "addOrder" ){
                     $arrPriceRequest["accounts_number"] = $accountNumber; 
                     $arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
 
-                    if ( isset($arrPriceRequest["discount"]) && strlen($arrPriceRequest["discount"]) > 0) {
-                        $productPrice = $arrPriceRequest["discount"];
+                    if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) && 
+                        (floatval($arrPriceRequest["discount"]["price"]) < floatval($arrPriceRequest["price"])) ) {
+                        $productPrice = $arrPriceRequest["discount"]["price"];
                     } else {
                         $productPrice = $arrPriceRequest["price"];
-                    } 
+                    }
 
 
                     $ord_add_product_sql = sprintf("INSERT INTO

@@ -634,7 +634,7 @@ if( !isset($action)){
     $reps_sql = "SELECT * FROM reps r WHERE r.accounts_number = " . $_SESSION['client_account_number'];
     $reps_query = my_db_query($reps_sql);
     $reps = my_db_fetch_array($reps_query);
-
+//echo  $reps_sql;
 echo my_draw_form('add_order',my_href_link('orders2_disc.php', 'action=ord_add','POST',' id="add_order"'));
 
 $po_number = strtoupper($_SESSION['client_prefix']).date("mdyHis");

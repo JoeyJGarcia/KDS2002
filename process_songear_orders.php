@@ -12,8 +12,9 @@ $csvfile = null;
 $accountNumber = null;
 $accountPriceLvl = null;
 $arrOrderIds = array();
+$arrOrderFiles = array();
 $output = "";
-$ignoreFile = false; //If for some reason there is a file that can't be deleted, just ignore it.
+$songearOrderId = "";
 
 $ord_shipping_sql = "SELECT * FROM shipping WHERE 1 ORDER BY shipping_name";
 $ord_shipping_query = my_db_query($ord_shipping_sql);
@@ -59,7 +60,9 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 	foreach(array_diff(scandir($d), array('.','..')) as $f) {
 		if(is_file($d.'/'.$f)) {
 			$csvfile = $d.'/'.$f;
+			$arrOrderFiles[] = $csvfile;
 			$arrLines = file($d.'/'.$f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			$output .= "<br><br>=======================================================================<br>";
 			$output .= "Processing file: " . $d.$f . "   at   ". date("y-m-d h:i:s") ."<br>";
 			$output .= "CSV File has ".count($arrLines)." rows (including the header row)";
 
@@ -117,19 +120,12 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 										mysql_real_escape_string($csv['accounts_number']), 
 										mysql_real_escape_string($csv['customer_invoice_number']) );
 				$check_for_order_query = my_db_query($check_for_order_sql);
-				$orderInfo = my_db_fetch_array($check_for_order_query);
-				$ord_add_insert_id = $orderInfo['order_id'];
+				$check_for_order = my_db_fetch_array($check_for_order_query);
 
-				//If orderId is found before the order is initally entered then we have a rogue
-				// order file, so ignore it;
-				if ($i == $startRow && isset($orderInfo['order_id'])) {
-					$ignoreFile = true;
-					echo "******  FOUND ROGUE ORDER FILE *******<BR>";
-					echo "******  MANUALLY REMOVE FILE: " . $csvfile;
-				}
-
-				if (!$ignoreFile && !isset($orderInfo['order_id'])) {
-
+				//If orderId is found before the order is initally entered then we have an orphaned
+				if (isset($check_for_order['order_id'])) {
+					//If this order is already in the DB, do nothing
+				} else {
 					$ord_add_sql = sprintf("INSERT INTO orders (
 						customer_name, customer_address1, customer_address2, customer_intl_phone, customer_city, 
 						customer_state, customer_zip, customer_country, customer_country_number, customer_shipping_method, 
@@ -190,77 +186,104 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 
 					$temp = my_db_query($ord_add_sql);
 
-					$ord_add_insert_id = my_db_insert_id();
-					$arrOrderIds[] = $ord_add_insert_id;
+					$songearOrderId = my_db_insert_id();
+					$arrOrderIds[] = $songearOrderId;
 					$orderCount++;
-					$output .= "<br><br>" .mysql_real_escape_string($csv['customer_name']) . "   [".mysql_real_escape_string($csv['customer_invoice_number'])."]<br>";
+					$output .= "<br><br>" .mysql_real_escape_string($csv['customer_name']) . "  [".mysql_real_escape_string($csv['customer_invoice_number'])."]<br>";
 				}
 
 
-				if (!$ignoreFile && isset($ord_add_insert_id)) {
-					$arrPriceRequest = array();
-					$arrPriceRequest["price"] = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
-					$arrPriceRequest["product_size"] = $product_size_adjusted;
-					$arrPriceRequest["productModel"] = $csv['product_model'];
-					$arrPriceRequest["priceLvl"] = $accountPriceLvl;
-					$arrPriceRequest["accounts_number"] = $accountNumber; 
-					$arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
 
-					if ( isset($arrPriceRequest["discount"]) && strlen($arrPriceRequest["discount"]) > 0) {
-						$productPrice = $arrPriceRequest["discount"];
-					} else {
-						$productPrice = $arrPriceRequest["price"];
-					} 
+				$check_for_product_sql = sprintf("SELECT order_id, order_product_quantity, order_product_size, order_product_model 
+					FROM orders_products 
+					WHERE order_id = %d AND 
+					order_product_quantity = %d AND 
+					order_product_size = '%s' AND 
+					order_product_model = '%S' ", 
+					$songearOrderId, 
+					intval($csv['product_quantity']), 
+					mysql_real_escape_string($csv['product_size']), 
+					mysql_real_escape_string($csv['product_model']) );
 
-					$ord_product_add_sql = sprintf("INSERT INTO orders_products (
-						order_id, order_product_quantity, order_product_size, 
-						order_product_name, order_product_model, order_product_charge
-						) VALUES (%d, %d, '%s', '%s', '%s', %01.2f)", 
-						$ord_add_insert_id,
-						intval($csv['product_quantity']),
-						mysql_real_escape_string($csv['product_size']),
-						mysql_real_escape_string($csv['product_name']),
-						mysql_real_escape_string($csv['product_model']),
-						number_format($productPrice, 2)
-					);
+//echo $check_for_product_sql . "<br>";
 
-					if ($orderInfo['order_comments']  == null ) {
-						$orderInfo['order_comments']  = "FTP Order";
+				$check_for_product_query = my_db_query($check_for_product_sql);
+				$check_for_product = my_db_fetch_array($check_for_product_query);
+
+				if ( isset($check_for_product['order_id']) ) {
+					// If this product is found already in the DB, do nothing
+				} else {
+					if (isset($songearOrderId)) {
+						$arrPriceRequest = array();
+						$arrPriceRequest["price"] = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
+						$arrPriceRequest["product_size"] = $product_size_adjusted;
+						$arrPriceRequest["productModel"] = $csv['product_model'];
+						$arrPriceRequest["priceLvl"] = $accountPriceLvl;
+						$arrPriceRequest["accounts_number"] = $accountNumber; 
+						$arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
+
+						if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) && 
+							(floatval($arrPriceRequest["discount"]["price"]) < floatval($arrPriceRequest["price"])) ) {
+							$productPrice = $arrPriceRequest["discount"]["price"];
+						} else {
+							$productPrice = $arrPriceRequest["price"];
+						}
+
+						$ord_product_add_sql = sprintf("INSERT INTO orders_products (
+							order_id, order_product_quantity, order_product_size, 
+							order_product_name, order_product_model, order_product_charge
+							) VALUES (%d, %d, '%s', '%s', '%s', %01.2f)", 
+							$songearOrderId,
+							intval($csv['product_quantity']),
+							mysql_real_escape_string($csv['product_size']),
+							mysql_real_escape_string($csv['product_name']),
+							mysql_real_escape_string($csv['product_model']),
+							number_format($productPrice, 2)
+						);
+
+						if ($orderInfo['order_comments']  == null ) {
+							$orderInfo['order_comments']  = "FTP Order";
+						}
+						my_db_query($ord_product_add_sql);
+						$productDescription = $orderInfo['order_comments'] . "<br>" . $csv['product_quantity'] . ' X ' . 'Product Model: ' .$csv['product_model'] . ' / Size: ' . $csv['product_size'];
+						
+						$order_update_comments = "UPDATE orders set order_comments='".$productDescription."' where order_id=".$songearOrderId;
+						my_db_query($order_update_comments);
+//$output .= "<br>(" . $order_update_comments . ")<br>";
+						$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). ", Unit Price: " . $productPrice . "<br>";
 					}
-					my_db_query($ord_product_add_sql);
-					$productDescription = $orderInfo['order_comments'] . "<br>" . $csv['product_quantity'] . ' X ' . 'Product Model: ' .$csv['product_model'] . ' / Size: ' . $csv['product_size'];
-					
-					$order_update_comments = "UPDATE orders set order_comments='".$productDescription."' where order_id=".$ord_add_insert_id;
-					my_db_query($order_update_comments);
-
-					$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). "<br>";
 				}
+			}// End of For Loop			
+		}// End of If Statement
+	}// End of Foreach Loop
 
-			}			
+
+	// Remove all csv files
+	if (count($arrOrderFiles) > 0) {
+
+		for($i = 0; $i < count($arrOrderFiles); $i++) {
+			if(unlink($arrOrderFiles[$i])) {
+				$output .= "<br><br>  Successfully deleted order file: " . $arrOrderFiles[$i];
+			}
+
 		}
-	}
-
-	if (!$ignoreFile && $orderCount > 0) {
-		$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
-		chmod($csvfile, 0777);
-		
 		
 		for($i = 0; $i < count($arrOrderIds); $i++) {
 			my_mail_order($arrOrderIds[$i], $accountNumber);
 		}
 
-		if (unlink ($csvfile)) {
-			$output .= "<br> Attempt to deleted the CSV file was successful";
-		} else {
-			$output .= "<br> Attempt to deleted the CSV file has failed";
-		}
-
-	    $headers  = 'MIME-Version: 1.0' . "\r\n";
-	    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-		mail("haciendadad@yahoo.com","FTP Order Processed",$output,$headers);
+		$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
+		//sendEmail("FTP Order Processed", $output);
 	}
 
 
 }
 
+
+function sendEmail($title, $message) {
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
+	mail("haciendadad@yahoo.com",$title,$message,$headers);
+}
 ?>

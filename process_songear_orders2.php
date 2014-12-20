@@ -1,5 +1,6 @@
 <?php
 require('includes/application_top.php');
+require('includes/classes/KDSUtils.class.php');
 ?>
 
 
@@ -10,44 +11,46 @@ $newOrderStatus = 10;
 $orderCount = 0;
 $csvfile = null;
 $accountNumber = null;
+$accountPriceLvl = null;
 $arrOrderIds = array();
 $output = "";
-$ignoreFile = false; //If for some reason there is a file that can't be deleted, just ignore it.
+$ignoreOrder = ""; //If for some reason there is a file that can't be deleted, just ignore it.
 
-$ord_shipping_sql = "SELECT * FROM shipping WHERE 1 ORDER BY shipping_name";
-$ord_shipping_query = my_db_query($ord_shipping_sql);
-while($ord_shipping = my_db_fetch_array($ord_shipping_query)){
-    $arrShipping[$ord_shipping['shipping_alias']] = $ord_shipping['shipping_id'];
-    $arrShippingName[$ord_shipping['shipping_alias']] = $ord_shipping['shipping_name'];
-}
 
-$ord_countries_sql = "SELECT countries_id, countries_name, countries_iso_code_3, countries_number FROM countries order by countries_name";
-$ord_countries_query = my_db_query($ord_countries_sql);
-while($ord_countries = my_db_fetch_array($ord_countries_query)){
-    $arrCountries[strtoupper($ord_countries['countries_name'])] = $ord_countries['countries_number'];
-}
 
-$arrFees = array();
-$fees_sql = "SELECT * FROM fees ";
-$fees_query = my_db_query($fees_sql);
-while($fees = my_db_fetch_array($fees_query)){
-    $arrFees[$fees['fees_name']]= $fees['fees_value'];
-}
 
-$arrRepCodes = array();
-$rep_codes_sql = "SELECT * FROM rep_codes";
-$rep_codes_query = my_db_query($rep_codes_sql);
-while( $rep_codes = my_db_fetch_array($rep_codes_query) ){
-    $arrRepCodes[$rep_codes['rep_name']] = $rep_codes['rep_code'];
-}
 
-$client_folders_sql = "SELECT * FROM accounts WHERE accounts_username in ('songear')";
-$client_folders_query = my_db_query($client_folders_sql);
+echo "<PRE>";
+print_r($arrRepCodes);
+echo "</PRE>";
 
+echo "------------------------------------------------------";
+
+$kdsUtils = new KDSUtils();
+
+$shipping = $kdsUtils->getShipping();
+$arrShippingName = $kdsUtils->createNameValuePair($shipping, 'shipping_alias', 'shipping_name');
+$arrShipping = $kdsUtils->createNameValuePair($shipping, 'shipping_alias', 'shipping_id');
+$countries = $kdsUtils->getCountries();
+$arrCountries = $kdsUtils->createNameValuePair($countries, 'countries_name', 'countries_number');
+$fees = $kdsUtils->getFees();
+$arrFees = $kdsUtils->createNameValuePair($fees, 'fees_name', 'fees_value');
+$repcodes = $kdsUtils->getRepCodes();
+$arrRepCodes = $kdsUtils->createNameValuePair($repcodes, 'rep_name', 'rep_code');
+
+echo "<PRE>";
+print_r($arrRepCodes);
+echo "</PRE>";
+
+
+
+
+/*
 while($client_folders = my_db_fetch_array($client_folders_query)){
-	$d = 'orderpull/' . $client_folders['accounts_folder_name'];
+	$d = 'orderpull/test';
 	$accountNumber = $client_folders['accounts_number'];
 	$clientPrefix = $client_folders['accounts_prefix'];
+	$accountPriceLvl = $client_folders['accounts_price_level'];
 
 	$arrReps = array();
 	$reps_sql = "SELECT * FROM reps r WHERE r.accounts_number = " . $accountNumber;
@@ -57,26 +60,11 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 	foreach(array_diff(scandir($d), array('.','..')) as $f) {
 		if(is_file($d.'/'.$f)) {
 			$csvfile = $d.'/'.$f;
-	
-			if (($handle = fopen($csvfile, "r")) !== FALSE) {
-				$row = 
-				while (($csvLine = fgetcsv($handle, 0, ",")) !== FALSE) {
-					$arrLines[] = $csvLine;
-				}
-
-				fclose($handle);
-				if (unlink ($csvfile)) {
-					$output .= "<br> Attempt to deleted the CSV file was successful";
-				} else {
-					$output .= "<br> Attempt to deleted the CSV file has failed";
-				}
-			}
-
 			$arrLines = file($d.'/'.$f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 			$output .= "Processing file: " . $d.$f . "   at   ". date("y-m-d h:i:s") ."<br>";
 			$output .= "CSV File has ".count($arrLines)." rows (including the header row)";
 
-			for ($i = $startRow; $i < count($arrLines); $i++) {
+			for($i = $startRow; $i < count($arrLines); $i++) {
 				$arrLine = explode(",", $arrLines[$i]);
 
 				$ord_add_sql = "";
@@ -133,15 +121,18 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 				$orderInfo = my_db_fetch_array($check_for_order_query);
 				$ord_add_insert_id = $orderInfo['order_id'];
 
-				//If orderId is found before the order is initally entered then we have a rogue
+				//If orderId is found before the order is initally entered then we have an orphaned
 				// order file, so ignore it;
 				if ($i == $startRow && isset($orderInfo['order_id'])) {
-					$ignoreFile = true;
-					echo "******  FOUND ROGUE ORDER FILE *******<BR>";
-					echo "******  MANUALLY REMOVE FILE: " . $csvfile;
+					$ignoreOrder = $orderInfo['order_id'];
+					$title =   "FOUND ORPHANED ORDER FILE";
+					$message =  "******  MANUALLY REMOVE FILE: " . $csvfile;
+
+					sendEmail($title, $message);
+					unlink ($csvfile);
 				}
 
-				if (!$ignoreFile && !isset($orderInfo['order_id'])) {
+				if (strlen($ignoreOrder) == 0 && !isset($orderInfo['order_id'])) {
 
 					$ord_add_sql = sprintf("INSERT INTO orders (
 						customer_name, customer_address1, customer_address2, customer_intl_phone, customer_city, 
@@ -210,9 +201,21 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 				}
 
 
-				if (!$ignoreFile && isset($ord_add_insert_id)) {
-					$productPrice = 0;
-					$productPrice = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
+				if (strlen($ignoreOrder) == 0 && isset($ord_add_insert_id)) {
+					$arrPriceRequest = array();
+					$arrPriceRequest["price"] = getPriceBySize($accountNumber, $csv['product_model'], $product_size_adjusted);
+					$arrPriceRequest["product_size"] = $product_size_adjusted;
+					$arrPriceRequest["productModel"] = $csv['product_model'];
+					$arrPriceRequest["priceLvl"] = $accountPriceLvl;
+					$arrPriceRequest["accounts_number"] = $accountNumber; 
+					$arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
+
+					if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) && 
+						(floatval($arrPriceRequest["discount"]["price"]) < floatval($arrPriceRequest["price"])) ) {
+						$productPrice = $arrPriceRequest["discount"]["price"];
+					} else {
+						$productPrice = $arrPriceRequest["price"];
+					}
 
 					$ord_product_add_sql = sprintf("INSERT INTO orders_products (
 						order_id, order_product_quantity, order_product_size, 
@@ -235,26 +238,44 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 					$order_update_comments = "UPDATE orders set order_comments='".$productDescription."' where order_id=".$ord_add_insert_id;
 					my_db_query($order_update_comments);
 
-					$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). "<br>";
+					$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). ", Unit Price: " . $productPrice . "<br>";
 				}
+				$ignoreOrder = "";
+			}// End of For Loop			
+		}// End of If Statement
+	}// End of Foreach Loop
 
-			}	
+	if ($orderCount > 0) {
+		$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
+
+		if (($handle = fopen($csvfile, "r")) !== FALSE) {
+
+			fclose($handle);
+			if (unlink ($csvfile)) {
+				$output .= "<br> Attempt to deleted the CSV file was successful";
+			} else {
+				$output .= "<br> Attempt to deleted the CSV file has failed";
+			}
+		} else {
+			$output .= "<br> Attempt to OPEN the CSV file has failed";
 		}
+
+		
+		for($i = 0; $i < count($arrOrderIds); $i++) {
+			my_mail_order($arrOrderIds[$i], $accountNumber);
+		}
+
+		sendEmail("FTP Order Processed", $output);
 	}
 
-if (!$ignoreFile && $orderCount > 0) {
-	$output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
-	
-	
-	for($i = 0; $i < count($arrOrderIds); $i++) {
-		my_mail_order($arrOrderIds[$i], $accountNumber);
-	}
-
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-	mail("haciendadad@yahoo.com","FTP Order Processed",$output,$headers)
 }
+*/
 
 
+function sendEmail($title, $message) {
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
+	mail("haciendadad@yahoo.com",$title,$message,$headers);
 }
 ?>

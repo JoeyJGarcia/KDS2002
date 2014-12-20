@@ -296,7 +296,7 @@ Optional: Apply Only to Specific Clients, Choose One
 </tr>
 
 <?php
-    $arrApplyPLvls[] = array('id' => '0','text' => 'Price Levels');
+    $arrApplyPLvls[] = array('id' => '0','text' => 'Select Group');
     $arrApplyPLvls[] = array('id' => '1','text' => '1');
     $arrApplyPLvls[] = array('id' => '2','text' => '2');
     $arrApplyPLvls[] = array('id' => '3','text' => '3');
@@ -305,7 +305,7 @@ Optional: Apply Only to Specific Clients, Choose One
     $arrApplyPLvls[] = array('id' => '6','text' => '6');
 ?>
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL"></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL"></span> <span style="width: 120px; float:right;">By Customer Group:</span></td>
 <td class="smallText"><?php echo my_draw_pull_down_menu('by_price_level',$arrApplyPLvls); ?></td>
 </tr>
 
@@ -450,7 +450,7 @@ Optional: Apply Only to Specific Clients, Choose One
         $noLimitationSelected = " checked=\"checked\" ";
     }
 
-    $arrApplyPLvls[] = array('id' => '0','text' => 'Price Levels');
+    $arrApplyPLvls[] = array('id' => '0','text' => 'Select Group');
     $arrApplyPLvls[] = array('id' => '1','text' => '1');
     $arrApplyPLvls[] = array('id' => '2','text' => '2');
     $arrApplyPLvls[] = array('id' => '3','text' => '3');
@@ -464,7 +464,7 @@ Optional: Apply Only to Specific Clients, Choose One
 </tr>
 
 <tr class="tableRowColor" style="padding: 15px 0;">
-<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL" <?=$priceLevelSelected?> ></span> <span style="width: 120px; float:right;">By Price Level:</span></td>
+<td align=right class="mediumBoldText"><span><input type="radio" name="limit_by" value="PRICE_LEVEL" <?=$priceLevelSelected?> ></span> <span style="width: 120px; float:right;">By Customer Group:</span></td>
 <td class="smallText"><?php echo my_draw_pull_down_menu('by_price_level',$arrApplyPLvls, $discounts_mod['by_price_level']); ?></td>
 </tr>
 

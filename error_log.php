@@ -11,6 +11,15 @@ require('includes/application_top.php');
 
 <?php
 
+if(isset($GLOBALS['session_started'])) {
+      echo 'session_started: TRUE';
+
+} else {
+	   echo 'session_started: FALSE';
+
+}
+      echo '<br>';
+
 $arrLines = file('error_log', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 for($i = 0; $i < count($arrLines); $i++) {

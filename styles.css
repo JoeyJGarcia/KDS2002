@@ -422,7 +422,8 @@ tr.show{
 }
 .sortable-td.promo-desc,
 .sortable-th.promo-desc{
-  width: 66%;
+  float: right;
+  width: 60%;
   text-align: left;
 }
 .sortable-td.promo-sort{
