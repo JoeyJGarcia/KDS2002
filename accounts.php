@@ -331,6 +331,15 @@ if( $_GET['action'] == 'add_start' ){
 </tr>
 
 
+
+<tr class="tableRowColor">
+<td align=right class="mediumBoldText">Order Folder Name:</td>
+<td class="smallText"><?php echo my_draw_input_field($tableName.'_folder_name','','size=30'); ?>
+<font color=red>Unique!</font>
+</td>
+</tr>
+
+
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Prefix:</td>
 <td class="smallText"><?php echo my_draw_input_field($tableName.'_prefix','','size=5'); ?>*
@@ -566,6 +575,14 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
 </tr>
 
 
+
+<tr class="tableRowColor">
+<td valign=top align=right class="mediumBoldText">Order Folder Name:</td>
+<td class="smallText"><?php echo my_draw_input_field($tableName.'_folder_name',$accounts_mod['accounts_folder_name'],'size=15'); ?>
+</td>
+</tr>
+
+
 <tr class="tableRowColor">
 <td valign=top align=right class="mediumBoldText">Prefix:</td>
 <td class="smallText"><?php echo my_draw_input_field($tableName.'_prefix',$accounts_mod['accounts_prefix'],'size=5'); ?>*
@@ -747,6 +764,8 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
         ( strlen($_POST['accounts_poc']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_poc'])."'" : "NULL" ;
         $_POST['accounts_username'] =
         ( strlen($_POST['accounts_username']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_username'])."'" : "NULL" ;
+        $_POST['accounts_folder_name'] =
+        ( strlen($_POST['accounts_folder_name']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_folder_name'])."'" : "NULL" ;
         $_POST['accounts_prefix'] =
         ( strlen($_POST['accounts_prefix']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_prefix'])."'" : "NULL" ;
         $_POST['accounts_ship_id'] =
@@ -789,14 +808,14 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
 
         $accounts_sql = sprintf("INSERT INTO `accounts` ( `accounts_company_name` , `accounts_address1` , 
         `accounts_address2` , `accounts_city` , `accounts_state` , `accounts_zip`, `accounts_country` , 
-        `accounts_phone` , `accounts_fax` , `accounts_email` , `accounts_url` , `accounts_poc` , 
+        `accounts_phone` , `accounts_fax` , `accounts_email` , `accounts_url` , `accounts_poc` , `accounts_folder_name` ,
         `accounts_username` , `accounts_prefix` , `accounts_number`,`accounts_term_code`, `accounts_ship_id`, 
         `accounts_rep_group`, `accounts_dropship_fee`, `accounts_handling_fee` ) VALUES 
-        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %f, %f)", 
+        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %f, %f)", 
         $_POST['accounts_company_name'], $_POST['accounts_address1'], $_POST['accounts_address2'], 
         $_POST['accounts_city'], $_POST['accounts_state'], $_POST['accounts_zip'], $_POST['accounts_country'], 
-        $_POST['accounts_phone'], $_POST['accounts_fax'], $_POST['accounts_email'], $_POST['accounts_url'], 
-        $_POST['accounts_poc'], $_POST['accounts_username'], $_POST['accounts_prefix'], $_POST['accounts_number'], 
+        $_POST['accounts_phone'], $_POST['accounts_fax'], $_POST['accounts_email'], $_POST['accounts_url'], $_POST['accounts_poc'],
+        $_POST['accounts_folder_name'], $_POST['accounts_username'], $_POST['accounts_prefix'], $_POST['accounts_number'], 
         $_POST['accounts_term_code'], $_POST['accounts_ship_id'], $_POST['accounts_rep_group'], 
         $_POST['accounts_dropship_fee'], $_POST['accounts_handling_fee']);
 
@@ -883,6 +902,8 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
             ( strlen($_POST['accounts_poc']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_poc'])."'" : "NULL" ;
         $_POST['accounts_username'] =
             ( strlen($_POST['accounts_username']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_username'])."'" : "NULL" ;
+        $_POST['accounts_folder_name'] =
+            ( strlen($_POST['accounts_folder_name']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_folder_name'])."'" : "NULL" ;
         $_POST['accounts_prefix'] =
             ( strlen($_POST['accounts_prefix']) > 0 )? "'".mysql_real_escape_string($_POST['accounts_prefix'])."'" : "NULL" ;
         $_POST['accounts_ship_id'] =
@@ -923,6 +944,7 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
                                 `accounts_email` = %s,
                                 `accounts_url` = %s,
                                 `accounts_poc` = %s,
+                                `accounts_folder_name` = %s,
                                 `accounts_username` = %s,
                                 `accounts_prefix` = %s,
                                 `accounts_number` = %s,
@@ -934,7 +956,7 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
                                  WHERE `accounts_id` = ".$_POST['accounts_id'],
                                  $_POST['accounts_company_name'],$_POST['accounts_address1'],$_POST['accounts_address2'],$_POST['accounts_city'],
                                  $_POST['accounts_state'],$_POST['accounts_zip'],$_POST['accounts_country'],$_POST['accounts_phone'],$_POST['accounts_fax'],$_POST['accounts_email'],
-                                 $_POST['accounts_url'],$_POST['accounts_poc'],$_POST['accounts_username'],$_POST['accounts_prefix'],$_POST['accounts_number'],
+                                 $_POST['accounts_url'],$_POST['accounts_poc'],$_POST['accounts_folder_name'],$_POST['accounts_username'],$_POST['accounts_prefix'],$_POST['accounts_number'],
                                  $_POST['accounts_term_code'],$_POST['accounts_ship_id'],$_POST['accounts_rep_group'],$_POST['accounts_dropship_fee'],$_POST['accounts_handling_fee']);
 
         if($account_has_required_data){
@@ -1029,9 +1051,13 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
     $arrUserLevel[0]= "Client";
     $arrUserLevel[1]= "Admin";
     $arrUserLevel[2]= "Super";
+    $arrUserLevelColor[0]= "green";
+    $arrUserLevelColor[1]= "orange";
+    $arrUserLevelColor[2]= "red";
     while($accounts_view = my_db_fetch_array($accounts_view_query)){
         $is_default = ($accounts_view[$tableName.'_default'] == 1)?"*":"";
         $bgcolor = ( fmod($count,2)==0 )? "tableRowColorEven" : "tableRowColorOdd";
+        $userLevelColor = $arrUserLevelColor[$accounts_view['login_userlevel']];
 
         echo "<tr class=$bgcolor>";
         echo "<td align=center><a href=\"". my_href_link($tableName.'.php',
@@ -1046,7 +1072,7 @@ echo my_draw_pull_down_menu('accounts_term_code', $arrTermCodes, $defaultTerm);
         echo "<td align=center>". $accounts_view[$tableName.'_company_name'] ."</td>";
         echo "<td align=center>". $accounts_view[$tableName.'_username'] ."</td>";
         echo "<td align=center>". getPriceLevelsSelectionOptions($accounts_view['accounts_number'], $accounts_view['accounts_price_level']) ."</td>";        
-        echo "<td align=center>". $arrUserLevel[$accounts_view['login_userlevel']] ."</td>";
+        echo "<td align=center style='color: $userLevelColor'>". $arrUserLevel[$accounts_view['login_userlevel']] ."</td>";
         echo "<td align=center>". $accounts_view[$tableName.'_number'] ."</td>";
         echo "</tr>\n";
         $count++;

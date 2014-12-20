@@ -31,7 +31,8 @@ if( $_POST['doAction'] == "addOrder" ){
 		}
 
 
-
+        $accountNumber = $_POST['accounts_number'];
+        $accountPriceLvl = $_POST['accounts_price_level'];
 
 
 
@@ -195,6 +196,23 @@ if( $_POST['doAction'] == "addOrder" ){
 						$generic_size = $arrSizes[$_POST['product_size_'.$i]];
 					}
 					
+
+                    $arrPriceRequest = array();
+                    $arrPriceRequest["price"] = getPriceBySize($accountNumber, $productModel, $generic_size);
+                    $arrPriceRequest["product_size"] = $generic_size;
+                    $arrPriceRequest["productModel"] = $productModel;
+                    $arrPriceRequest["priceLvl"] = $accountPriceLvl;
+                    $arrPriceRequest["accounts_number"] = $accountNumber; 
+                    $arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
+
+                    if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) && 
+                        (floatval($arrPriceRequest["discount"]["price"]) < floatval($arrPriceRequest["price"])) ) {
+                        $productPrice = $arrPriceRequest["discount"]["price"];
+                    } else {
+                        $productPrice = $arrPriceRequest["price"];
+                    }
+
+
                     $ord_add_product_sql = sprintf("INSERT INTO
                     `orders_products` (`order_id` ,`order_product_quantity` ,
                     `order_product_size` , `order_product_name`, `order_product_model`,
@@ -203,7 +221,7 @@ if( $_POST['doAction'] == "addOrder" ){
                      $_POST['product_quantity_'.$i],
                     "'".strtoupper(mysql_real_escape_string($_POST['product_size_'.$i]))."'",
                     "'".mysql_real_escape_string(trim($arrInventory[$_POST['product_name_'.$i]]))."'",
-                    "'".$productModel."'", getPriceBySize($_POST['accounts_number'],$productModel, $generic_size));
+                    "'".$productModel."'", $productPrice);
 
 echo 'Product Price: '.getPriceBySize($_POST['accounts_number'],$productModel, $generic_size) ."<br>";
 

@@ -25,10 +25,11 @@ class Form{
 		$orderNum;
 		$acctNumber = trim($_SESSION['client_account_number']);
 
-		$client_prefix_sql = "SELECT accounts_prefix FROM accounts WHERE accounts_number = '$acctNumber' LIMIT 1";
+		$client_prefix_sql = "SELECT accounts_prefix, accounts_price_level FROM accounts WHERE accounts_number = '$acctNumber' LIMIT 1";
 		$client_prefix_query = my_db_query($client_prefix_sql);
 		$client_prefix_text = my_db_fetch_array($client_prefix_query);
 		$client_prefix = trim($client_prefix_text['accounts_prefix']);
+		$acctPriceLvl = $client_prefix_text['accounts_price_level'];
 
 
 		$po_number = strtoupper($client_prefix).date("mdyhis")."-".$orderNum;
@@ -94,6 +95,7 @@ class Form{
 		<input type="hidden" name="doAction" value="addOrder"/>
 		<input type="hidden" name="order_size" value="$productCount"/>
 		<input type="hidden" name="accounts_number" value="$acctNumber"/>
+		<input type="hidden" name="accounts_price_level" value="$acctPriceLvl"/>
 		<input type="hidden" name="purchase_order_number" value="$po_number"/>
 
 		<input type="hidden" name="rep1_name" value="$rep1_name"/>

@@ -54,7 +54,7 @@
   }
 
   function my_session_start() {
-    return session_start();
+      return session_start();
   }
 
   function my_session_register($variable) {
@@ -123,7 +123,9 @@
         session_set_save_handler('_sess_open', '_sess_close', '_sess_read', '_sess_write', '_sess_destroy', '_sess_gc');
       }
 
-      session_start();
+      if(!isset($GLOBALS['session_started'])) {
+        session_start();
+      }
 
       $_SESSION = $session_backup;
       unset($session_backup);
