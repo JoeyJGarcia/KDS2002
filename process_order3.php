@@ -189,6 +189,9 @@ function saveChanges(el) {
             document.getElementById('original_quantity_'+index).value = document.getElementById('order_product_quantity_'+index).value;
         }
     } else if (el.name.indexOf('model') > -1) {
+        if ( el.value === "1") {
+            return;
+        }
         temp = el[el.selectedIndex].text.split('/');
         newProductName = ' [ ' + temp[0] + ' ] ' + temp[1] + '/' + temp[2];
         original = document.getElementById('original_model_'+index);
@@ -219,11 +222,52 @@ function saveChanges(el) {
     $notes[0].value = ($notes[0].value.length > 0) ? $notes[0].value + '\n' +  '[** ' + action + ' **]\n' + value : '[** ' + action + ' **]\n' +  value ;
 }
 
+function setInvalidProduct(el) {
+    var $el = jQuery(el),
+        rowNum = $el[0].name.split('_')[3],
+        productModel = $(document.getElementById('order_product_model_'+rowNum))[0].value,
+        $selSizes,
+        option,
+        rowNum,
+        unitPrice,
+        qtyXcharge,
+        $productCharge,
+        $spanProductCharge,
+        qty;
+
+    $selSizes = jQuery(document.getElementById('order_product_size_'+rowNum));
+    $selSizes.empty();
+    option = document.createElement('option');
+    option.value = '1';
+    option.text = 'NA';
+    $selSizes.append(option.cloneNode(true));
+    $selSizes.removeAttr('disabled');
+
+
+    qty = document.getElementById('order_product_quantity_'+rowNum);
+    qty.value = "1";
+    unitPrice = document.getElementById('order_product_charge_'+rowNum);
+    unitPrice.value = "0";
+    $qtyXcharge = jQuery(document.getElementById('qtyXcharge_'+rowNum));
+    $qtyXcharge.text("0.00"); 
+    $productCharge = jQuery(document.getElementById('order_product_charge_'+rowNum));
+    $productCharge[0].value = "0";
+    $spanProductCharge = jQuery(document.getElementById('span_order_product_charge_'+rowNum));
+    $spanProductCharge.html("0.00");
+
+}
+
 function getSizes(el) {
     var $el = jQuery(el),
         url = "http://www.kerussods.com/ajax_controller.php?action=get_sizes_v1&kdssid=<?php echo $_GET['kdssid'];?>",
         rowNum = $el[0].name.split('_')[3],
         productModel = $(document.getElementById('order_product_model_'+rowNum))[0].value;
+
+        if (productModel === "1") {
+            setInvalidProduct(el);
+
+            return;
+        }
         
         url += "&product_code="+productModel+"&row="+rowNum;
 
@@ -457,6 +501,7 @@ if( $_GET['action'] == 'show_order' ){
         $arrInventory[] = array('id' => $ord_inventory['product_model'],
                           'text' => $productText);
     }
+    $arrInventory[] = array('id' => '1','text' => '******* INVALID PRODUCT *******');
 
     if($debug_mode){//DEBUG
         echo "<b>product_status_sql</b> = ".$product_status_sql."<br>";
@@ -893,7 +938,7 @@ cal2SHIPDATE.time_comp = false;
         <?php 
             echo my_draw_hidden_field('order_product_id_'.$counter,$order_products['order_product_id'], 'id="order_product_id_'.$counter.'"');
             echo my_draw_hidden_field('order_product_name_'.$counter,$order_products['order_product_name'], 'id="order_product_name_'.$counter.'"');
-            echo my_draw_pull_down_menu('order_product_model_'.$counter,$arrInventory,$order_products['order_product_model'], 'id="order_product_model_'.$counter.'" onchange=saveChanges(this) '); 
+            echo my_draw_pull_down_menu('order_product_model_'.$counter,$arrInventory,$order_products['order_product_model'], 'id="order_product_model_'.$counter.'" onchange=getSizes(this);saveChanges(this) '); 
         ?>
     </td>
     <td>
