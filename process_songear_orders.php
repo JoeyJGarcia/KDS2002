@@ -15,6 +15,7 @@ $arrOrderIds = array();
 $arrOrderFiles = array();
 $output = "";
 $songearOrderId = "";
+$productDescription = "";
 
 $ord_shipping_sql = "SELECT * FROM shipping WHERE 1 ORDER BY shipping_name";
 $ord_shipping_query = my_db_query($ord_shipping_sql);
@@ -65,6 +66,7 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 			$output .= "<br><br>=======================================================================<br>";
 			$output .= "Processing file: " . $d.$f . "   at   ". date("y-m-d h:i:s") ."<br>";
 			$output .= "CSV File has ".count($arrLines)." rows (including the header row)";
+            $productDescription = "FTP Order";
 
 			for($i = $startRow; $i < count($arrLines); $i++) {
 				$arrLine = explode(",", $arrLines[$i]);
@@ -116,8 +118,8 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 				'product_quantity' => str_replace('"','',$arrLine[14])
 				);
 
-				$check_for_order_sql = sprintf("SELECT * FROM orders WHERE accounts_number = '%s' AND customer_invoice_number = '%s' ", 
-										mysql_real_escape_string($csv['accounts_number']), 
+				$check_for_order_sql = sprintf("SELECT count(*) as prodCount1, order_id FROM orders WHERE accounts_number = '%s' AND customer_invoice_number = '%s' ",
+										mysql_real_escape_string($csv['accounts_number']),
 										mysql_real_escape_string($csv['customer_invoice_number']) );
 				$check_for_order_query = my_db_query($check_for_order_sql);
 				$check_for_order = my_db_fetch_array($check_for_order_query);
@@ -127,21 +129,21 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 					//If this order is already in the DB, do nothing
 				} else {
 					$ord_add_sql = sprintf("INSERT INTO orders (
-						customer_name, customer_address1, customer_address2, customer_intl_phone, customer_city, 
-						customer_state, customer_zip, customer_country, customer_country_number, customer_shipping_method, 
-						customer_shipping_id, customer_invoice_number, purchase_date, accounts_number, purchase_order_number, 
-						order_comments, order_status, dropship_fee, handling_fee, isRush, 
-						rush_fee, misc_desc, rep1_name, rep1_code, rep2_name, 
-						rep2_code, rep3_name, rep3_code, rep4_name, rep4_code, 
+						customer_name, customer_address1, customer_address2, customer_intl_phone, customer_city,
+						customer_state, customer_zip, customer_country, customer_country_number, customer_shipping_method,
+						customer_shipping_id, customer_invoice_number, purchase_date, accounts_number, purchase_order_number,
+						order_comments, order_status, dropship_fee, handling_fee, isRush,
+						rush_fee, misc_desc, rep1_name, rep1_code, rep2_name,
+						rep2_code, rep3_name, rep3_code, rep4_name, rep4_code,
 						rep5_name, rep5_code, rep6_name, rep6_code
 						) VALUES (
-		          		'%s', '%s', '%s', '%s', '%s', 
-		          		'%s', '%s', '%s', %d, '%s', 
-		          		'%s', '%s', '%s', '%s', '%s', 
-		          		'%s', '%s', %01.2f, %01.2f, %d, 
-		          		%01.2f, '%s', '%s', '%s', '%s', 
-		          		'%s', '%s', '%s', '%s', '%s', 
-		          		'%s', '%s', '%s', '%s' )", 
+		          		'%s', '%s', '%s', '%s', '%s',
+		          		'%s', '%s', '%s', %d, '%s',
+		          		'%s', '%s', '%s', '%s', '%s',
+		          		'%s', '%s', %01.2f, %01.2f, %d,
+		          		%01.2f, '%s', '%s', '%s', '%s',
+		          		'%s', '%s', '%s', '%s', '%s',
+		          		'%s', '%s', '%s', '%s' )",
 
 						mysql_real_escape_string($csv['customer_name']),
 						mysql_real_escape_string($csv['customer_address1']),
@@ -193,22 +195,23 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 				}
 
 
-
-				$check_for_product_sql = sprintf("SELECT order_id, order_product_quantity, order_product_size, order_product_model 
-					FROM orders_products 
-					WHERE order_id = %d AND 
-					order_product_quantity = %d AND 
-					order_product_size = '%s' AND 
-					order_product_model = '%S' ", 
-					$songearOrderId, 
-					intval($csv['product_quantity']), 
-					mysql_real_escape_string($csv['product_size']), 
+				$check_for_product_sql = sprintf("SELECT count(*) as prodCount2, order_id
+					FROM orders_products
+					WHERE order_id = %d AND
+					order_product_quantity = %d AND
+					order_product_size = '%s' AND
+					order_product_model = '%s' ",
+					$songearOrderId,
+					intval($csv['product_quantity']),
+					mysql_real_escape_string($csv['product_size']),
 					mysql_real_escape_string($csv['product_model']) );
-
-//echo $check_for_product_sql . "<br>";
+                // echo "<br><br>";
+                // echo "songearOrderId: " .$songearOrderId. "<br><br>";
+                // echo $check_for_product_sql . "<br><br>";
 
 				$check_for_product_query = my_db_query($check_for_product_sql);
 				$check_for_product = my_db_fetch_array($check_for_product_query);
+
 
 				if ( isset($check_for_product['order_id']) ) {
 					// If this product is found already in the DB, do nothing
@@ -219,10 +222,10 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 						$arrPriceRequest["product_size"] = $product_size_adjusted;
 						$arrPriceRequest["productModel"] = $csv['product_model'];
 						$arrPriceRequest["priceLvl"] = $accountPriceLvl;
-						$arrPriceRequest["accounts_number"] = $accountNumber; 
+						$arrPriceRequest["accounts_number"] = $accountNumber;
 						$arrPriceRequest["discount"] = checkForDiscount($arrPriceRequest);
 
-						if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) && 
+						if ( is_array($arrPriceRequest["discount"]) && isset($arrPriceRequest["discount"]["price"]) &&
 							(floatval($arrPriceRequest["discount"]["price"]) < floatval($arrPriceRequest["price"])) ) {
 							$productPrice = $arrPriceRequest["discount"]["price"];
 						} else {
@@ -230,9 +233,9 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 						}
 
 						$ord_product_add_sql = sprintf("INSERT INTO orders_products (
-							order_id, order_product_quantity, order_product_size, 
+							order_id, order_product_quantity, order_product_size,
 							order_product_name, order_product_model, order_product_charge
-							) VALUES (%d, %d, '%s', '%s', '%s', %01.2f)", 
+							) VALUES (%d, %d, '%s', '%s', '%s', %01.2f)",
 							$songearOrderId,
 							intval($csv['product_quantity']),
 							mysql_real_escape_string($csv['product_size']),
@@ -241,19 +244,26 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 							number_format($productPrice, 2)
 						);
 
-						if ($orderInfo['order_comments']  == null ) {
-							$orderInfo['order_comments']  = "FTP Order";
-						}
+                        //echo $ord_product_add_sql . "<br><br>";
 						my_db_query($ord_product_add_sql);
-						$productDescription = $orderInfo['order_comments'] . "<br>" . $csv['product_quantity'] . ' X ' . 'Product Model: ' .$csv['product_model'] . ' / Size: ' . $csv['product_size'];
-						
-						$order_update_comments = "UPDATE orders set order_comments='".$productDescription."' where order_id=".$songearOrderId;
-						my_db_query($order_update_comments);
-//$output .= "<br>(" . $order_update_comments . ")<br>";
+						$productDescription .= "<br>" . $csv['product_quantity'] . ' X ' . 'Product Model: ' .$csv['product_model'] . ' / Size: ' . $csv['product_size'];
+
+						if (isset($songearOrderId)) {
+                            $order_select_comments_sql = sprintf("SELECT order_comments FROM orders WHERE order_id=%d", $songearOrderId);
+                            $order_select_comments_query = my_db_query($order_select_comments_sql);
+                            $order_select_comments = my_db_fetch_array($order_select_comments_query);
+
+                            $productDescription = $order_select_comments['order_comments'] . $productDescription;
+
+							$order_update_comments_sql = sprintf("UPDATE orders set order_comments='%s' where order_id=%d",$productDescription, $songearOrderId);
+							$output .= "<br>Order Comments: " . $order_update_comments_sql . "<br>";
+							my_db_query($order_update_comments_sql);
+						}
 						$output .= intval($csv['product_quantity'])." X ".mysql_real_escape_string($csv['product_size']) ." / ". mysql_real_escape_string($csv['product_model']). ", Unit Price: " . $productPrice . "<br>";
+                        //echo $output;
 					}
 				}
-			}// End of For Loop			
+			}// End of For Loop
 		}// End of If Statement
 	}// End of Foreach Loop
 
@@ -267,7 +277,7 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
 			}
 
 		}
-		
+
 		for($i = 0; $i < count($arrOrderIds); $i++) {
 			my_mail_order($arrOrderIds[$i], $accountNumber);
 		}

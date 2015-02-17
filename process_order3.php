@@ -104,7 +104,7 @@ function getProductPrice(el) {
         $productElement = jQuery(document.getElementById('product_name_' + rowNum)),
         size = $(document.getElementById('order_product_size_'+rowNum))[0].value.split(' ')[2],
         productModel = $(document.getElementById('order_product_model_'+rowNum))[0].value;
-        
+
         url += "&product_size="+size+"&product_code="+productModel+"&accounts_number="+accountId;
 
         jQuery.ajax({
@@ -115,7 +115,7 @@ function getProductPrice(el) {
                 var $inpPriceEl = jQuery(document.getElementById('order_product_charge_'+data.row)),
                     $spnPriceEl = jQuery(document.getElementById('span_order_product_charge_'+data.row));
 
-                if (typeof data.discount !== 'undefined' && data.discount !== null && 
+                if (typeof data.discount !== 'undefined' && data.discount !== null &&
                     typeof data.discount.msg !== 'undefined' && data.discount.msg !== null &&
                     typeof data.discount.price !== 'undefined' && data.discount.price !== null) {
 
@@ -137,7 +137,7 @@ function updateProductCharge(index) {
     qty = document.getElementById('order_product_quantity_'+index)
     unitPrice = document.getElementById('order_product_charge_'+index);
     $qtyXcharge = jQuery(document.getElementById('qtyXcharge_'+index));
-    $qtyXcharge.text((parseInt(qty.value)*parseFloat(unitPrice.value)).toFixed(2)); 
+    $qtyXcharge.text((parseInt(qty.value)*parseFloat(unitPrice.value)).toFixed(2));
 
 }
 
@@ -167,7 +167,7 @@ function saveChanges(el) {
     if (el.name.indexOf('quantity') > -1) {
         original = document.getElementById('original_quantity_'+index);
         if (original.value !== '') {
-            value = 'Qty_'+index+': ' + original.value + ' -> ' + el.value; 
+            value = 'Qty_'+index+': ' + original.value + ' -> ' + el.value;
             text += 'Qty: ' + el.value;
             field = 'qty';
         } else {
@@ -197,7 +197,7 @@ function saveChanges(el) {
         original = document.getElementById('original_model_'+index);
         $prodModelName = jQuery(document.getElementById('order_product_name_'+index));
         $prodModelName.val(newProductName);
-        
+
         if (original.value !== '') {
             value = 'Model_'+index+': ' + original.value + ' -> ' + el.value;
             text += 'Model: ' + el.value;
@@ -213,7 +213,7 @@ function saveChanges(el) {
     }
 
     if (field === 'size' || field === 'model') {
-        getProductPrice(el); 
+        getProductPrice(el);
     } else if (field === 'qty' ) {
         updateProductCharge(index);
     }
@@ -249,7 +249,7 @@ function setInvalidProduct(el) {
     unitPrice = document.getElementById('order_product_charge_'+rowNum);
     unitPrice.value = "0";
     $qtyXcharge = jQuery(document.getElementById('qtyXcharge_'+rowNum));
-    $qtyXcharge.text("0.00"); 
+    $qtyXcharge.text("0.00");
     $productCharge = jQuery(document.getElementById('order_product_charge_'+rowNum));
     $productCharge[0].value = "0";
     $spanProductCharge = jQuery(document.getElementById('span_order_product_charge_'+rowNum));
@@ -268,7 +268,7 @@ function getSizes(el) {
 
             return;
         }
-        
+
         url += "&product_code="+productModel+"&row="+rowNum;
 
     jQuery.ajax({
@@ -285,8 +285,6 @@ function getSizes(el) {
                     option.value = '0';
                     option.text = 'Select Size'
                     $selSizes.append(option.cloneNode(true));
-                } else if (data.sizes.length === 1) {
-                    getProductPrice($selSizes);
                 }
 
             if (typeof data.sizes !== 'undefined' &&
@@ -305,6 +303,8 @@ function getSizes(el) {
                 }
 
             }
+
+            getProductPrice($selSizes);
         }});
 }
 
@@ -645,7 +645,7 @@ if($order_info['isRush'] > 0){
             </tr>
         </table>
     </td>
-    
+
     <td align=left class="mediumBoldText"  colspan=2 valign=top>
         <table width=100% border=0>
             <?php
@@ -739,9 +739,9 @@ cal2SHIPDATE.time_comp = false;
 <?php echo my_draw_hidden_field('original_order_status',$order_info['order_status']); ?>
 
 <div align="center">
-	<a href="#" 
-    onclick="saveProcessedOrder('cancel')"><?php 
-    echo my_image(DIR_WS_IMAGES.'btnCancelOnWhite.gif','Back To Process Menu'); 
+	<a href="#"
+    onclick="saveProcessedOrder('cancel')"><?php
+    echo my_image(DIR_WS_IMAGES.'btnCancelOnWhite.gif','Back To Process Menu');
     ?></a>
     <?php echo my_draw_spacer('spacer.gif',80,1); ?>
     <a href="#" onclick="saveProcessedOrder('save')">
@@ -774,7 +774,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" style="width: 40%;">Customer Name:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_name',$order_info['customer_name'],'size=30');
     ?>
@@ -783,7 +783,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Address Information:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_address1',$order_info['customer_address1'],'size=30');
     ?>
@@ -792,7 +792,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Add'l Address Information:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_address2',$order_info['customer_address2'],'size=30');
     ?>
@@ -801,7 +801,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >City:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_city',$order_info['customer_city'],'size=30');
     ?>
@@ -810,7 +810,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >State:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_state',$order_info['customer_state'],'size=30');
     ?>
@@ -819,7 +819,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Zip/Postal Code:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_zip',$order_info['customer_zip'],'size=10');
     ?>
@@ -828,7 +828,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Country:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_country',$order_info['customer_country'],'size=30');
     ?>
@@ -837,7 +837,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >International Phone No.:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_intl_phone',$order_info['customer_intl_phone'],'size=30');
     ?>
@@ -846,7 +846,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Shipping Method:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_pull_down_menu('customer_shipping_id',$arrShipping, $order_info['customer_shipping_id'], 'id="customer_shipping_id" ');
     ?>
@@ -855,7 +855,7 @@ cal2SHIPDATE.time_comp = false;
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Order Id:</td>
     <td align=left class="mediumBoldText" >
-    <?php 
+    <?php
     echo my_draw_spacer('spacer.gif',20,1);
     echo my_draw_input_field('customer_invoice_number',$order_info['customer_invoice_number'],'size=30');
     ?>
@@ -911,11 +911,11 @@ cal2SHIPDATE.time_comp = false;
 
 <tr class="<?= $bgcolor?>" id="product_row_<?=$counter?>">
     <td class="align-center">
-        <?php 
+        <?php
             echo my_draw_input_field('order_product_quantity_'.$counter,$order_products['order_product_quantity'],'size=3 id="order_product_quantity_'.$counter.'" onchange=saveChanges(this) ');
             echo my_draw_hidden_field('original_model_'.$counter, $order_products['order_product_model'], 'id="original_model_'.$counter.'"');
             echo my_draw_hidden_field('original_size_'.$counter, $order_products['order_product_size'], 'id="original_size_'.$counter.'"');
-            echo my_draw_hidden_field('original_quantity_'.$counter,$order_products['order_product_quantity'], 'id="original_quantity_'.$counter.'"'); 
+            echo my_draw_hidden_field('original_quantity_'.$counter,$order_products['order_product_quantity'], 'id="original_quantity_'.$counter.'"');
         ?>
     </td>
     <td class="mediumText">
@@ -930,19 +930,19 @@ cal2SHIPDATE.time_comp = false;
         <span id="qtyXcharge_<?=$counter?>"><?php echo number_format($product_price*$order_products['order_product_quantity'], 2, '.', 'id="order_product_quantity_'.$counter."'"); ?></span>
     </td>
     <td>
-        <?php 
-            echo my_draw_pull_down_menu('order_product_size_'.$counter,$arrProductSizes,$order_products['order_product_size'], 'id="order_product_size_'.$counter.'" onchange=saveChanges(this) '); 
+        <?php
+            echo my_draw_pull_down_menu('order_product_size_'.$counter,$arrProductSizes,$order_products['order_product_size'], 'id="order_product_size_'.$counter.'" onchange=saveChanges(this) ');
         ?>
     </td>
     <td>
-        <?php 
+        <?php
             echo my_draw_hidden_field('order_product_id_'.$counter,$order_products['order_product_id'], 'id="order_product_id_'.$counter.'"');
             echo my_draw_hidden_field('order_product_name_'.$counter,$order_products['order_product_name'], 'id="order_product_name_'.$counter.'"');
-            echo my_draw_pull_down_menu('order_product_model_'.$counter,$arrInventory,$order_products['order_product_model'], 'id="order_product_model_'.$counter.'" onchange=getSizes(this);saveChanges(this) '); 
+            echo my_draw_pull_down_menu('order_product_model_'.$counter,$arrInventory,$order_products['order_product_model'], 'id="order_product_model_'.$counter.'" onchange=getSizes(this);saveChanges(this) ');
         ?>
     </td>
     <td>
-        <?php 
+        <?php
             echo my_draw_pull_down_menu('order_product_status_'.
                 $counter, $arrProductStatus,$arrProductStatusID[$order_products['order_product_status']], 'id="order_product_status_'.$counter.'"');
         ?>
@@ -1102,7 +1102,7 @@ Add Notes
                     WHERE order_product_id=".
                     $_POST['order_product_id_'.$i];
 //echo $orders_products_status_sql . "<br><br>";
-                
+
                     $orders_products_status_query = my_db_query($orders_products_status_sql);
                 } else {
                     $ord_add_product_sql = sprintf("INSERT INTO
