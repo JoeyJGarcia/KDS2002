@@ -1,6 +1,6 @@
 <?php
-	if( isset($_POST['rep_group_action']) && $_POST['rep_group_action'] >= 0)
-	$_SESSION['rep_group'] = $_POST['rep_group_action'];
+    if( isset($_POST['rep_group_action']) && $_POST['rep_group_action'] >= 0)
+    $_SESSION['rep_group'] = $_POST['rep_group_action'];
 
 
     $arrNewOrders = array();
@@ -8,24 +8,24 @@
 
     //order_status=10 refers to a New Order
     $new_orders_sql = "SELECT r.rep_groups_id AS grpId, r.rep_groups_name AS grpName
-	FROM orders o, accounts a, rep_groups r where order_status=10
-	AND o.accounts_number=a.accounts_number
+    FROM orders o, accounts a, rep_groups r where order_status=10
+    AND o.accounts_number=a.accounts_number
     AND a.accounts_rep_group = r.rep_groups_id";
     $new_orders_query = my_db_query($new_orders_sql);
 
-	while($new_orders = my_db_fetch_array($new_orders_query)){
-	  if( $new_orders['grpId'] == $_SESSION['rep_group'] )
-	  	$arrNewOrders[] = $new_orders['grpName'];
-	  else
-	  	$arrOtherNewOrders[] = $new_orders['grpName'];
+    while($new_orders = my_db_fetch_array($new_orders_query)){
+      if( $new_orders['grpId'] == $_SESSION['rep_group'] )
+          $arrNewOrders[] = $new_orders['grpName'];
+      else
+          $arrOtherNewOrders[] = $new_orders['grpName'];
     }
 
-	$new_orders_num=(count($arrNewOrders)> 0)?"(".count($arrNewOrders) . " new)&nbsp;":"";
+    $new_orders_num=(count($arrNewOrders)> 0)?"(".count($arrNewOrders) . " new)&nbsp;":"";
 
 
     $rush_new_orders_sql = "SELECT COUNT(*)AS Count FROM orders o, accounts a
-	 WHERE o.order_status=10 AND o.isRush=1 AND o.accounts_number=a.accounts_number
-	  AND a.accounts_rep_group=".$_SESSION['rep_group'];
+     WHERE o.order_status=10 AND o.isRush=1 AND o.accounts_number=a.accounts_number
+      AND a.accounts_rep_group=".$_SESSION['rep_group'];
 
     $rush_new_orders_query = my_db_query($rush_new_orders_sql);
     $rush_new_orders = my_db_fetch_array($rush_new_orders_query);
@@ -85,40 +85,40 @@ Super Admin Links
         <li><a href="<?php echo my_href_link('products_inventory_update.php'); ?>">Update New Products On-Hand Table</a>
         <li><a href="<?php echo my_href_link('products_remove_discontinued.php'); ?>">Remove Discontinued Products</a>
     </ul>
-        
+
     <br>
-	<?php if($_SESSION['userlevel']== "super" ) { ?>
+    <?php if($_SESSION['userlevel']== "super" ) { ?>
 
     <dl>
     <dt><strong>&nbsp;&nbsp;<?php echo count($arrOtherNewOrders); ?> New order(s) in other groups</strong>
 
-	<?php
+    <?php
 
-	echo "<dt>";
-	$arrTemp = array();
-	$intTemp = 0;
-	for($i=0; $i<count($arrOtherNewOrders); $i++){
-		if( in_array($arrOtherNewOrders[$i], $arrTemp) ){
-		  $arrTemp = array($arrOtherNewOrders[$i]=>1);
-		}else{
-		  $intTemp = $arrTemp[$arrOtherNewOrders[$i]];
-		  $arrTemp[$arrOtherNewOrders[$i]] = $intTemp+1;
-		}
-	}
+    echo "<dt>";
+    $arrTemp = array();
+    $intTemp = 0;
+    for($i=0; $i<count($arrOtherNewOrders); $i++){
+        if( in_array($arrOtherNewOrders[$i], $arrTemp) ){
+          $arrTemp = array($arrOtherNewOrders[$i]=>1);
+        }else{
+          $intTemp = $arrTemp[$arrOtherNewOrders[$i]];
+          $arrTemp[$arrOtherNewOrders[$i]] = $intTemp+1;
+        }
+    }
 
-	foreach($arrTemp as $grpName=>$grpNum){
-		echo "<dd>".$grpNum. " " .$grpName;
-	}
-	echo "</dt></dl>";
-	?>
+    foreach($arrTemp as $grpName=>$grpNum){
+        echo "<dd>".$grpNum. " " .$grpName;
+    }
+    echo "</dt></dl>";
+    ?>
 
-	<?php } ?>
-	<form name="frmRepGroup" method="POST" action="<?php echo $_SERVER['PHP_SELF'];?> ">
-	Current Rep Group:
-	<?php
+    <?php } ?>
+    <form name="frmRepGroup" method="POST" action="<?php echo $_SERVER['PHP_SELF'];?> ">
+    Current Rep Group:
+    <?php
 
 
-	$rep_groups_sql = "SELECT * FROM rep_groups where 1 ORDER BY rep_groups_sort";
+    $rep_groups_sql = "SELECT * FROM rep_groups where 1 ORDER BY rep_groups_sort";
     $rep_groups_query = my_db_query($rep_groups_sql);
     $arrRepGroups[] = array('id' => '0','text' => 'All Groups');
     while( $rep_groups = my_db_fetch_array($rep_groups_query)  ){
@@ -126,27 +126,27 @@ Super Admin Links
                               'text' => $rep_groups['rep_groups_name']);
     }
 
-	echo my_draw_pull_down_menu('rep_groups_id',$arrRepGroups, $_SESSION['rep_group'], "onchange='switchGroup()'");
-	echo my_draw_hidden_field('rep_group_action','');
+    echo my_draw_pull_down_menu('rep_groups_id',$arrRepGroups, $_SESSION['rep_group'], "onchange='switchGroup()'");
+    echo my_draw_hidden_field('rep_group_action','');
 ?>
 
-	<script language="javascript1.2" type="text/javascript">
-	function switchGroup(){
-	  var df = document.frmRepGroup;
-	  var selIndex = df.rep_groups_id.selectedIndex;
-	  df.rep_group_action.value = df.rep_groups_id[selIndex].value;
-	  df.submit();
-	}
-	</script>
+    <script language="javascript1.2" type="text/javascript">
+    function switchGroup(){
+      var df = document.frmRepGroup;
+      var selIndex = df.rep_groups_id.selectedIndex;
+      df.rep_group_action.value = df.rep_groups_id[selIndex].value;
+      df.submit();
+    }
+    </script>
 
 
-	</form>
+    </form>
     </td>
      <td align=left class="mediumBoldText" valign="top">
      <ul>
         <?php if($_SESSION['userlevel']== "super" ) { ?>
-		<li><a href="<?php echo my_href_link('accounts.php'); ?>">Manage Accounts</a>
-		<li><a href="<?php echo my_href_link('inventory.php','hide_disabled=1'); ?>">Manage Inventory</a>
+        <li><a href="<?php echo my_href_link('accounts.php'); ?>">Manage Accounts</a>
+        <li><a href="<?php echo my_href_link('inventory.php','hide_disabled=1'); ?>">Manage Inventory</a>
         <li><a href="<?php echo my_href_link('shipping.php'); ?>">Manage Shipping Methods</a>
         <li><a href="<?php echo my_href_link('product_status.php'); ?>">Manage Product Status</a>
         <li><a href="<?php echo my_href_link('order_status.php'); ?>">Manage Order Status</a>
@@ -155,15 +155,17 @@ Super Admin Links
         <li><a href="<?php echo my_href_link('term_codes.php'); ?>">Manage Term Codes</a>
         <li><a href="<?php echo my_href_link('reps.php'); ?>">View Rep Groups</a>
         <li><a href="<?php echo my_href_link('upload_reps.php'); ?>">Upload Reps Lists</a>
-		<li><a href="<?php echo my_href_link('admin_reports.php'); ?>">Admin Reports</a>
-		<li><a href="<?php echo my_href_link('inventory_populate.php'); ?>">Inventory Populate</a>
-		<li><a href="<?php echo my_href_link('cat_sizes.php'); ?>">Manage Category Sizes</a>
-		<li><a href="<?php echo my_href_link('categories.php'); ?>">Manage Default Categories & Prices</a>
-		<li><a href="<?php echo my_href_link('products_customized.php'); ?>">Manage Customized Products Prices</a>
+        <li><a href="<?php echo my_href_link('admin_reports.php'); ?>">Admin Reports</a>
+        <li><a href="<?php echo my_href_link('inventory_populate.php'); ?>">Inventory Populate</a>
+        <li><a href="<?php echo my_href_link('cat_sizes.php'); ?>">Manage Category Sizes</a>
+        <li><a href="<?php echo my_href_link('categories.php'); ?>">Manage Default Categories & Prices</a>
+        <li><a href="<?php echo my_href_link('products_customized.php'); ?>">Manage Customized Products Prices</a>
         <li><a href="<?php echo my_href_link('products_customer_prices.php'); ?>">Manage Customer Prices</a>
         <li><a href="<?php echo my_href_link('price_level_discounts.php'); ?>">Manage Price Level Discounts</a>
         <li><a href="<?php echo my_href_link('price_levels.php'); ?>">Manage Price Levels</a>
         <li><a href="<?php echo my_href_link('promotions.php'); ?>">Manage Promotions</a>
+        <li><a href="<?php echo my_href_link('process_csv_orders.php'); ?>">Process CSV Orders</a>
+        <li><a href="<?php echo my_href_link('orderpull_folder.php'); ?>">Create CSV FTP Folder</a>
         <?php } ?>
     </ul>
     </td>

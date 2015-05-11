@@ -2,127 +2,127 @@
 require('includes/application_top.php');
 
 if( isset($_GET['action']) ){
-	$action = $_GET['action'];
+    $action = $_GET['action'];
 }
 
 if( isset($_POST['order_size']) ){
-	$order_size = $_POST['order_size'];
+    $order_size = $_POST['order_size'];
 }
 
 if( isset($_POST['order_comments']) ){
-	$order_comments = $_POST['order_comments'];
+    $order_comments = $_POST['order_comments'];
 }
 
 if( isset($_POST['product_size_']) ){
-	$product_size_ = $_POST['product_size_'];
+    $product_size_ = $_POST['product_size_'];
 }
 
 if( isset($_POST['product_name_']) ){
-	$product_name_ = $_POST['product_name_'];
+    $product_name_ = $_POST['product_name_'];
 }
 
 if( isset($_POST['product_quantity_']) ){
-	$product_quantity_ = $_POST['product_quantity_'];
+    $product_quantity_ = $_POST['product_quantity_'];
 }
 
 if( isset($_POST['isRush']) ){
-	$isRush = $_POST['isRush'];
+    $isRush = $_POST['isRush'];
 }
 
 if( isset($_POST['customer_order_no']) ){
-	$customer_order_no = $_POST['customer_order_no'];
+    $customer_order_no = $_POST['customer_order_no'];
 }
 
 if( isset($_POST['shipping_method']) ){
-	$shipping_method = $_POST['shipping_method'];
+    $shipping_method = $_POST['shipping_method'];
 }
 
 if( isset($_POST['customer_country']) ){
-	$customer_country = $_POST['customer_country'];
+    $customer_country = $_POST['customer_country'];
 }
 
 if( isset($_POST['customer_zip']) ){
-	$customer_zip = $_POST['customer_zip'];
+    $customer_zip = $_POST['customer_zip'];
 }
 
 if( isset($_POST['customer_state']) ){
-	$customer_state = $_POST['customer_state'];
+    $customer_state = $_POST['customer_state'];
 }
 
 if( isset($_POST['customer_city']) ){
-	$customer_city = $_POST['customer_city'];
+    $customer_city = $_POST['customer_city'];
 }
 
 if( isset($_POST['customer_address2']) ){
-	$customer_address2 = $_POST['customer_address2'];
+    $customer_address2 = $_POST['customer_address2'];
 }
 
 if( isset($_POST['customer_address1']) ){
-	$customer_address1 = $_POST['customer_address1'];
+    $customer_address1 = $_POST['customer_address1'];
 }
 
 if( isset($_POST['customer_intl_phone']) ){
-	$customer_intl_phone = $_POST['customer_intl_phone'];
+    $customer_intl_phone = $_POST['customer_intl_phone'];
 }
 
 if( isset($_POST['customer_name']) ){
-	$customer_name = $_POST['customer_name'];
+    $customer_name = $_POST['customer_name'];
 }
 
 if( isset($_POST['purchase_order_number']) ){
-	$purchase_order_number = $_POST['purchase_order_number'];
+    $purchase_order_number = $_POST['purchase_order_number'];
 }
 
 if( isset($_POST['accounts_number']) ){
-	$accounts_number = $_POST['accounts_number'];
+    $accounts_number = $_POST['accounts_number'];
 }
 
 if( isset($_POST['rep1_name']) ){
-	$rep1_name = $_POST['rep1_name'];
+    $rep1_name = $_POST['rep1_name'];
 }
 
 if( isset($_POST['rep1_code']) ){
-	$rep1_code = $_POST['rep1_code'];
+    $rep1_code = $_POST['rep1_code'];
 }
 
 if( isset($_POST['rep2_name']) ){
-	$rep2_name = $_POST['rep2_name'];
+    $rep2_name = $_POST['rep2_name'];
 }
 
 if( isset($_POST['rep2_code']) ){
-	$rep2_code = $_POST['rep2_code'];
+    $rep2_code = $_POST['rep2_code'];
 }
 
 if( isset($_POST['rep3_name']) ){
-	$rep3_name = $_POST['rep3_name'];
+    $rep3_name = $_POST['rep3_name'];
 }
 
 if( isset($_POST['rep3_code']) ){
-	$rep3_code = $_POST['rep3_code'];
+    $rep3_code = $_POST['rep3_code'];
 }
 
 if( isset($_POST['rep4_name']) ){
-	$rep4_name = $_POST['rep4_name'];
+    $rep4_name = $_POST['rep4_name'];
 }
 
 if( isset($_POST['rep4_code']) ){
-	$rep4_code = $_POST['rep4_code'];
+    $rep4_code = $_POST['rep4_code'];
 }
 
 if( isset($_POST['rep5_name']) ){
-	$rep5_name = $_POST['rep5_name'];
+    $rep5_name = $_POST['rep5_name'];
 }
 
 if( isset($_POST['rep5_code']) ){
-	$rep5_code = $_POST['rep5_code'];
+    $rep5_code = $_POST['rep5_code'];
 }
 
 if( isset($_POST['rep6_name']) ){
-	$rep6_name = $_POST['rep6_name'];
+    $rep6_name = $_POST['rep6_name'];
 }
 
 if( isset($_POST['rep6_code']) ){
-	$rep6_code = $_POST['rep6_code'];
+    $rep6_code = $_POST['rep6_code'];
 }
 
 
@@ -134,19 +134,19 @@ if( isset($_POST['rep6_code']) ){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 <head>
-	<title>Kerusso Drop Ship - Order Entry</title>
-	<link rel="stylesheet" href="styles.css" type="text/css"/>
-	<script language="JavaScript" src="debugInfo.js"></script>
+    <title>Kerusso Drop Ship - Order Entry</title>
+    <link rel="stylesheet" href="styles.css" type="text/css"/>
+    <script language="JavaScript" src="debugInfo.js"></script>
 </head>
 
 <style type="text/css">
-	@import "includes/js/dojoroot/dijit/themes/tundra/tundra.css";
-	@import "includes/js/dojoroot/dojo/resources/dojo.css"
+    @import "includes/js/dojoroot/dijit/themes/tundra/tundra.css";
+    @import "includes/js/dojoroot/dojo/resources/dojo.css"
 </style>
 
 <script type="text/javascript"
-	src="includes/js/dojoroot/dojo/dojo.js"
-	djConfig="parseOnLoad: true">
+    src="includes/js/dojoroot/dojo/dojo.js"
+    djConfig="parseOnLoad: true">
 </script>
 <script type="text/javascript" 	src="includes/js/jquery_latest.js"></script>
 
@@ -158,133 +158,133 @@ if( isset($_POST['rep6_code']) ){
 <script type="text/javascript" >
 var commentLimit = 200;
 $(document).ready(function(){
-	$("#commentsArea").keypress(countChars);
-	$("#charsLimit").html(commentLimit);
-	$("#charsLeft").html(commentLimit);
+    $("#commentsArea").keypress(countChars);
+    $("#charsLimit").html(commentLimit);
+    $("#charsLeft").html(commentLimit);
 });
 
 function countChars(){
-	var charsLeft = commentLimit - $("#commentsArea")[0].value.length;
-	
-	if(charsLeft < 0){
-		$("#commentsArea")[0].value = $("#commentsArea")[0].value.substring(0,commentLimit);
-	}else if(charsLeft < 20){
-		$("#charsLeft").html(charsLeft);
-		$("#charsLeft").css("color","#ff0000");
-		$("#charsLeft").css("font-weight","bold");
-	}else{
-		$("#charsLeft").html(charsLeft);
-		$("#charsLeft").css("color","#000000");
-	}
+    var charsLeft = commentLimit - $("#commentsArea")[0].value.length;
+
+    if(charsLeft < 0){
+        $("#commentsArea")[0].value = $("#commentsArea")[0].value.substring(0,commentLimit);
+    }else if(charsLeft < 20){
+        $("#charsLeft").html(charsLeft);
+        $("#charsLeft").css("color","#ff0000");
+        $("#charsLeft").css("font-weight","bold");
+    }else{
+        $("#charsLeft").html(charsLeft);
+        $("#charsLeft").css("color","#000000");
+    }
 
 }
 
 function isNumber(value){
-	var isNumber = true;
-	var validNumbers = "9876543210";
-	for(var i=0; i<value.length; i++){
-		if(validNumbers.indexOf(value.charAt(i)) == -1){
-			isNumber = false;
-			break;
-		}
-	}
+    var isNumber = true;
+    var validNumbers = "9876543210";
+    for(var i=0; i<value.length; i++){
+        if(validNumbers.indexOf(value.charAt(i)) == -1){
+            isNumber = false;
+            break;
+        }
+    }
 
-	return isNumber;
+    return isNumber;
 }
 
 function trim(stringToTrim) {
-	return stringToTrim.replace(/^\s+|\s+$/g,"");
+    return stringToTrim.replace(/^\s+|\s+$/g,"");
 }
 
 function clearPriceInfo(index) {
-	$priceInpElement = jQuery(document.getElementById('product_price_' + index));
-	$priceSpnElement = jQuery(document.getElementById('span_price_' + index));
-	$productMsgEl = jQuery(document.getElementById('product_msg_'+index));
-	$priceInpElement.text("");
-	$priceSpnElement.text("");
-	$productMsgEl.text("");
+    $priceInpElement = jQuery(document.getElementById('product_price_' + index));
+    $priceSpnElement = jQuery(document.getElementById('span_price_' + index));
+    $productMsgEl = jQuery(document.getElementById('product_msg_'+index));
+    $priceInpElement.text("");
+    $priceSpnElement.text("");
+    $productMsgEl.text("");
 }
 
 function getProductPrice(el) {
 
-	var $el = jQuery(el),
-		url = "http://www.kerussods.com/ajax_controller.php?action=get_product_price_v1&kdssid=<?php echo $_GET['kdssid'];?>",
-		accountId = document.getElementById('accounts_number').value,
-		rowNum = $el[0].dataset['index'],
-		priceLvl = '<?=$_SESSION['price_level']?>',
-		$productElement = jQuery(document.getElementById('product_name_' + rowNum)),
-		prodSelIndx = $productElement[0].selectedIndex,
-		sizeSelIndx = $el[0].selectedIndex,
-		sizeText = $el[0][sizeSelIndx].text,
-		productCode = $productElement[0][prodSelIndx].value,
-		productModel = jQuery.trim($productElement[0][prodSelIndx].text.split('/')[0]);
-		
-		url += "&product_size="+sizeText+"&product_code="+productModel+"&accounts_number="+accountId;
-		clearPriceInfo(rowNum);
+    var $el = jQuery(el),
+        url = "http://www.kerussods.com/ajax_controller.php?action=get_product_price_v1&kdssid=<?php echo $_GET['kdssid'];?>",
+        accountId = document.getElementById('accounts_number').value,
+        rowNum = $el[0].dataset['index'],
+        priceLvl = '<?=$_SESSION['price_level']?>',
+        $productElement = jQuery(document.getElementById('product_name_' + rowNum)),
+        prodSelIndx = $productElement[0].selectedIndex,
+        sizeSelIndx = $el[0].selectedIndex,
+        sizeText = $el[0][sizeSelIndx].text,
+        productCode = $productElement[0][prodSelIndx].value,
+        productModel = jQuery.trim($productElement[0][prodSelIndx].text.split('/')[0]);
 
-		jQuery.ajax({
-			url: url,
-			dataType: 'json',
-			data: {row: rowNum, acctNumber: accountId, priceLvl: priceLvl},
-			success: function(data){
-				var $inpPriceEl = jQuery(document.getElementById('product_price_'+data.row)),
-					$spnPriceEl = jQuery(document.getElementById('span_price_'+data.row)),
-					$productMsgEl = jQuery(document.getElementById('product_msg_'+data.row));
+        url += "&product_size="+sizeText+"&product_code="+productModel+"&accounts_number="+accountId;
+        clearPriceInfo(rowNum);
 
-				if (typeof data.discount !== 'undefined' && data.discount !== null && 
-					typeof data.discount.msg !== 'undefined' && data.discount.msg !== null &&
-					typeof data.discount.price !== 'undefined' && data.discount.price !== null) {
+        jQuery.ajax({
+            url: url,
+            dataType: 'json',
+            data: {row: rowNum, acctNumber: accountId, priceLvl: priceLvl},
+            success: function(data){
+                var $inpPriceEl = jQuery(document.getElementById('product_price_'+data.row)),
+                    $spnPriceEl = jQuery(document.getElementById('span_price_'+data.row)),
+                    $productMsgEl = jQuery(document.getElementById('product_msg_'+data.row));
 
-					$inpPriceEl[0].value = data.discount.price;
-					$spnPriceEl.text(data.discount.price);
-					$productMsgEl.text(data.discount.msg);
-				} else {
-					$inpPriceEl[0].value = data.results;
-					$spnPriceEl.text(data.results);
-				}
-				
-			}});
+                if (typeof data.discount !== 'undefined' && data.discount !== null &&
+                    typeof data.discount.msg !== 'undefined' && data.discount.msg !== null &&
+                    typeof data.discount.price !== 'undefined' && data.discount.price !== null) {
+
+                    $inpPriceEl[0].value = data.discount.price;
+                    $spnPriceEl.text(data.discount.price);
+                    $productMsgEl.text(data.discount.msg);
+                } else {
+                    $inpPriceEl[0].value = data.results;
+                    $spnPriceEl.text(data.results);
+                }
+
+            }});
 }
 
 function setOnHand(){
-	var sizeText = null;
-	var productCode = arguments[1];
-	var index = arguments[0];
-	if(arguments.length == 3){
-		sizeText = arguments[2];
-	}else{
-		var sizeNode = document.forms[0].elements['product_size_'+index];
-		sizeText = sizeNode[sizeNode.selectedIndex].text;
-	}
-	var spanOnhandId = "onhand_"+index;
+    var sizeText = null;
+    var productCode = arguments[1];
+    var index = arguments[0];
+    if(arguments.length == 3){
+        sizeText = arguments[2];
+    }else{
+        var sizeNode = document.forms[0].elements['product_size_'+index];
+        sizeText = sizeNode[sizeNode.selectedIndex].text;
+    }
+    var spanOnhandId = "onhand_"+index;
 
 
 dojo.xhrGet({
     <?php if($_SERVER['SERVER_NAME'] == 'localhost') {?>
-		url:"http://localhost/kds/ajax_controller.php?action=get_onhand&size="+sizeText+"&pCode="+productCode+"&kdssid=<?php echo $_GET['kdssid'];?>",
+        url:"http://localhost/kds/ajax_controller.php?action=get_onhand&size="+sizeText+"&pCode="+productCode+"&kdssid=<?php echo $_GET['kdssid'];?>",
     <?php }else{ ?>
-		url:"http://www.kerussods.com/ajax_controller.php?action=get_onhand&size="+sizeText+"&pCode="+productCode+"&kdssid=<?php echo $_GET['kdssid'];?>",
+        url:"http://www.kerussods.com/ajax_controller.php?action=get_onhand&size="+sizeText+"&pCode="+productCode+"&kdssid=<?php echo $_GET['kdssid'];?>",
     <?php } ?>
 
-		handleAs: "text",//
+        handleAs: "text",//
 
-		content:{"spanOnhandId":spanOnhandId},
+        content:{"spanOnhandId":spanOnhandId},
 
-		load:function(response, ioArgs){
+        load:function(response, ioArgs){
 
-		var onhandNode = dojo.byId(spanOnhandId);
-		var quantity = (parseInt(trim(response)) < 20)? "<font color='red'>"+trim(response)+"</font>" : trim(response);
+        var onhandNode = dojo.byId(spanOnhandId);
+        var quantity = (parseInt(trim(response)) < 20)? "<font color='red'>"+trim(response)+"</font>" : trim(response);
 
-		onhandNode.innerHTML=quantity;
-	},
+        onhandNode.innerHTML=quantity;
+    },
 
-	error: function(response){
-		dojo.byId("statusMsg").innerHTML =
-		"An error occurred, with response: " + response;
-		alert(response);
-	}
+    error: function(response){
+        dojo.byId("statusMsg").innerHTML =
+        "An error occurred, with response: " + response;
+        alert(response);
+    }
 
-	});
+    });
 
 }
 
@@ -301,68 +301,68 @@ dojo.byId(spanOnhandId).innerHTML = "";
 clearPriceInfo(index);
 dojo.xhrGet({
     <?php if($_SERVER['SERVER_NAME'] == 'localhost') {?>
-		url:"http://localhost/kds/ajax_controller.php?action=get_sizes&pCode="+product_code+"&kdssid=<?php echo $_GET['kdssid'];?>",
+        url:"http://localhost/kds/ajax_controller.php?action=get_sizes&pCode="+product_code+"&kdssid=<?php echo $_GET['kdssid'];?>",
     <?php }else{ ?>
-		url:"http://www.kerussods.com/ajax_controller.php?action=get_sizes&pCode="+product_code+"&kdssid=<?php echo $_GET['kdssid'];?>",
+        url:"http://www.kerussods.com/ajax_controller.php?action=get_sizes&pCode="+product_code+"&kdssid=<?php echo $_GET['kdssid'];?>",
     <?php } ?>
 
-		handleAs: "json",// IMPORTANT: tells Dojo to automatically parse the HTTP response into a JSON object
+        handleAs: "json",// IMPORTANT: tells Dojo to automatically parse the HTTP response into a JSON object
 
-		content:{"productName":formElement.name, "product_code":product_code,"index":index},
+        content:{"productName":formElement.name, "product_code":product_code,"index":index},
 
-		load:function(request, ioArgs){
+        load:function(request, ioArgs){
 
-		var selSizeName = ioArgs.args.content.productName.replace("name","size");
-		var selProductName = ioArgs.args.content.productName;
-		var selSizes = dojo.byId(selSizeName);
-		selSizes.disabled=false;
-		//Added to make work in IE
-		selSizes.onchange=function(){getProductPrice(this);setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code);};
+        var selSizeName = ioArgs.args.content.productName.replace("name","size");
+        var selProductName = ioArgs.args.content.productName;
+        var selSizes = dojo.byId(selSizeName);
+        selSizes.disabled=false;
+        //Added to make work in IE
+        selSizes.onchange=function(){getProductPrice(this);setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code);};
 
 
-		for(i=selSizes.options.length; i>0; i--){
-			selSizes.remove(i-1);
-		}
+        for(i=selSizes.options.length; i>0; i--){
+            selSizes.remove(i-1);
+        }
 
-		if(request.arrSizes.length > 1){
-			var sizeDefaultOption = document.createElement("OPTION");
-			sizeDefaultOption.value = "0";
-			sizeDefaultOption.text = "Select Size";
-			try
-			{
-				selSizes.add(sizeDefaultOption); //IE
-			}catch (ex){
-				selSizes.add(sizeDefaultOption, null); //Firefox et autres
-			}
-		}
-		for(i=0; i<request.arrSizes.length; i++){
+        if(request.arrSizes.length > 1){
+            var sizeDefaultOption = document.createElement("OPTION");
+            sizeDefaultOption.value = "0";
+            sizeDefaultOption.text = "Select Size";
+            try
+            {
+                selSizes.add(sizeDefaultOption); //IE
+            }catch (ex){
+                selSizes.add(sizeDefaultOption, null); //Firefox et autres
+            }
+        }
+        for(i=0; i<request.arrSizes.length; i++){
 
-			 var currentOption = document.createElement("OPTION");
-			 currentOption.setAttribute('value',request.arrSizes[i].id);
-			 currentOption.text = request.arrSizes[i].name;
+             var currentOption = document.createElement("OPTION");
+             currentOption.setAttribute('value',request.arrSizes[i].id);
+             currentOption.text = request.arrSizes[i].name;
 
-			try
-			{
-				selSizes.add(currentOption); //IE
-			}catch (ex){
-				selSizes.add(currentOption, null); //Firefox
-			}
-		}
+            try
+            {
+                selSizes.add(currentOption); //IE
+            }catch (ex){
+                selSizes.add(currentOption, null); //Firefox
+            }
+        }
 
-		if(request.arrSizes.length == 1){
-			setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code,"NA");//Used for NA sizes
-			getProductPrice(document.getElementById('product_size_' + ioArgs.args.content.index));
-		}
+        if(request.arrSizes.length == 1){
+            setOnHand(ioArgs.args.content.index,ioArgs.args.content.product_code,"NA");//Used for NA sizes
+            getProductPrice(document.getElementById('product_size_' + ioArgs.args.content.index));
+        }
 
-	},
+    },
 
-	error: function(response){
-		dojo.byId("statusMsg").innerHTML =
-		"An error occurred, with response: " + response;
-		alert(response);
-	}
+    error: function(response){
+        dojo.byId("statusMsg").innerHTML =
+        "An error occurred, with response: " + response;
+        alert(response);
+    }
 
-	});
+    });
 
 }
 
@@ -371,14 +371,14 @@ function submitAddOrder(){
 var orderIsReady = true;
 
     //International Phone Validation
-	var CountrySelectedIndex = document.forms[0].customer_country.selectedIndex;
+    var CountrySelectedIndex = document.forms[0].customer_country.selectedIndex;
     if( document.forms[0].customer_country.options[CountrySelectedIndex].value != '1#United States' ){
-		if(document.forms[0].customer_intl_phone.value.length == 0){
-			alert("Missing value found for a International Phone Number.  \n Please fix field value and then re-submit.\nReminder: All International orders now require a phone number for delivery.");
-			document.forms[0].customer_intl_phone.focus();
-			orderIsReady = false;
-			return false;
-		}
+        if(document.forms[0].customer_intl_phone.value.length == 0){
+            alert("Missing value found for a International Phone Number.  \n Please fix field value and then re-submit.\nReminder: All International orders now require a phone number for delivery.");
+            document.forms[0].customer_intl_phone.focus();
+            orderIsReady = false;
+            return false;
+        }
     }
 
     //Customer Name Validation
@@ -426,44 +426,44 @@ var orderIsReady = true;
     var orderSize = parseInt(document.forms[0].order_size.value);
     for(i=0; i<document.forms[0].elements.length; i++){
 
-    	var elName = document.forms[0].elements[i];
-    	var select = null;
-    	if(document.forms[0].elements[i].type.toLowerCase().indexOf("select") > -1){
-    		select = document.forms[0].elements[i];
-    	}
+        var elName = document.forms[0].elements[i];
+        var select = null;
+        if(document.forms[0].elements[i].type.toLowerCase().indexOf("select") > -1){
+            select = document.forms[0].elements[i];
+        }
 
-    	if(elName.name.indexOf("product_quantity_") > -1 ||
+        if(elName.name.indexOf("product_quantity_") > -1 ||
            elName.name.indexOf("product_size_") > -1 ||
            elName.name.indexOf("product_name_") > -1 ){
 
-			if(elName.name.indexOf("product_quantity_") > -1){
-				if( elName.value.length == 0){
-					alert("A product is missing a value for quantity. Order cannot be submitted yet.");
-					orderIsReady = false;
-					return false;
-				}
+            if(elName.name.indexOf("product_quantity_") > -1){
+                if( elName.value.length == 0){
+                    alert("A product is missing a value for quantity. Order cannot be submitted yet.");
+                    orderIsReady = false;
+                    return false;
+                }
 
-				if( !isNumber(elName.value) ){
-					alert("A quantity value is not a number. Order cannot be submitted yet.");
-					orderIsReady = false;
-					return false;
-				}
+                if( !isNumber(elName.value) ){
+                    alert("A quantity value is not a number. Order cannot be submitted yet.");
+                    orderIsReady = false;
+                    return false;
+                }
 
-				continue;
-			}
+                continue;
+            }
 
-        	if(select.options.selectedIndex == 0){
-        		if(elName.name.toLowerCase().indexOf("product_size_") > -1 && parseInt(elName.value) == 0){
-            		alert("A size is missing for one of the products. Order cannot be submitted yet.");
-					orderIsReady = false;
-					return false;
-        		}
-        		if(elName.name.toLowerCase().indexOf("product_name_") > -1){
-            		alert("A product has not been selected from the list, please. Order cannot be submitted yet.");
-					orderIsReady = false;
-					return false;
-        		}
-        	}
+            if(select.options.selectedIndex == 0){
+                if(elName.name.toLowerCase().indexOf("product_size_") > -1 && parseInt(elName.value) == 0){
+                    alert("A size is missing for one of the products. Order cannot be submitted yet.");
+                    orderIsReady = false;
+                    return false;
+                }
+                if(elName.name.toLowerCase().indexOf("product_name_") > -1){
+                    alert("A product has not been selected from the list, please. Order cannot be submitted yet.");
+                    orderIsReady = false;
+                    return false;
+                }
+            }
         }
      }
 
@@ -479,86 +479,86 @@ var orderIsReady = true;
     }
 
     if(orderIsReady){
-    	document.forms[0].submit();
+        document.forms[0].submit();
     }
 
 }//end of submitAddOrder function
 
 function addItemRow(){
-	var prodTable = dojo.byId("productTable");
-	var tbod = dojo.byId("productTable").tBodies[0];
-	var newRow = document.createElement("TR");
-	var tdQuantity = document.createElement("TD");
-	var tdX = document.createElement("TD");
-	var tdMsg = document.createElement("TD");
-	var tdOnHand = document.createElement("TD");
-	var tdPrice = document.createElement("TD");
-	var tdSize = document.createElement("TD");
-	var tdProducts = document.createElement("TD");
-	var productsSelectNode = prodTable.tBodies[0].rows[0].cells[5].childNodes[0].cloneNode(true);
-	var newRowNum = prodTable.rows.length-2;
+    var prodTable = dojo.byId("productTable");
+    var tbod = dojo.byId("productTable").tBodies[0];
+    var newRow = document.createElement("TR");
+    var tdQuantity = document.createElement("TD");
+    var tdX = document.createElement("TD");
+    var tdMsg = document.createElement("TD");
+    var tdOnHand = document.createElement("TD");
+    var tdPrice = document.createElement("TD");
+    var tdSize = document.createElement("TD");
+    var tdProducts = document.createElement("TD");
+    var productsSelectNode = prodTable.tBodies[0].rows[0].cells[5].childNodes[0].cloneNode(true);
+    var newRowNum = prodTable.rows.length-2;
 
-	var order_size = dojo.byId("order_size");
-	order_size.value = newRowNum + 1;
+    var order_size = dojo.byId("order_size");
+    order_size.value = newRowNum + 1;
 
-	tdX.setAttribute("align","center");
-	tdX.innerText = " x ";
+    tdX.setAttribute("align","center");
+    tdX.innerText = " x ";
 
-	tdMsg.setAttribute("align","center");
-	tdMsg.setAttribute("id","product_msg_"+newRowNum);
+    tdMsg.setAttribute("align","center");
+    tdMsg.setAttribute("id","product_msg_"+newRowNum);
 
-	productsSelectNode.setAttribute("name","product_name_"+newRowNum);
-	productsSelectNode.setAttribute("id","product_name_"+newRowNum);
-	tdProducts.appendChild(productsSelectNode);
-	tdProducts.setAttribute("align","center");
+    productsSelectNode.setAttribute("name","product_name_"+newRowNum);
+    productsSelectNode.setAttribute("id","product_name_"+newRowNum);
+    tdProducts.appendChild(productsSelectNode);
+    tdProducts.setAttribute("align","center");
 
-	newRow.setAttribute("className","tableRowColor");
-	newRow.setAttribute("class","tableRowColor");
-	tdQuantity.setAttribute("class","mediumBoldText");
-	tdQuantity.setAttribute("align","center");
+    newRow.setAttribute("className","tableRowColor");
+    newRow.setAttribute("class","tableRowColor");
+    tdQuantity.setAttribute("class","mediumBoldText");
+    tdQuantity.setAttribute("align","center");
 
-	var textQuantity = document.createElement("INPUT");
-	textQuantity.setAttribute("name","product_quantity_"+newRowNum);
-	textQuantity.setAttribute("size","2");
-	tdQuantity.appendChild(textQuantity);
+    var textQuantity = document.createElement("INPUT");
+    textQuantity.setAttribute("name","product_quantity_"+newRowNum);
+    textQuantity.setAttribute("size","2");
+    tdQuantity.appendChild(textQuantity);
 
-	var spanPrice = document.createElement("SPAN");
-	var hidPrice = document.createElement("INPUT");
-	hidPrice.setAttribute("type", "hidden");
-	hidPrice.setAttribute("id","product_price_"+newRowNum);
-	hidPrice.setAttribute("name","product_price_"+newRowNum);
-	hidPrice.setAttribute("value","");
-	spanPrice.setAttribute("id","span_price_"+newRowNum);
-	tdPrice.setAttribute("align","center");
-	tdPrice.appendChild(spanPrice);
-	tdPrice.appendChild(hidPrice);
+    var spanPrice = document.createElement("SPAN");
+    var hidPrice = document.createElement("INPUT");
+    hidPrice.setAttribute("type", "hidden");
+    hidPrice.setAttribute("id","product_price_"+newRowNum);
+    hidPrice.setAttribute("name","product_price_"+newRowNum);
+    hidPrice.setAttribute("value","");
+    spanPrice.setAttribute("id","span_price_"+newRowNum);
+    tdPrice.setAttribute("align","center");
+    tdPrice.appendChild(spanPrice);
+    tdPrice.appendChild(hidPrice);
 
-	var spanOnHand = document.createElement("SPAN");
-	spanOnHand.setAttribute("id","onhand_"+newRowNum);
-	tdOnHand.setAttribute("align","center");
-	tdOnHand.appendChild(spanOnHand);
+    var spanOnHand = document.createElement("SPAN");
+    spanOnHand.setAttribute("id","onhand_"+newRowNum);
+    tdOnHand.setAttribute("align","center");
+    tdOnHand.appendChild(spanOnHand);
 
-	var selectSize = document.createElement("SELECT");
-	selectSize.setAttribute("id","product_size_"+newRowNum);
-	selectSize.setAttribute("name","product_size_"+newRowNum);
-	selectSize.setAttribute("disabled","true");
-	selectSize.setAttribute("data-index",newRowNum);
-	selectSize.setAttribute("onChange","getProductPrice(this);setOnHand("+newRowNum+")");
-	var sizeOption = document.createElement("OPTION");
-	sizeOption.value = "0";
-	sizeOption.text = "Select Size";
-	selectSize.appendChild(sizeOption);
-	tdSize.appendChild(selectSize);
-	tdSize.setAttribute("align","center");
+    var selectSize = document.createElement("SELECT");
+    selectSize.setAttribute("id","product_size_"+newRowNum);
+    selectSize.setAttribute("name","product_size_"+newRowNum);
+    selectSize.setAttribute("disabled","true");
+    selectSize.setAttribute("data-index",newRowNum);
+    selectSize.setAttribute("onChange","getProductPrice(this);setOnHand("+newRowNum+")");
+    var sizeOption = document.createElement("OPTION");
+    sizeOption.value = "0";
+    sizeOption.text = "Select Size";
+    selectSize.appendChild(sizeOption);
+    tdSize.appendChild(selectSize);
+    tdSize.setAttribute("align","center");
 
-	newRow.appendChild(tdQuantity);
-	newRow.appendChild(tdX);
-	newRow.appendChild(tdPrice);
-	newRow.appendChild(tdSize);
-	newRow.appendChild(tdOnHand);
-	newRow.appendChild(tdProducts);
-	newRow.appendChild(tdMsg);
-	tbod.appendChild(newRow);
+    newRow.appendChild(tdQuantity);
+    newRow.appendChild(tdX);
+    newRow.appendChild(tdPrice);
+    newRow.appendChild(tdSize);
+    newRow.appendChild(tdOnHand);
+    newRow.appendChild(tdProducts);
+    newRow.appendChild(tdMsg);
+    tbod.appendChild(newRow);
 
 }
 </script>
@@ -677,12 +677,12 @@ echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
 <tr class="tableRowColor" >
     <td align=right class="mediumBoldText" >International Phone No.:</td>
     <td align=left class="mediumBoldText" ><?php echo my_draw_input_field('customer_intl_phone','','size=30 maxlength=30'); ?>
-	</td>
+    </td>
  </tr>
 <tr class="tableRowColor" >
     <td align=right class="mediumBoldText" ></td>
     <td align=left class="mediumBoldText" ><span style="font-size:0.75em"><span style="color:red;">NOTE:</span>  International phone numbers are now required for international orders.</span>
-	</td>
+    </td>
  </tr>
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >City:</td>
@@ -707,13 +707,13 @@ echo my_draw_hidden_field('rep6_code',$arrRepCodes[$reps['sales_mgr']]);
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText" >Your Order Number:</td>
     <td align=left class="mediumBoldText" ><?php echo my_draw_input_field('customer_order_no','','size=30'); ?><br>
-	</td>
+    </td>
 </tr>
 <tr class="tableRowColor" >
     <td align=right class="mediumBoldText" ></td>
     <td align=left class="mediumBoldText" ><span style="font-size:0.75em"><span style="color:red;">NOTE:</span> This Order Number is very important now since it will be <br>added to the PO Number on your Invoices to aid in your book keeping.</span>
-	<br><br>
-	</td>
+    <br><br>
+    </td>
  </tr>
 
 <tr class="tableRowColor">
@@ -794,7 +794,7 @@ C O M M E N T S
 <tr class="tableRowColor">
 <td colspan=3 align="center">
 <div style="margin:5px;">
-	<strong>Comments Character Limit: <span id="charsLimit"></span> characters</strong> (<span id="charsLeft" style="" ></span> characters left)
+    <strong>Comments Character Limit: <span id="charsLimit"></span> characters</strong> (<span id="charsLeft" style="" ></span> characters left)
 </div>
 </td>
 </tr>
@@ -884,12 +884,12 @@ if( $action == 'ord_mod_start' ){
                 }
 
 
-				$arrStateNames = array();
-				$states_query = my_db_query("SELECT state_mapping_shortName AS ShortName,state_mapping_longName
-				AS LongName FROM `state_mapping` WHERE 1");
-				while($states = my_db_fetch_array($states_query) ){
-					$arrStateNames[ strtoupper($states['LongName']) ] = strtoupper($states['ShortName']);
-				}
+                $arrStateNames = array();
+                $states_query = my_db_query("SELECT state_mapping_shortName AS ShortName,state_mapping_longName
+                AS LongName FROM `state_mapping` WHERE 1");
+                while($states = my_db_fetch_array($states_query) ){
+                    $arrStateNames[ strtoupper($states['LongName']) ] = strtoupper($states['ShortName']);
+                }
 
 
 
@@ -901,38 +901,38 @@ if( $action == 'ord_mod_start' ){
                 $isRush = ($isRush == "on")? 1 : 0 ;
                 $rushFee = ($isRush > 0)?"5":"0";
 
-				if($shortShippingState = array_key_exists(strtoupper(trim($customer_state)), $arrStateNames)){
-					$shortShippingState = $arrStateNames[strtoupper(trim($customer_state))];
-				}else{
-					$shortShippingState = $customer_state;
-				}
+                if($shortShippingState = array_key_exists(strtoupper(trim($customer_state)), $arrStateNames)){
+                    $shortShippingState = $arrStateNames[strtoupper(trim($customer_state))];
+                }else{
+                    $shortShippingState = $customer_state;
+                }
 
 
                 $ord_add_sql = sprintf("INSERT INTO `orders` (`customer_name` ,
                 `customer_address1` , `customer_address2`, `customer_intl_phone`
-				,`customer_city` , `customer_state` ,
+                ,`customer_city` , `customer_state` ,
                 `customer_zip` , `customer_country` , `customer_country_number` , `customer_shipping_method` ,
                 `customer_shipping_id` ,
                 `customer_invoice_number` , `purchase_date` , `accounts_number`,
-                `purchase_order_number` , 
-                `order_comments`, 
+                `purchase_order_number` ,
+                `order_comments`,
                 `order_status`,
                 `dropship_fee`,
-                `handling_fee`, 
-                `isRush`, 
-                `rush_fee`, 
+                `handling_fee`,
+                `isRush`,
+                `rush_fee`,
                 `misc_desc`,
-                `rep1_name`, 
-                `rep1_code`, 
-                `rep2_name`, 
-                `rep2_code`, 
-                `rep3_name`, 
-                `rep3_code`, 
-                `rep4_name`, 
-                `rep4_code`, 
-                `rep5_name`, 
-                `rep5_code`, 
-                `rep6_name`, 
+                `rep1_name`,
+                `rep1_code`,
+                `rep2_name`,
+                `rep2_code`,
+                `rep3_name`,
+                `rep3_code`,
+                `rep4_name`,
+                `rep4_code`,
+                `rep5_name`,
+                `rep5_code`,
+                `rep6_name`,
                 `rep6_code`) VALUES
                 (%s, %s, %s, %s, %s, %s, %s, %s, %d, %s, %d, %s, '".date("y-m-d h:i:s")."', %s, %s, %s, %d, %01.2f,%01.2f,%d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 "'".str_replace(",","",mysql_real_escape_string($customer_name))."'",
@@ -952,7 +952,7 @@ if( $action == 'ord_mod_start' ){
                 "'".str_replace(",","",mysql_real_escape_string($order_comments))."'",
                 $fees['order_status_id'],
                 $arrFees['Drop Ship'],
-                $arrFees['Handling'], 
+                $arrFees['Handling'],
                 $isRush,
                 $rushFee,
                 "''",
@@ -970,7 +970,7 @@ if( $action == 'ord_mod_start' ){
                 "'".mysql_real_escape_string($rep6_code)."'" );
 
 
-	//echo "accounts_number: ".$accounts_number ."<br><br>";
+    //echo "accounts_number: ".$accounts_number ."<br><br>";
 
                   my_db_query($ord_add_sql);
 
@@ -996,25 +996,25 @@ if( $action == 'ord_mod_start' ){
                 for($i=0; $i<$order_size; $i++){
 
 
-		            $start = strpos($updateModel['order_product_name'],"[") + 2;
-		            $length = strpos($arrInventory[$_POST['product_name_'.$i]],"]")-$start;
-		            $productModel = trim(substr($arrInventory[$_POST['product_name_'.$i]],$start,$length));
-		            $generic_size = $arrSizes[$_POST['product_size_'.$i]];
-		            $category = trim(substr($productModel, 0, 3));
+                    $start = strpos($updateModel['order_product_name'],"[") + 2;
+                    $length = strpos($arrInventory[$_POST['product_name_'.$i]],"]")-$start;
+                    $productModel = trim(substr($arrInventory[$_POST['product_name_'.$i]],$start,$length));
+                    $generic_size = $arrSizes[$_POST['product_size_'.$i]];
+                    $category = trim(substr($productModel, 0, 3));
 
                     $ord_add_product_sql = sprintf("INSERT INTO
                     `orders_products` (`order_id` , `order_product_quantity` ,
-					`order_product_size` , `order_product_name`,
-					`order_product_model`, `order_product_charge`
+                    `order_product_size` , `order_product_name`,
+                    `order_product_model`, `order_product_charge`
                      )VALUES (%d, %d, %s, %s, %s, %f)", $ord_add_insert_id,
                      $_POST['product_quantity_'.$i],
                     "'".strtoupper($category . " - " .mysql_real_escape_string($arrSizes[$_POST['product_size_'.$i]]))."'",
                     "'".mysql_real_escape_string(trim($arrInventory[$_POST['product_name_'.$i]]))."'",
-					"'".$productModel."'",
-					$_POST['product_price_'.$i] );
+                    "'".$productModel."'",
+                    $_POST['product_price_'.$i] );
 
                      my_db_query($ord_add_product_sql);
-	//echo $ord_add_product_sql ."<br><br>";
+    //echo $ord_add_product_sql ."<br><br>";
 
                 }
 

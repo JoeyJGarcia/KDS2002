@@ -77,10 +77,10 @@ if($_GET['action'] != 'writeOrders'  ){
 //*************************************************************************
 //**************************** MAIN MENU - Begin **************************
 //*************************************************************************
-	if( !isset($_SESSION['rep_group']) || $_SESSION['rep_group'] == 0)
-	  $repGroupsClause = "";
-	else
-	  $repGroupsClause = "AND a.accounts_rep_group=".$_SESSION['rep_group'];
+    if( !isset($_SESSION['rep_group']) || $_SESSION['rep_group'] == 0)
+      $repGroupsClause = "";
+    else
+      $repGroupsClause = "AND a.accounts_rep_group=".$_SESSION['rep_group'];
 
     $arrNewOrders = array();
     $new_orders_sql = "SELECT a.accounts_username, COUNT(o.order_status) AS NewOrders
@@ -195,23 +195,23 @@ cal2TO.time_comp = false;
 //************* Build ORDERS INFO ********************
 //**********************************************************
 
-		$arrShippingAlias = array();
-		$shipping_alias_query = my_db_query("SELECT shipping_alias, shipping_id FROM `shipping` WHERE 1");
-		while($arr_shipping_alias = my_db_fetch_array($shipping_alias_query) ){
-			$arrShippingAlias[ $arr_shipping_alias['shipping_id'] ] = $arr_shipping_alias['shipping_alias'];
-		}
+        $arrShippingAlias = array();
+        $shipping_alias_query = my_db_query("SELECT shipping_alias, shipping_id FROM `shipping` WHERE 1");
+        while($arr_shipping_alias = my_db_fetch_array($shipping_alias_query) ){
+            $arrShippingAlias[ $arr_shipping_alias['shipping_id'] ] = $arr_shipping_alias['shipping_alias'];
+        }
 
-		$arrPaymentAlias = array();
-		$payment_alias_query = my_db_query("SELECT term_alias, term_code FROM `term_codes` WHERE 1");
-		while($arr_payment_alias = my_db_fetch_array($payment_alias_query) ){
-			$arrPaymentAlias[ $arr_payment_alias['term_code'] ] = $arr_payment_alias['term_alias'];
-		}
+        $arrPaymentAlias = array();
+        $payment_alias_query = my_db_query("SELECT term_alias, term_code FROM `term_codes` WHERE 1");
+        while($arr_payment_alias = my_db_fetch_array($payment_alias_query) ){
+            $arrPaymentAlias[ $arr_payment_alias['term_code'] ] = $arr_payment_alias['term_alias'];
+        }
 
-		$arrStateNames = array();
-		$states_query = my_db_query("SELECT state_mapping_shortName AS ShortName,state_mapping_longName AS LongName FROM `state_mapping` WHERE 1");
-		while($states = my_db_fetch_array($states_query) ){
-			$arrStateNames[ strtoupper($states['LongName']) ] = strtoupper($states['ShortName']);
-		}
+        $arrStateNames = array();
+        $states_query = my_db_query("SELECT state_mapping_shortName AS ShortName,state_mapping_longName AS LongName FROM `state_mapping` WHERE 1");
+        while($states = my_db_fetch_array($states_query) ){
+            $arrStateNames[ strtoupper($states['LongName']) ] = strtoupper($states['ShortName']);
+        }
 
 
         $arrRepGroupNames = array();
@@ -246,7 +246,7 @@ cal2TO.time_comp = false;
             }
 
 
-		$boolMappingIsMissing = false;
+        $boolMappingIsMissing = false;
 
 
         $orderInfo_sql = "SELECT o.order_id as oID,
@@ -261,7 +261,7 @@ cal2TO.time_comp = false;
         o.customer_zip AS Ship_Zip,
         o.customer_country AS Ship_Country,
         o.customer_country_number AS Ship_Country_Number,
-		o.customer_invoice_number AS CustInvoiceNumber,
+        o.customer_invoice_number AS CustInvoiceNumber,
         a.accounts_company_name AS Billing_Name,
         a.accounts_address1 AS Billing_Address1,
         a.accounts_address2 AS Billing_Address2,
@@ -284,18 +284,17 @@ cal2TO.time_comp = false;
         o.handling_fee AS Handling_Fee,
         o.shipping_charge AS Shipping_Fee,
         o.misc_fee AS Misc_Fee,
-        o.customer_invoice_number AS coID, 
-        o.rep1_code as REP1, 
-        o.rep2_code AS REP2, 
-        o.rep3_code AS REP3, 
-        o.rep4_code AS REP4, 
-        o.rep5_code AS REP5, 
+        o.customer_invoice_number AS coID,
+        o.rep1_code as REP1,
+        o.rep2_code AS REP2,
+        o.rep3_code AS REP3,
+        o.rep4_code AS REP4,
+        o.rep5_code AS REP5,
         o.rep6_code AS REP6
         FROM orders o, accounts a
-        WHERE $whereClause AND o.accounts_number=a.accounts_number  
+        WHERE $whereClause AND o.accounts_number=a.accounts_number
         ORDER BY oID ASC";
 
-//echo $orderInfo_sql."<p>";
 
         $inClause = "";
         $repRate = "2.00";
@@ -305,34 +304,34 @@ cal2TO.time_comp = false;
         if( mysql_num_rows($orderInfo_query)> 0 ){
         while($orderInfo = my_db_fetch_array($orderInfo_query) ){
 
-        	$shippingState = $orderInfo['Ship_State'];
-        	$billingState = $orderInfo['Billing_State'];
+            $shippingState = $orderInfo['Ship_State'];
+            $billingState = $orderInfo['Billing_State'];
 
-        	if( strlen( trim($orderInfo['Ship_State']) ) == 2 ){
-        		$shippingState = trim($orderInfo['Ship_State']);
-        	}else{
-	        	if(array_key_exists(strtoupper($orderInfo['Ship_State']), $arrStateNames) ){
-	          		$shippingState = $arrStateNames[strtoupper($orderInfo['Ship_State'])];
-	        	}else{
-	        		echo "<font color=red>";
-					echo "Mapping not found for Shipping State (".$orderInfo['Ship_State']." / ".$orderInfo['oID'].")";
-					echo "</font><br>";
-					$boolMappingIsMissing = true;
-	        	}
-        	}
+            if( strlen( trim($orderInfo['Ship_State']) ) == 2 ){
+                $shippingState = trim($orderInfo['Ship_State']);
+            }else{
+                if(array_key_exists(strtoupper($orderInfo['Ship_State']), $arrStateNames) ){
+                      $shippingState = $arrStateNames[strtoupper($orderInfo['Ship_State'])];
+                }else{
+                    echo "<font color=red>";
+                    echo "Mapping not found for Shipping State (".$orderInfo['Ship_State']." / ".$orderInfo['oID'].")";
+                    echo "</font><br>";
+                    $boolMappingIsMissing = true;
+                }
+            }
 
-        	if( strlen( trim($orderInfo['Billing_State']) ) == 2 ){
-        		$billingState = trim($orderInfo['Billing_State']);
-        	}else{
-	        	if(array_key_exists(strtoupper($orderInfo['Billing_State']), $arrStateNames) ){
-	          		$billingState = $arrStateNames[strtoupper($orderInfo['Billing_State'])];
-	        	}else{
-	        		echo "<font color=red>";
-	        		echo "Mapping not found for Billing State (".$orderInfo['Billing_State']." / ".$orderInfo['oID'].")";
-					echo "</font><br>";
-					$boolMappingIsMissing = true;
-	        	}
-	        }
+            if( strlen( trim($orderInfo['Billing_State']) ) == 2 ){
+                $billingState = trim($orderInfo['Billing_State']);
+            }else{
+                if(array_key_exists(strtoupper($orderInfo['Billing_State']), $arrStateNames) ){
+                      $billingState = $arrStateNames[strtoupper($orderInfo['Billing_State'])];
+                }else{
+                    echo "<font color=red>";
+                    echo "Mapping not found for Billing State (".$orderInfo['Billing_State']." / ".$orderInfo['oID'].")";
+                    echo "</font><br>";
+                    $boolMappingIsMissing = true;
+                }
+            }
 
 
             $arrDateTemp = split(" ",$orderInfo['Purchase_Date']);
@@ -452,9 +451,9 @@ cal2TO.time_comp = false;
              echo "Cannot open file ($ordersFilename)";
              exit;
         }else{
-        	if( !chmod("./order_files/".$ordersFilename, 0666)){
+            if( !chmod("./order_files/".$ordersFilename, 0666)){
             echo "Cannot change file permissions for $ordersFilename";
-        	}
+            }
         }
         //****************** KDS Orders Info - Begin **********************
 
@@ -487,9 +486,9 @@ cal2TO.time_comp = false;
         //************** Write ORDERS.XML File **************** End
 
 
-		if( boolMappingIsMissing){
-		echo "<p><strong>Note:</strong><br>Missing Mappings can be eliminated by adding them <a href='".my_href_link("./state_mapping.php")."'>here</a>. <br>Remember Mappings ignore character case.<br>";
-		}
+        if( boolMappingIsMissing){
+        echo "<p><strong>Note:</strong><br>Missing Mappings can be eliminated by adding them <a href='".my_href_link("./state_mapping.php")."'>here</a>. <br>Remember Mappings ignore character case.<br>";
+        }
 
 
         echo "<h3 align=center >".count($arrOrderInfo)." Orders Captured</h3>";
