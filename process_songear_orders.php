@@ -44,7 +44,7 @@ while( $rep_codes = my_db_fetch_array($rep_codes_query) ){
     $arrRepCodes[$rep_codes['rep_name']] = $rep_codes['rep_code'];
 }
 
-$client_folders_sql = "SELECT * FROM accounts WHERE accounts_username in ('songear', 'hooxed')";
+$client_folders_sql = "SELECT * FROM accounts WHERE accounts_username in ('songear','hooxed')";
 $client_folders_query = my_db_query($client_folders_sql);
 
 while($client_folders = my_db_fetch_array($client_folders_query)){
