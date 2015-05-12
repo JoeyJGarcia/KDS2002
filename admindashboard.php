@@ -166,6 +166,7 @@ Super Admin Links
         <li><a href="<?php echo my_href_link('promotions.php'); ?>">Manage Promotions</a>
         <li><a href="<?php echo my_href_link('process_csv_orders.php'); ?>">Process CSV Orders</a>
         <li><a href="<?php echo my_href_link('orderpull_folder.php'); ?>">Create CSV FTP Folder</a>
+        <li><a href="<?php echo my_href_link('reps_repair.php'); ?>">Reps Repair Tool</a>
         <?php } ?>
     </ul>
     </td>

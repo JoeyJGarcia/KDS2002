@@ -175,7 +175,7 @@ function submitOrder ($arrFileContents) {
  * @return (array) An array of the line's order data
  */
 function createOrderArray ($arrOrderLine) {
-    global $accountNumber, $newOrderStatus, $reps, $arrFee, $accountReps;
+    global $accountNumber, $newOrderStatus, $reps, $arrFees, $accountReps, $clientPrefix;
     global $arrCountries, $arrShippingName, $arrShipping, $arrRepCodes, $product_size_adjusted;
 
     $product_size_adjusted = ( strlen(str_replace('"','',$arrOrderLine[13])) > 0 ) ? str_replace('"','',$arrOrderLine[13]) : "NA";
@@ -473,7 +473,7 @@ function printMessage($message, $title='') {
 
 function mailOrderMessage($orderId, $accountNumber) {
     global $output;
-    
+
     if (intval($orderId) > 0) {
         my_mail_order($orderId, $accountNumber);
     }
