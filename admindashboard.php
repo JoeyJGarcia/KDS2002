@@ -154,6 +154,7 @@ Super Admin Links
         <li><a href="<?php echo my_href_link('fees.php'); ?>">Manage Fees</a>
         <li><a href="<?php echo my_href_link('term_codes.php'); ?>">Manage Term Codes</a>
         <li><a href="<?php echo my_href_link('reps.php'); ?>">View Rep Groups</a>
+        <li><a href="<?php echo my_href_link('repcodes_mgr.php'); ?>">Manager Rep Codes</a>
         <li><a href="<?php echo my_href_link('upload_reps.php'); ?>">Upload Reps Lists</a>
         <li><a href="<?php echo my_href_link('admin_reports.php'); ?>">Admin Reports</a>
         <li><a href="<?php echo my_href_link('inventory_populate.php'); ?>">Inventory Populate</a>
