@@ -594,7 +594,11 @@ if( !isset($action)){
 //************************ ORDER ADD FORM *********************************
 //*************************************************************************
 
-    $ord_inventory_sql = "SELECT * FROM products WHERE product_enabled = 1 ORDER BY product_model";
+    if ($_SESSION['userlevel'] != "client") {
+        $ord_inventory_sql = "SELECT * FROM products WHERE product_enabled = 1 AND visible_type in (1, 2) ORDER BY product_model";
+    } else {
+        $ord_inventory_sql = "SELECT * FROM products WHERE product_enabled = 1 AND visible_type = 1 ORDER BY product_model";
+    }
     $ord_inventory_query = my_db_query($ord_inventory_sql);
     $arrInventory[] = array('id' => '0','text' => 'Select Product');
     while($ord_inventory = my_db_fetch_array($ord_inventory_query)){

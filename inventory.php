@@ -1,5 +1,10 @@
 <?php
 require('includes/application_top.php');
+
+//Global Variables
+$arrVisibleTypes[] = array('id'=>1, 'text'=>'DROPSHIPPER ONLY');
+$arrVisibleTypes[] = array('id'=>2, 'text'=>'DROPSHIPPER & ADMIN');
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -45,18 +50,18 @@ require('navigation.php');
 ?>
 <div style="align:center;">
 <div style="float:right;margin-right:15%; border-color:#cococo; border:1px solid #000000; background-color:#cococo;">
-	<div style="background:gray; color:white; ">
-	<strong>Legend:</strong>
-	</div>
-	<div style="background:#f5f5f5;">
-	Gray Row - Disabled product
-	</div>
-	<div style="background:#f5f5f5;">
-	Red Row - Customized product & prices
-	</div>
-	<div  style="background:#f5f5f5;">
-	Gray Sizes - Non-standard product sizes
-	</div>
+    <div style="background:gray; color:white; ">
+    <strong>Legend:</strong>
+    </div>
+    <div style="background:#f5f5f5;">
+    Gray Row - Disabled product
+    </div>
+    <div style="background:#f5f5f5;">
+    Red Row - Customized product & prices
+    </div>
+    <div  style="background:#f5f5f5;">
+    Gray Sizes - Non-standard product sizes
+    </div>
 </div>
 </div>
 <br />
@@ -84,7 +89,7 @@ if( $_GET['action'] == 'inv_add_start' ){
 
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Name:</td>
-<td><?php echo my_draw_input_field('product_name','','size=30'); ?></td>
+<td><?php echo my_draw_input_field('product_name','','size=50'); ?></td>
 </tr>
 
 <tr class="tableRowColor">
@@ -116,6 +121,11 @@ if( $_GET['action'] == 'inv_add_start' ){
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Desc:</td>
 <td><?php echo my_draw_textarea_field('product_desc','soft','40','5'); ?></td>
+</tr>
+
+<tr class="tableRowColor">
+<td align=right class="mediumBoldText">Visibility:</td>
+<td><?php echo my_draw_pull_down_menu('visible_type',$arrVisibleTypes); ?></td>
 </tr>
 
 <tr class="tableFooter">
@@ -155,7 +165,7 @@ if( $_GET['action'] == 'inv_add_start' ){
 
 <tr class="tableRowColor">
 <td align=right class="mediumBoldText">Name:</td>
-<td><?php echo my_draw_input_field('product_name',$inv_mod['product_name'],'size=30'); ?></td>
+<td><?php echo my_draw_input_field('product_name',$inv_mod['product_name'],'size=50'); ?></td>
 </tr>
 
 <tr class="tableRowColor">
@@ -187,6 +197,11 @@ if( $_GET['action'] == 'inv_add_start' ){
 <td><?php echo my_draw_textarea_field('product_desc','soft','40','5',$inv_mod['product_desc']); ?></td>
 </tr>
 
+<tr class="tableRowColor">
+<td align=right class="mediumBoldText">Visibility:</td>
+<td><?php echo my_draw_pull_down_menu('visible_type',$arrVisibleTypes, $inv_mod['visible_type']); ?></td>
+</tr>
+
 <tr class="tableFooter">
     <td colspan="2" align="CENTER">
         <a href="<?php echo my_href_link('inventory.php'); ?>"><?php echo my_image(DIR_WS_IMAGES.'btnCancel.gif','Cancel'); ?></a>
@@ -206,10 +221,10 @@ if( $_GET['action'] == 'inv_add_start' ){
 //*************************************************************************
     if( $_GET['action'] == 'inv_add'  ){
         $strSizes = "";
- 		$arrSzTmp = "";
+         $arrSzTmp = "";
 
         for($i=0; $i<$_POST['CBSizesLength']; $i++){
-          if( isset( $_POST['CBSizesId'.$i] ) ){			
+          if( isset( $_POST['CBSizesId'.$i] ) ){
             $strSizes .= "[".$_POST['CBSizesId'.$i].",".$_POST['CBSizesText'.$i]."]#";
           }
         }
@@ -217,31 +232,32 @@ if( $_GET['action'] == 'inv_add_start' ){
 
         $inv_add_sql = sprintf("INSERT INTO `products` (`product_name` ,
         `product_model` , `product_sizes` , `product_desc` , `product_avail_sizes`,
-        `product_mod_date`)
-        VALUES ('%s', '%s', '%s', '%s', '%s', now())", mysql_real_escape_string($_POST['product_name']),
+        `product_mod_date`, `visible_type`)
+        VALUES ('%s', '%s', '%s', '%s', '%s', now(), %d)", mysql_real_escape_string($_POST['product_name']),
         mysql_real_escape_string($_POST['product_model']),
         mysql_real_escape_string($_POST['product_sizes']),
         mysql_real_escape_string(str_replace("'","",$_POST['product_desc'])),
-        mysql_real_escape_string($strSizes));
+        mysql_real_escape_string($strSizes),
+        $_POST['visible_type']);
         $inv_add_query = my_db_query($inv_add_sql);
-		$pId = mysql_insert_id();
-		
+        $pId = mysql_insert_id();
 
-		$delete_once = true;	
+
+        $delete_once = true;
         for($i=0; $i<$_POST['CBSizesLength']; $i++){
-          if( isset( $_POST['CBSizesId'.$i] ) ){			
-			$arrSzTmp = explode(",", $_POST['CBSizesText'.$i]);
-			
-			if($delete_once){
-				$del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $pId);
-				my_db_query($del_prod_cust_sql);
-				$delete_once = false;
-			}
+          if( isset( $_POST['CBSizesId'.$i] ) ){
+            $arrSzTmp = explode(",", $_POST['CBSizesText'.$i]);
 
-			$prod_cust_sql = sprintf("INSERT INTO products_customized (`customized_price`, 
-			`categories_id`, `product_id`, `absolute_price`, `insert_date`) VALUES (%01.2f, %d, %d, 0, now() )",
-			$arrSzTmp[0], $arrSzTmp[1], $pId);
-			my_db_query($prod_cust_sql);
+            if($delete_once){
+                $del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $pId);
+                my_db_query($del_prod_cust_sql);
+                $delete_once = false;
+            }
+
+            $prod_cust_sql = sprintf("INSERT INTO products_customized (`customized_price`,
+            `categories_id`, `product_id`, `absolute_price`, `insert_date`) VALUES (%01.2f, %d, %d, 0, now() )",
+            $arrSzTmp[0], $arrSzTmp[1], $pId);
+            my_db_query($prod_cust_sql);
           }
         }
 
@@ -259,8 +275,8 @@ if( $_GET['action'] == 'inv_add_start' ){
         $inv_del_sql ="delete from products where product_id=".$_GET['pId'];
         $inv_del_query = my_db_query($inv_del_sql);
 
-		$del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $_GET['pId']);
-		my_db_query($del_prod_cust_sql);
+        $del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $_GET['pId']);
+        my_db_query($del_prod_cust_sql);
 
         if( $inv_del_query == 1){
             echo "<div align=center class=\"success\">Product Deleted Successfully</div>";
@@ -275,7 +291,7 @@ if( $_GET['action'] == 'inv_add_start' ){
         $inv_toggle_sql =sprintf("UPDATE `products` SET `product_enabled` = %d WHERE `product_id`=%d", $_GET['ptoggle'], $_GET['pId']);
         $inv_mod_toggle_query = my_db_query($inv_toggle_sql);
 
- 		if( $inv_mod_toggle_query == 1){
+         if( $inv_mod_toggle_query == 1){
             echo "<div align=center class=\"success\">Product Toggled Successfully</div>";
         }else{
             echo "<div align=center class=\"fail\">Product Not Toggled</div>";
@@ -287,28 +303,28 @@ if( $_GET['action'] == 'inv_add_start' ){
     if( $_GET['action'] == 'inv_mod'  ){
 
         $strSizes = "";
-		$arrSzTmp = "";
-		
+        $arrSzTmp = "";
 
-		$delete_once = true;	
+
+        $delete_once = true;
         for($i=0; $i<$_POST['CBSizesLength']; $i++){
           if( isset( $_POST['CBSizesId'.$i] ) ){
-		  
-			
-            $strSizes .= "[".$_POST['CBSizesId'.$i].",".$_POST['CBSizesText'.$i]."]#";
-			$arrSzTmp = explode(",", $_POST['CBSizesText'.$i]);
-			
-			if($delete_once){
-				$del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $arrSzTmp[2]);
-				my_db_query($del_prod_cust_sql);
-				$delete_once = false;
-//echo $del_prod_cust_sql . "<br>" ;
-			}
 
-			$prod_cust_sql = sprintf("INSERT INTO products_customized (`customized_price`, 
-			`categories_id`, `product_id`, `absolute_price`, `insert_date`) VALUES (%01.2f, %d, %d, 0, now() )",
-			$arrSzTmp[0], $arrSzTmp[1], $arrSzTmp[2]);
-			my_db_query($prod_cust_sql);
+
+            $strSizes .= "[".$_POST['CBSizesId'.$i].",".$_POST['CBSizesText'.$i]."]#";
+            $arrSzTmp = explode(",", $_POST['CBSizesText'.$i]);
+
+            if($delete_once){
+                $del_prod_cust_sql = sprintf("DELETE FROM products_customized WHERE  product_id = %d", $arrSzTmp[2]);
+                my_db_query($del_prod_cust_sql);
+                $delete_once = false;
+//echo $del_prod_cust_sql . "<br>" ;
+            }
+
+            $prod_cust_sql = sprintf("INSERT INTO products_customized (`customized_price`,
+            `categories_id`, `product_id`, `absolute_price`, `insert_date`) VALUES (%01.2f, %d, %d, 0, now() )",
+            $arrSzTmp[0], $arrSzTmp[1], $arrSzTmp[2]);
+            my_db_query($prod_cust_sql);
 //echo $prod_cust_sql . "<br>" ;
           }
         }
@@ -316,11 +332,12 @@ if( $_GET['action'] == 'inv_add_start' ){
 //echo "Size Length: ".$_POST['CBSizesLength'];
         $inv_mod_sql =sprintf("UPDATE `products` SET `product_name` = '%s',
         `product_model` = '%s',`product_sizes` = '%s',`product_desc` = '%s',
-        `product_avail_sizes` = '%s'
+        `product_avail_sizes` = '%s',
+        `visible_type` = %d
         WHERE `product_id`=%d", mysql_real_escape_string($_POST['product_name']),
         mysql_real_escape_string($_POST['product_model']),
         mysql_real_escape_string($_POST['product_sizes']),
-        mysql_real_escape_string(str_replace("'","",$_POST['product_desc'])), $strSizes, $_GET['pId']);
+        mysql_real_escape_string(str_replace("'","",$_POST['product_desc'])), $strSizes, $_POST['visible_type'], $_GET['pId']);
 //echo $inv_mod_sql;
         $inv_mod_query = my_db_query($inv_mod_sql);
         if( $inv_mod_query == 1){
@@ -343,9 +360,15 @@ if( $_GET['action'] == 'inv_add_start' ){
 
 <?php
 
+    $prod_types_sql = "SELECT * FROM product_types";
+    $prod_types_query = my_db_query($prod_types_sql);
+    while($prod_types = my_db_fetch_array($prod_types_query)) {
+        $arrProdTypes[$prod_types['product_type']] = $prod_types['product_type_name'];
+    }
+
     echo "<table width=900 border=0 align=center cellspacing=0 class=\"thinOutline\">\n";
 
-    echo "<tr class=\"tableHeader\"><td colspan=8>". my_image(DIR_WS_IMAGES.'spacer.gif','','700','1') ."</td></tr>\n";
+    echo "<tr class=\"tableHeader\"><td colspan=9>". my_image(DIR_WS_IMAGES.'spacer.gif','','700','1') ."</td></tr>\n";
 
     echo "<tr class=\"tableHeader\">\n";
     echo "<th width=10 colspan=3 valign=bottom>Actions</th>\n";
@@ -354,6 +377,7 @@ if( $_GET['action'] == 'inv_add_start' ){
     echo "\t<th>Sizes</th>\n";
     echo "\t<th>Group</th>\n";
     echo "\t<th>Desc</th>\n";
+    echo "\t<th>Type</th>\n";
     echo "</tr>\n";
 
 
@@ -362,9 +386,9 @@ if( $_GET['action'] == 'inv_add_start' ){
     $count = 0;
     $bgcolor = "#FFFFFF";
     while($inv_view = my_db_fetch_array($inv_view_query)){
-		$flag = ($inv_view['product_enabled'] == 1)? 0 : 1;
-		if( $_GET['hide_disabled'] == 1 && $flag == 1) continue;
-		$textColor = ( $flag == 1) ?  " disabledText ":  " enabledText ";
+        $flag = ($inv_view['product_enabled'] == 1)? 0 : 1;
+        if( $_GET['hide_disabled'] == 1 && $flag == 1) continue;
+        $textColor = ( $flag == 1) ?  " disabledText ":  " enabledText ";
         $bgcolor = ( fmod($count,2)==0 )? "tableRowColorEven_10" : "tableRowColorOdd_10";
 
         echo "<tr class=\"$bgcolor  $textColor \">";
@@ -381,9 +405,9 @@ if( $_GET['action'] == 'inv_add_start' ){
         echo "<td align=center>";
         echo "<a href=\"". my_href_link('inventory.php',  'action=inv_toggle&ptoggle='. $flag.'&pId='.$inv_view['product_id']). "\"> ";
         if( $flag == 0){
-        	echo " Enabled ";
+            echo " Enabled ";
         }else{
-        	echo " Disabled ";
+            echo " Disabled ";
         }
         echo "</a>";
         echo "</td>";
@@ -393,6 +417,7 @@ if( $_GET['action'] == 'inv_add_start' ){
         echo "<td align=center>". getSizeAndPrices(trim($inv_view['product_model'])) ."</td>";
         echo "<td align=center>". getProductGroupsSelectionOptions( $inv_view['product_model'] . "_" . $inv_view['product_group_id'], $inv_view['product_group_id'] )  ."</td>";
         echo "<td align=center>". stripslashes($inv_view['product_desc']) ."</td>";
+        echo "<td align=center>". $arrProdTypes[$inv_view['visible_type']] ."</td>";
         echo "</tr>\n";
         $count++;
     }
@@ -438,7 +463,7 @@ if( $_GET['action'] == 'inv_add_start' ){
             if( i == 0 || i == JSONObject.arrSizes.length-1){
                 arrSizeRange[arrSizeRange.length] = JSONObject.arrSizes[i].name;
             }
-            
+
             if( JSONObject.arrSizes[i].isChecked == 1){
                 isChecked = "CHECKED";
             }else{
@@ -496,7 +521,7 @@ if( $_GET['action'] == 'inv_add_start' ){
             data: groupData,
             success: function(data, status, jqXHR){
                 console.log("Status: " + data.status);
-                var message = "Updated product group successfully.";                 
+                var message = "Updated product group successfully.";
                 setUserMessage(message, "ajax_success");
             },
             error: function(jqXHR, textStatus, errorThrown ){
