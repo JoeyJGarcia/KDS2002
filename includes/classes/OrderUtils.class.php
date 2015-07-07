@@ -62,7 +62,7 @@ class OrderUtils {
         $rows = null;
 
         $sql = sprintf("SELECT *
-            FROM orders_products 
+            FROM orders_products
             WHERE order_id = %d AND
                 order_product_model = '%s' AND
                 order_product_size = '%s' AND
@@ -88,6 +88,27 @@ class OrderUtils {
         $database =  $this->getDatabaseUtils();
 
         return $database->rowCount();
+    }
+
+    public function productModelExist($product_model)
+    {
+        $database =  $this->getDatabaseUtils();
+        $isFound = null;
+        $rows = null;
+
+        $sql = sprintf("SELECT *
+            FROM products2
+            WHERE products2_model = '%s'",
+                $product_model);
+        try {
+            $database->query($sql);
+            $rows = $database->resultset();
+            $isFound = ($database->rowCount() > 0) ? true : false ;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+
+        return $isFound;
     }
 
 }
