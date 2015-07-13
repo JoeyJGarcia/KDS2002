@@ -13,16 +13,16 @@ $debug = true;
   <link rel="stylesheet" href="styles.css" type="text/css"/>
 <?php
 if(isset($_GET['debug_mode']) && $_GET['debug_mode'] == 1){
-	$debug_mode = true;
+    $debug_mode = true;
 }else{
-	$debug_mode = false;
+    $debug_mode = false;
 }
 //echo "action: ".$_GET['action'];
 if($_GET['action'] != 'show_orders' && $_GET['action'] != 'update_order' ){
 ?>
     <!-- American format mm/dd/yyyy -->
     <script type="text/JavaScript" src="calendar2.js"></script>
-	<!-- Date only with year scrolling -->
+    <!-- Date only with year scrolling -->
 <?php
 }
 ?>
@@ -76,22 +76,22 @@ function saveProcessedOrder($command){
     }
 
     if($command == "save"){
-    	document.process_order_form.action.value = "update_order";
+        document.process_order_form.action.value = "update_order";
     }else{
 
-    	if(document.process_order_form.radReturnTo[0].checked == true){
-    		document.process_order_form.action.value = "show_orders";
+        if(document.process_order_form.radReturnTo[0].checked == true){
+            document.process_order_form.action.value = "show_orders";
             document.process_order_form.returnTo.value = "show_orders";
-    	}else{
-    		document.process_order_form.action.value = null;
-    	}
+        }else{
+            document.process_order_form.action.value = null;
+        }
     }
     document.process_order_form.submit();
 
 }
 
 function blankDSFee(){
-	document.process_order_form.dropship_fee.value="0.00";
+    document.process_order_form.dropship_fee.value="0.00";
 }
 
 function getProductPrice(el) {
@@ -597,8 +597,8 @@ if($order_info['isRush'] > 0){
 <tr class="tableRowColor">
     <td align=right class="mediumBoldText"  colspan=2><div style="margin: 10px 0 10px 0;">Order Status</div></td>
     <td align=left class="mediumBoldText"  colspan=2>
-		<div style="margin: 10px 0 10px 0;"><?php echo my_draw_pull_down_menu('order_status',$arrOrderStatus,$order_info['order_status']); ?></div>
-	</td>
+        <div style="margin: 10px 0 10px 0;"><?php echo my_draw_pull_down_menu('order_status',$arrOrderStatus,$order_info['order_status']); ?></div>
+    </td>
 </tr>
 <tr class="tableRowColor">
     <td align=left class="mediumBoldText" colspan=2>Shipping Information</td>
@@ -617,7 +617,7 @@ if($order_info['isRush'] > 0){
                 <td>
                     <?php
                     if( strlen($order_info['ship_date']) > 4 &&
-                    	$order_info['ship_date'] != "0000-00-00 00:00:00" ){
+                        $order_info['ship_date'] != "0000-00-00 00:00:00" ){
                         $arrShipDate = split("-",justDate($order_info['ship_date']));
                         $ship_date = $arrShipDate[1]."/".$arrShipDate[2]."/".$arrShipDate[0];
                     }else{
@@ -660,10 +660,10 @@ if($order_info['isRush'] > 0){
             <tr>
 
                 <?php
-					$getFee_sql = "SELECT * FROM fees WHERE fees_name = 'Rush' ";
-					$getFee_query = my_db_query($getFee_sql);
-					$getFee = my_db_fetch_array($getFee_query);
-					$rushFee = $getFee['fees_value'];
+                    $getFee_sql = "SELECT * FROM fees WHERE fees_name = 'Rush' ";
+                    $getFee_query = my_db_query($getFee_sql);
+                    $getFee = my_db_fetch_array($getFee_query);
+                    $rushFee = $getFee['fees_value'];
 
                 if( $isRushOrder ){// 10 == New Order
                     $dsFee = "0.00";
@@ -739,7 +739,7 @@ cal2SHIPDATE.time_comp = false;
 <?php echo my_draw_hidden_field('original_order_status',$order_info['order_status']); ?>
 
 <div align="center">
-	<a href="#"
+    <a href="#"
     onclick="saveProcessedOrder('cancel')"><?php
     echo my_image(DIR_WS_IMAGES.'btnCancelOnWhite.gif','Back To Process Menu');
     ?></a>
@@ -890,11 +890,14 @@ cal2SHIPDATE.time_comp = false;
     while( $order_products = my_db_fetch_array($order_products_query) ){
         $arrTemp1[0] = array('id' => '0','text' => 'Select Size');
         $arrTemp2 = getProductSizeArray($order_products['order_product_model']);
+        if (count($arrTemp2) == 0) {
+            $arrTemp2[0] = array('id' => '1','text' => 'NA');
+        }
         $arrProductSizes = array_merge($arrTemp1, $arrTemp2);
 
-    	$varSize = $order_products['order_product_size'];
-    	$startLoc = (strpos($varSize, "-"))? strpos($varSize, "-")+1: strlen($varSize);
-    	$generic_size = trim(substr($varSize, $startLoc));
+        $varSize = $order_products['order_product_size'];
+        $startLoc = (strpos($varSize, "-"))? strpos($varSize, "-")+1: strlen($varSize);
+        $generic_size = trim(substr($varSize, $startLoc));
 
         //NOTE: Using this method to utilize the Promotions feature
         $product_price = $order_products['order_product_charge'];
@@ -1124,7 +1127,7 @@ Add Notes
           $notifiedClient = ($_POST['notify_client'] == "on")? 1 : 0 ;
 
         if(  strlen($_POST['order_history_comments']) > 0 ||
-        	   $_POST['original_order_status'] != $_POST['order_status']){
+               $_POST['original_order_status'] != $_POST['order_status']){
             $order_history_sql = sprintf("INSERT into orders_history (order_id,
             order_history_date, order_history_is_notified, order_history_status,
             order_history_comments) VALUES (%d,'".date("y-m-d h:i:s")."',
@@ -1156,24 +1159,24 @@ Add Notes
 
         elseif( $_GET['action'] == 'show_orders' || $returnTo == 'show_orders' ){
 
-        	if($_GET['action'] == 'show_orders'){
-	            my_session_register('selected_account');
-	            $_SESSION['selected_account'] = $_POST['accounts_number'];
-        	}
+            if($_GET['action'] == 'show_orders'){
+                my_session_register('selected_account');
+                $_SESSION['selected_account'] = $_POST['accounts_number'];
+            }
 
-			if($_SESSION['rep_group'] == 0)
-			  $repGroupsClause = "";
-			else
-			  $repGroupsClause = " AND a.accounts_rep_group=".$_SESSION['rep_group'];
+            if($_SESSION['rep_group'] == 0)
+              $repGroupsClause = "";
+            else
+              $repGroupsClause = " AND a.accounts_rep_group=".$_SESSION['rep_group'];
 
             $arrRushOrders = array();
             $rush_orders_sql = "SELECT o.order_id FROM orders o, accounts a WHERE
             o.accounts_number=a.accounts_number
-			".$repGroupsClause." AND o.isRush=1 AND o.order_status=10";
+            ".$repGroupsClause." AND o.isRush=1 AND o.order_status=10";
             $rush_orders_query = my_db_query($rush_orders_sql);
 // echo $rush_orders_sql ."<br><br>";
 
- 			while( $rush_orders = my_db_fetch_array($rush_orders_query)  ){
+             while( $rush_orders = my_db_fetch_array($rush_orders_query)  ){
                 $arrRushOrders[] = $rush_orders['order_id'];
             }
 
@@ -1207,18 +1210,18 @@ Add Notes
 
                 if($_POST['radWhereClause'] == "2"){
                     $daysInPast = " AND o.purchase_date > DATE_ADD( CURDATE(  ) ,  INTERVAL  -".
-                    				$_POST['days_back']." DAY  ) ";
+                                    $_POST['days_back']." DAY  ) ";
                 }else{
                     $daysInPast = "";
                 }
 
-				$whereClauseAcct = ($_POST['accounts_number'] == '*')?'':" AND a.accounts_number =  '".$_POST['accounts_number']."' ";
+                $whereClauseAcct = ($_POST['accounts_number'] == '*')?'':" AND a.accounts_number =  '".$_POST['accounts_number']."' ";
 
                 $show_orders_sql = "SELECT o.order_id, o.customer_name,
                 date_format(o.purchase_date, '%Y-%m-%d %H:%m:%s ') as purchase_date, o.customer_shipping_method, o.order_status,
                 o.purchase_order_number, o.customer_invoice_number,
                 o.order_comments, a.accounts_username FROM orders o,
-				accounts a WHERE o.accounts_number =
+                accounts a WHERE o.accounts_number =
                 a.accounts_number ".$whereClauseAcct.$repGroupsClause.
                 $status." ". $daysInPast." ORDER BY a.accounts_username ASC";
             }
@@ -1327,17 +1330,17 @@ Add Notes
 
 <?php
     }//end of  action == 'show_orders' ||  returnTo == 'show_orders' test
-		if($_GET['action'] != 'show_orders' &&
-			$_GET['action'] != 'show_order' &&
-			$_GET['action'] != 'process_order'){
+        if($_GET['action'] != 'show_orders' &&
+            $_GET['action'] != 'show_order' &&
+            $_GET['action'] != 'process_order'){
 
 //*************************************************************************
 //**************************** MAIN MENU **********************************
 //*************************************************************************
-	if($rep_group == 0)
-	  $repGroupsClause = "";
-	else
-	  $repGroupsClause = "AND a.accounts_rep_group=".$_SESSION['rep_group'];
+    if($rep_group == 0)
+      $repGroupsClause = "";
+    else
+      $repGroupsClause = "AND a.accounts_rep_group=".$_SESSION['rep_group'];
 
 
     $arrRushOrders = array();

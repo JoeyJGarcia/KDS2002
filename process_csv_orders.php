@@ -106,7 +106,6 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
         mailWebServicesAboutBadProducts();
 
         $arrFileContents = null;
-        $arrBlackList  = array();
     }
 
     echo "<br>" . $orderCount . " Orders Processed for " . $accountUsername . "<br>";
@@ -126,32 +125,23 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
  */
 function submitOrder ($arrFileContents) {
     global $startRow, $accountNumber, $ku, $arrBlackList;
-echo "<pre>";
-echo count($arrFileContents);
-echo "</pre><br>";
+
     for($i = $startRow; $i < count($arrFileContents); $i++) {
-echo "JOEY";
         $arrOrder = createOrderArray($arrFileContents[$i]);
         $doesProductExist = $ku->productModelExist($arrOrder['product_model']);
         $doesOrderExist = orderExist($arrOrder);
-if ($doesProductExist) {
-    echo "product does exist BAD<br>";
-} else {
-    echo "product does exist GOOD<br>";
-}
 
-if ($doesOrderExist) {
-    echo "order does exist BAD<br>";
-} else {
-    echo "order does exist GOOD<br>";
-}
         if (!$doesProductExist) {
             if (!array_key_exists($arrOrder['customer_invoice_number'], $arrBlackList)) {
                 $arrBlackList[$arrOrder['customer_invoice_number']] = $arrOrder['product_model'];
             } elseif(in_array($arrOrder['product_model'], $arrBlackList)) {
                 $arrBlackList[$arrOrder['customer_invoice_number']] = $arrBlackList[$arrOrder['customer_invoice_number']] . ', ' .$arrOrder['product_model'];
             }
-
+            //Not using $arrBlackList currently
+            mailWebServicesAboutBadProducts ($arrOrder['customer_invoice_number'], $arrOrder['product_model']);
+            echo "<pre>";
+            print_r($arrBlackList);
+            echo "</pre><br>";
             echo $arrOrder['product_model'] . " Product does not exist. <br>";
             continue;
         }
@@ -172,6 +162,21 @@ if ($doesOrderExist) {
         echo "****************<br>";
         echo "orderId type: " . getType($orderId) . "<br>";
         echo "orderId: " . $orderId . "<br>";
+        if ($doesProductExist) {
+            echo "product does exist GOOD<br>";
+        } else {
+            echo "product does NOT exist BAD<br>";
+        }
+
+        if ($doesOrderExist) {
+            echo "order does exist BAD<br>";
+        } else {
+            echo "order does Not exist GOOD<br>";
+        }
+        echo "doesProductExist: " . $doesProductExist . "<br>";
+        echo "doesOrderExist: " . $doesOrderExist . "<br>";
+        echo "doesProductExist Type: " . getType($doesProductExist) . "<br>";
+        echo "doesOrderExist Type: " . getType($doesOrderExist) . "<br>";
         echo "****************<br>";
 
         if (intVal($orderId) > 0 && !productExist($orderId, $arrOrder)) {
@@ -513,25 +518,25 @@ function mailOrderMessage($orderId, $accountNumber) {
     }
 }
 
-function mailWebServicesAboutBadProducts () {
-    global $arrBlackList, $accountNumber;
-print_r($arrBlackList);
+function mailWebServicesAboutBadProducts ($customer_invoice, $product_model) {
+    global $accountNumber;
+
     $title = 'Bad Product Model Value(s)';
     $headers  = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
     $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
     $message = '';
-    for($i = 0; $i < count($arrBlackList); $i++) {
-        $message .= 'Found a problem with customer invoice: ' . $arrBlackList[$i] . '<br>';
-        $message .= 'Account Number: ' .$accountNumber . '<br>';
-        $message .= 'Product Model: ' . $arrBlackList[$i]['product_model'] . '<br>';
-        $message .= '---------------------------------------------------------------<br><br>';
-    }
+    $message .= 'Found a problem with customer invoice: ' . $customer_invoice . '<br>';
+    $message .= 'Account Number: ' .$accountNumber . '<br>';
+    $message .= 'Product Model: ' . $product_model . '<br>';
+    $message .= 'Order was not processed!<br><br>';
+    $message .= '---------------------------------------------------------------<br><br>';
 
     if (strlen($message) > 0) {
         mail("haciendadad@yahoo.com",$title,$message,$headers);
     }
 
+    $arrBlackList  = array();
 }
 
 function sendJoeyEmail($title, $message) {
