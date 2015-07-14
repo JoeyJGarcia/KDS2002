@@ -1,4 +1,5 @@
 <?php
+#master version
 require('includes/application_top.php');
 require('includes/classes/KDSUtils.class.php');
 ?>
@@ -18,7 +19,17 @@ $accountNumber = null;
 $accountPriceLvl = null;
 $accountReps = null;
 $product_size_adjusted = null;
-$arrBlackList = array();
+$mail_title = "Bad Product Model Value(s)";
+$mail_headers  = "MIME-Version: 1.0" . "\r\n";
+$mail_headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+$mail_headers .= "From: Kerusso Drop Shipping <kds@kerusso.com>\r\n";
+$mail_message = "";
+$mail_message .= "Found a problem with customer invoice: %s <br>";
+$mail_message .= "Account Number: %s <br>";
+$mail_message .= "Product Model: %s <br>";
+$mail_message .= "Order was not processed!<br><br>";
+$mail_message .= "---------------------------------------------------------------<br><br>";
+
 
 $ku = new KDSUtils();
 
@@ -103,14 +114,13 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
         printMessage($output, "**** OUTPUT ****");
 
         submitOrder($arrFileContents);
-        mailWebServicesAboutBadProducts();
-
         $arrFileContents = null;
     }
 
     echo "<br>" . $orderCount . " Orders Processed for " . $accountUsername . "<br>";
     $orderCount = 0;
 }
+
 
 /**
  * Function: submitOrder
@@ -124,27 +134,11 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
  *
  */
 function submitOrder ($arrFileContents) {
-    global $startRow, $accountNumber, $ku, $arrBlackList;
+    global $startRow, $accountNumber;
 
     for($i = $startRow; $i < count($arrFileContents); $i++) {
         $arrOrder = createOrderArray($arrFileContents[$i]);
-        $doesProductExist = $ku->productModelExist($arrOrder['product_model']);
         $doesOrderExist = orderExist($arrOrder);
-
-        if (!$doesProductExist) {
-            if (!array_key_exists($arrOrder['customer_invoice_number'], $arrBlackList)) {
-                $arrBlackList[$arrOrder['customer_invoice_number']] = $arrOrder['product_model'];
-            } elseif(in_array($arrOrder['product_model'], $arrBlackList)) {
-                $arrBlackList[$arrOrder['customer_invoice_number']] = $arrBlackList[$arrOrder['customer_invoice_number']] . ', ' .$arrOrder['product_model'];
-            }
-            //Not using $arrBlackList currently
-            mailWebServicesAboutBadProducts ($arrOrder['customer_invoice_number'], $arrOrder['product_model']);
-            echo "<pre>";
-            print_r($arrBlackList);
-            echo "</pre><br>";
-            echo $arrOrder['product_model'] . " Product does not exist. <br>";
-            continue;
-        }
 
         if (getType($doesOrderExist) === 'boolean' && !$doesOrderExist) {
             /*
@@ -162,21 +156,6 @@ function submitOrder ($arrFileContents) {
         echo "****************<br>";
         echo "orderId type: " . getType($orderId) . "<br>";
         echo "orderId: " . $orderId . "<br>";
-        if ($doesProductExist) {
-            echo "product does exist GOOD<br>";
-        } else {
-            echo "product does NOT exist BAD<br>";
-        }
-
-        if ($doesOrderExist) {
-            echo "order does exist BAD<br>";
-        } else {
-            echo "order does Not exist GOOD<br>";
-        }
-        echo "doesProductExist: " . $doesProductExist . "<br>";
-        echo "doesOrderExist: " . $doesOrderExist . "<br>";
-        echo "doesProductExist Type: " . getType($doesProductExist) . "<br>";
-        echo "doesOrderExist Type: " . getType($doesOrderExist) . "<br>";
         echo "****************<br>";
 
         if (intVal($orderId) > 0 && !productExist($orderId, $arrOrder)) {
@@ -186,8 +165,6 @@ function submitOrder ($arrFileContents) {
             insertOrderProduct($orderId, $arrOrder);
         }
     }
-
-
     if (intVal($orderId) > 0 && getType($accountNumber) === 'string' && strlen($accountNumber) > 0) {
         mailOrderMessage($orderId, $accountNumber);
     } else {
@@ -518,26 +495,6 @@ function mailOrderMessage($orderId, $accountNumber) {
     }
 }
 
-function mailWebServicesAboutBadProducts ($customer_invoice, $product_model) {
-    global $accountNumber;
-
-    $title = 'Bad Product Model Value(s)';
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-    $message = '';
-    $message .= 'Found a problem with customer invoice: ' . $customer_invoice . '<br>';
-    $message .= 'Account Number: ' .$accountNumber . '<br>';
-    $message .= 'Product Model: ' . $product_model . '<br>';
-    $message .= 'Order was not processed!<br><br>';
-    $message .= '---------------------------------------------------------------<br><br>';
-
-    if (strlen($message) > 0) {
-        mail("haciendadad@yahoo.com",$title,$message,$headers);
-    }
-
-    $arrBlackList  = array();
-}
 
 function sendJoeyEmail($title, $message) {
     $headers  = 'MIME-Version: 1.0' . "\r\n";
