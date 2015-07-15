@@ -18,6 +18,22 @@ $accountNumber = null;
 $accountPriceLvl = null;
 $accountReps = null;
 $product_size_adjusted = null;
+$mail_title = "Bad Product Model Value(s)";
+$mail_headers  = "MIME-Version: 1.0" . "\r\n";
+$mail_headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+$mail_headers .= "From: Kerusso Drop Shipping <kds@kerusso.com>\r\n";
+$mail_message = "";
+$mail_message .= "Found a problem with customer invoice: %s <br>";
+$mail_message .= "Account Number: %s <br>";
+$mail_message .= "Product Model: %s <br>";
+$mail_message .= "Order was still processed!<br><br>";
+$mail_message .= "---------------------------------------------------------------<br><br>";
+$mail_to = "haciendadad@yahoo.com, webcustomerservice@kerusso.com";
+$ord_inventory_sql = "SELECT product_model FROM products WHERE product_enabled = 1  ORDER BY product_model";
+$ord_inventory_query = my_db_query($ord_inventory_sql);
+while($ord_inventory = my_db_fetch_array($ord_inventory_query)){
+    $arrInventory[] = $ord_inventory['product_model'];
+}
 
 $ku = new KDSUtils();
 
@@ -56,6 +72,7 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
     $accountPriceLvl = $ftpAccounts[$i]['accounts_price_level'];
     $accountFTPFolder = $ftpAccounts[$i]['accounts_folder_name'];
     $dir = 'orderpull/'.$accountFTPFolder;
+    $movedDir = '/home1/kerussod/public_html/orderpull/'.$accountFTPFolder.'/order_archive';
     $accountReps = $ku->getAccountReps($accountNumber);
     $repsRowCount = $ku->getRepsRowCount();
 
@@ -82,6 +99,7 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
     foreach($arrFilesFound as $file) {
         $output = "";
         $csvfile = $dir.'/'.$file;
+        $movedCSVfile = $movedDir.'/'.$file;
         if (getType($file) == NULL || !is_file($csvfile)) {
             continue;
         }
@@ -94,7 +112,8 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
             }
         }
         fclose($handle);// Remove file now that we copied its contents.
-        unlink($csvfile);
+        //unlink($csvfile);//Uncomment to delete the csv files
+        rename($csvfile, $movedCSVfile);
 
         saveOutput("Processing file: " . $csvfile . "   at   ". date("y-m-d h:i:s") ."<br>");
         saveOutput("CSV File has ".count($arrFileContents)." rows (including the header row)");
@@ -122,7 +141,7 @@ for ($i = 0; $i < $ftpAccountsCount; $i++) {
  *
  */
 function submitOrder ($arrFileContents) {
-    global $startRow, $accountNumber;
+    global $startRow, $accountNumber, $mail_to, $mail_title, $mail_message, $mail_headers, $arrInventory;
 
     for($i = $startRow; $i < count($arrFileContents); $i++) {
         $arrOrder = createOrderArray($arrFileContents[$i]);
@@ -142,9 +161,18 @@ function submitOrder ($arrFileContents) {
             printMessage("No need to add this order, it already exist.", "Order Already Exist");
         }
         echo "****************<br>";
-        echo "orderId type: " . getType($orderId) . "<br>";
         echo "orderId: " . $orderId . "<br>";
         echo "****************<br>";
+
+        echo "Is Product Found: ";
+        if (in_array($arrOrder['product_model'], $arrInventory)) {
+            echo "true";
+        } else {
+            echo "false";
+            mail($mail_to, $mail_title, sprintf($mail_message, $arrOrder['customer_invoice_number'], $accountNumber, $arrOrder['product_model']), $mail_headers);
+        }
+        echo "<br>";
+
 
         if (intVal($orderId) > 0 && !productExist($orderId, $arrOrder)) {
             /*

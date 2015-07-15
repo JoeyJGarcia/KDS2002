@@ -170,6 +170,14 @@ class KDSUtils {
         return $this->database->update($updateSQL);
     }
 
+    public function productModelExist($productModel) {
+        if (!isset($this->orderUtils)) {
+            $this->orderUtils = new OrderUtils($this->database);
+        }
+
+        return $this->orderUtils->productModelExist($productModel);
+    }
+
 }
 
 ?>
