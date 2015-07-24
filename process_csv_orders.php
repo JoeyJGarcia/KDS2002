@@ -28,15 +28,15 @@ $mail_message .= "Account Number: %s <br>";
 $mail_message .= "Product Model: %s <br>";
 $mail_message .= "Order was still processed!<br><br>";
 $mail_message .= "---------------------------------------------------------------<br><br>";
-$mail_to = "haciendadad@yahoo.com, webcustomerservice@kerusso.com";
+$mail_to = "webcustomerservice@kerusso.com";
 $ord_inventory_sql = "SELECT product_model FROM products WHERE product_enabled = 1  ORDER BY product_model";
 $ord_inventory_query = my_db_query($ord_inventory_sql);
 while($ord_inventory = my_db_fetch_array($ord_inventory_query)){
     $arrInventory[] = $ord_inventory['product_model'];
 }
 
-$ku = new KDSUtils();
 
+$ku = new KDSUtils();
 $shipping = $ku->getShipping();
 $arrShippingName = $ku->createNameValuePair($shipping, 'shipping_alias', 'shipping_name');
 $arrShipping = $ku->createNameValuePair($shipping, 'shipping_alias', 'shipping_id');
@@ -217,7 +217,7 @@ function createOrderArray ($arrOrderLine) {
         'customer_state'	=> str_replace('"','',$arrOrderLine[8]),
         'customer_zip' => str_replace('"','',$arrOrderLine[9]),
         'customer_country' => str_replace('"','',$arrOrderLine[10]),
-        'customer_country_number' => $arrCountries[strtoupper(str_replace('"','',$arrOrderLine[10]))],
+        'customer_country_number' => $arrCountries[str_replace('"','',$arrOrderLine[10])],
         'customer_shipping_method' => $arrShippingName[str_replace('"','',$arrOrderLine[17])],
         'customer_shipping_id' => $arrShipping[str_replace('"','',$arrOrderLine[17])],
         'customer_invoice_number' => str_replace('"','',$arrOrderLine[1]),
@@ -505,17 +505,6 @@ function mailOrderMessage($orderId, $accountNumber) {
     if (intval($orderId) > 0) {
         my_mail_order($orderId, $accountNumber);
     }
-
-    if ($accountNumber == "7777") {//Joey's account number
-        sendJoeyEmail("FTP Order Processed", $output);
-    }
 }
 
-
-function sendJoeyEmail($title, $message) {
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-    mail("haciendadad@yahoo.com",$title,$message,$headers);
-}
 ?>

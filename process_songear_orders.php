@@ -283,17 +283,10 @@ while($client_folders = my_db_fetch_array($client_folders_query)){
         }
 
         $output .= "<br><br>" . $orderCount . " UNIQUE ORDERS PROCESSED.";
-        //sendEmail("FTP Order Processed", $output);
     }
 
 
 }
 
 
-function sendEmail($title, $message) {
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-    mail("haciendadad@yahoo.com",$title,$message,$headers);
-}
 ?>

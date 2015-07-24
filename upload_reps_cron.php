@@ -1,19 +1,5 @@
 <?php
 require('includes/application_top.php');
-?>
-
-<head>
-  <title>Kerusso Drop Ship - Upload Rep List</title>
-  <link rel="stylesheet" href="styles.css" type="text/css"/>
-  <script language="JavaScript" src="debugInfo.js"></script>
-</head>
-
-<body>
-<?php
-require('navigation.php');
-?>
-<br><br>
-<?php
 
 $dir = 'uploads/';
 

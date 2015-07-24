@@ -38,7 +38,7 @@
       return $arrDate[2] ."-" .$arrDate[0] ."-" .$arrDate[1];
   }
 
-  
+
   function my_null_replace($value){
         if( $value == "NULL" ){
             return "";
@@ -48,8 +48,8 @@
   }
 
     function my_unescape_string($value){
-		$value = stripslashes($value);
-		return $value;
+        $value = stripslashes($value);
+        return $value;
     }
 
 
@@ -114,15 +114,15 @@
 
         mail($to,$subject,$message,$headers);
     }
-    
-    
+
+
     function my_mail_order($order_id, $client_account_number){
 
 
         $order_info_sql = "SELECT * FROM orders o WHERE order_id=".$order_id;
         $order_info_query = my_db_query($order_info_sql);
         $order_info = my_db_fetch_array($order_info_query);
-        
+
         if($order_info['isRush'] == 1){
             $rushMsg = "<div><font color=red><strong>NOTE: This is a <em>RUSH</em> order</strong></font></div>";
             $rushSubject = " (RUSH)";
@@ -151,34 +151,34 @@
             $ordered_products['order_product_name']."</td></tr>";
         }
 
-        $order_notes_sql = "SELECT o.purchase_date, os.order_status_name, o.order_comments 
-        FROM order_status os, orders o WHERE o.order_id =".$order_id." AND 
-		o.order_status = os. order_status_id ";
+        $order_notes_sql = "SELECT o.purchase_date, os.order_status_name, o.order_comments
+        FROM order_status os, orders o WHERE o.order_id =".$order_id." AND
+        o.order_status = os. order_status_id ";
         $order_notes_query = my_db_query($order_notes_sql);
         $order_notes = my_db_fetch_array($order_notes_query);
-        
-        $order_history_sql = "SELECT oh.order_history_date, os.order_status_name, 
-		oh.order_history_comments FROM orders_history oh, order_status os, orders o 
-		WHERE o.order_id=oh.order_id AND oh.order_id=".$order_id." AND 
-		oh.order_history_status=os.order_status_id ORDER BY oh.order_history_id ASC";
+
+        $order_history_sql = "SELECT oh.order_history_date, os.order_status_name,
+        oh.order_history_comments FROM orders_history oh, order_status os, orders o
+        WHERE o.order_id=oh.order_id AND oh.order_id=".$order_id." AND
+        oh.order_history_status=os.order_status_id ORDER BY oh.order_history_id ASC";
         $order_history_query = my_db_query($order_history_sql);
-        
+
 
         $orderNotes = "";
-        $notesCount = 0;        
-        
+        $notesCount = 0;
+
         $orderNotes .= "\n<tr bgcolor=#FFFFFF><td><font
         style=&quot;font-size:10pt&quot;>".$order_notes['purchase_date']
         ."</font></td><td><font style=&quot;font-size:10pt&quot;>".
         $order_notes['order_status_name']."</font></td><td><font
         style=&quot;font-size:10pt&quot;>".my_null_replace(my_unescape_string($order_notes['order_comments'])).
         "</font></td></tr><tr bgcolor=#999966><td colspan=3 height=2></td></tr>";
-        
+
         while( $order_history = my_db_fetch_array($order_history_query) ){
-          	if($notesCount == 0){
-          		$notesCount++;
-          		continue;
-          	}
+              if($notesCount == 0){
+                  $notesCount++;
+                  continue;
+              }
             $orderNotes .= "\n<tr bgcolor=#FFFFFF><td><font
             style=&quot;font-size:10pt&quot;>".$order_history['order_history_date']
             ."</font></td><td><font style=&quot;font-size:10pt&quot;>".
@@ -188,9 +188,9 @@
             $notesCount++;
         }
 
-		$arrShipDate = split(" ",$order_info['ship_date']);
+        $arrShipDate = split(" ",$order_info['ship_date']);
 
-		$order_ship_date = ($order_info['ship_date'] == "0000-00-00 00:00:00")?"":$arrShipDate[0];
+        $order_ship_date = ($order_info['ship_date'] == "0000-00-00 00:00:00")?"":$arrShipDate[0];
         $notesHeader = ($order_status['Name'] == "New Order")?"Received":"Updated";
 
         $message = sprintf("<html>
@@ -200,7 +200,7 @@
         <h3 align=center>Kerusso Drop Ship Order $notesHeader</h3>
         <hr width=70&#37; align=center>
 
-		<div align=center><strong>Order Status: %s</strong></div>	
+        <div align=center><strong>Order Status: %s</strong></div>
         <br>
         $rushMsg
         <br>
@@ -269,7 +269,7 @@
 
         </body>
         </html>",$order_notes['order_status_name'],
-				 $order_info['purchase_order_number'],
+                 $order_info['purchase_order_number'],
                  my_null_replace($order_info['customer_invoice_number']),
                  $order_info['customer_name'],
                  $order_info['customer_address1'],
@@ -301,39 +301,39 @@
             echo "Email sent now.";
         }
     }
-    
-	function my_mail_request($customer_name, $customer_invoice_number, 
-							 $accounts_company_name, $request_details,
-							 $accounts_number, $purchase_order_number, 
-							 $order_status_id, $order_id, $accounts_email, 
-							 $email_type){
 
-		$rep_group_sql = "SELECT rep_groups_email FROM accounts a, rep_groups r WHERE a.accounts_number=".$accounts_number." AND a.accounts_rep_group=r.rep_groups_id";
+    function my_mail_request($customer_name, $customer_invoice_number,
+                             $accounts_company_name, $request_details,
+                             $accounts_number, $purchase_order_number,
+                             $order_status_id, $order_id, $accounts_email,
+                             $email_type){
+
+        $rep_group_sql = "SELECT rep_groups_email FROM accounts a, rep_groups r WHERE a.accounts_number=".$accounts_number." AND a.accounts_rep_group=r.rep_groups_id";
         $rep_group_query = my_db_query($rep_group_sql);
         $rep_group = my_db_fetch_array($rep_group_query);
-		
-							 	
-							 	
-		if($email_type == 'rma'){
-			$title_type = "RMA Request";
-			$to = 'webcustomerservice@kerusso.com' . ', '; 
-		}else if($email_type == 'question'){
-			$title_type = "Question about Order";
-			$to = 'webcustomerservice@kerusso.com' . ', '; 
-		}else if($email_type == 'discrepancy'){
-			$title_type = "Discrepancy with Order";
-			$to = 'webcustomerservice@kerusso.com' . ', ';
-		}
-		
-		$to .= $accounts_email;
-		
-		$subject = $title_type." (".$accounts_number."/".$purchase_order_number.")";
+
+
+
+        if($email_type == 'rma'){
+            $title_type = "RMA Request";
+            $to = 'webcustomerservice@kerusso.com' . ', ';
+        }else if($email_type == 'question'){
+            $title_type = "Question about Order";
+            $to = 'webcustomerservice@kerusso.com' . ', ';
+        }else if($email_type == 'discrepancy'){
+            $title_type = "Discrepancy with Order";
+            $to = 'webcustomerservice@kerusso.com' . ', ';
+        }
+
+        $to .= $accounts_email;
+
+        $subject = $title_type." (".$accounts_number."/".$purchase_order_number.")";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $headers .= 'From: Kerusso Drop Shipping <kds@kerusso.com>' . "\r\n";
-		$headers .= 'Cc: '.$rep_group['rep_groups_email']. "\r\n";	
-		
-		
+        $headers .= 'Cc: '.$rep_group['rep_groups_email']. "\r\n";
+
+
         $message = sprintf("<html>
         <body>
 
@@ -382,7 +382,7 @@
         <td colspan=2>
         %s
         </td>
-        
+
         </tr>
 
         </table>
@@ -394,9 +394,9 @@
                  $customer_invoice_number,
                  $purchase_order_number,
                  my_unescape_string($request_details));
-        
+
 //********* TEST MESAGE START ******************
-		$testMsg = sprintf("<html>
+        $testMsg = sprintf("<html>
         <body>
         <br>
         <table width=500 cellpadding=5 cellspacing=0 style='border: solid black 1px'>
@@ -426,31 +426,29 @@
 
         </body>
         </html>",$title_type,
-				 $accounts_company_name,
+                 $accounts_company_name,
                  $to,
                  $rep_group['rep_groups_email']);
 //********* TEST MESAGE END ******************
-       
+
         try
         {
-			$mail_sent = mail($to,$subject,$message,$headers);
-						//mail("jmcgrail@kerusso.com, haciendadad@yahoo.com","Kerusso Test Email",$testMsg,$headers);//test email
-			
-			
-			$order_history_sql = "INSERT into orders_history (order_id,
-			order_history_date, order_history_status, order_history_is_notified,
-			order_history_comments)	VALUES (".$order_id.",'".date("y-m-d h:i:s")."', 
-			$order_status_id, 0, '".$title_type." sent <br> Details: ".mysql_real_escape_string($request_details)."')";
-			
-			$order_history_query = my_db_query($order_history_sql);		
-	        
-			return $mail_sent ? $title_type." Sent Successfully" : "Email Failure";
+            $mail_sent = mail($to,$subject,$message,$headers);			
+
+            $order_history_sql = "INSERT into orders_history (order_id,
+            order_history_date, order_history_status, order_history_is_notified,
+            order_history_comments)	VALUES (".$order_id.",'".date("y-m-d h:i:s")."',
+            $order_status_id, 0, '".$title_type." sent <br> Details: ".mysql_real_escape_string($request_details)."')";
+
+            $order_history_query = my_db_query($order_history_sql);
+
+            return $mail_sent ? $title_type." Sent Successfully" : "Email Failure";
         }
         catch(Exception $e){
-        	return "Error Sending Email";
+            return "Error Sending Email";
         }
-		
-	}
+
+    }
 
 
 ////
@@ -473,12 +471,12 @@
       return mt_rand();
     }
   }
-  
+
   function getCountryCode($countryName){
-  	$country_sql = "SELECT countries_iso_code_3 FROM countries WHERE countries_name = '".$countryName."'";
-  	$country_query = my_db_query($country_sql);
-  	$country = my_db_fetch_array($country_query);
-  	return $country['countries_iso_code_3'];
+      $country_sql = "SELECT countries_iso_code_3 FROM countries WHERE countries_name = '".$countryName."'";
+      $country_query = my_db_query($country_sql);
+      $country = my_db_fetch_array($country_query);
+      return $country['countries_iso_code_3'];
   }
 
-	?>
+    ?>
