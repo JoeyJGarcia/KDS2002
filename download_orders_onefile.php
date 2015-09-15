@@ -178,7 +178,11 @@ cal2TO.year_scroll = false;
 cal2TO.time_comp = false;
 //-->
 </script>
-
+<br><br>
+<div style="width: 400px; text-align:center; margin: 0 auto;">
+<small><strong>Note:</strong> Error message like this <code>This page contains the following errors:
+error on line 540 at column 38: EntityRef: expecting ';'</code>  are  caused because of an ampersand symbol.  Look at the order output for this symbol and removed it.</small>
+</div>
 <?php
 //*************************************************************************
 //**************************** MAIN MENU - End **************************

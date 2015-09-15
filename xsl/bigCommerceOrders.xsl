@@ -18,7 +18,7 @@
                 <xsl:for-each select="Product_Details/item" >
                     <xsl:variable name="sku"><xsl:value-of select="Product_SKU" /></xsl:variable>
                     <xsl:variable name="qty"><xsl:value-of select="Product_Qty" /></xsl:variable>
-                    
+
                     <xsl:variable name="size">
                         <xsl:call-template name="sizeTmpl" >
                             <xsl:with-param name="size_pt1"><xsl:value-of select="Product_SKU" /></xsl:with-param>
@@ -42,7 +42,7 @@
 <xsl:template name="sizeTmpl">
     <xsl:param name="size_pt1" />
     <xsl:param name="size_pt2" />
-    
+
     <xsl:variable name="size_pt1_trimmed"><xsl:value-of select="normalize-space($size_pt1)" /></xsl:variable>
     <xsl:variable name="size_cat">
          <xsl:value-of select="substring($size_pt1_trimmed,1,3)"/>
@@ -56,10 +56,10 @@
         </xsl:otherwise>
         </xsl:choose>
     </xsl:variable>
-    
-    
+
+
     <xsl:value-of select="concat($size_cat, ' - ', $size_size)" />
-    
+
 </xsl:template>
 
 <xsl:template name="shippingInfo">
@@ -79,12 +79,12 @@
                 <xsl:variable name="orderId">
                     <xsl:choose>
                         <xsl:when test="number($oId) >= number(8000)">
-                            GN<xsl:value-of select="$oId"/>
+                            <xsl:value-of select="$oId"/>
                         </xsl:when>
                         <xsl:otherwise>
-                            FT<xsl:value-of select="$oId"/>
-                        </xsl:otherwise>                          
-                    </xsl:choose> 
+                            <xsl:value-of select="$oId"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:variable>
                 <orderNumber><xsl:value-of select="$orderId"/></orderNumber>
             </shippingInfo>
