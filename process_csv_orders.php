@@ -203,7 +203,7 @@ function submitOrder ($arrFileContents) {
  * @return (array) An array of the line's order data
  */
 function createOrderArray ($arrOrderLine) {
-    global $accountNumber, $newOrderStatus, $reps, $arrFees, $accountReps, $clientPrefix;
+    global $accountNumber, $newOrderStatus, $reps, $arrFees, $accountReps, $clientPrefix, $orderCount;
     global $arrCountries, $arrShippingName, $arrShipping, $arrRepCodes, $product_size_adjusted;
 
     $product_size_adjusted = ( strlen(str_replace('"','',$arrOrderLine[13])) > 0 ) ? str_replace('"','',$arrOrderLine[13]) : "NA";
@@ -223,7 +223,7 @@ function createOrderArray ($arrOrderLine) {
         'customer_invoice_number' => str_replace('"','',$arrOrderLine[1]),
         'purchase_date'	=>  date("y-m-d h:i:s"),
         'accounts_number' => $accountNumber,
-        'purchase_order_number'	=> strtoupper($clientPrefix).date("mdyHis"),
+        'purchase_order_number'	=> strtoupper($clientPrefix).date("mdyHis").'-'.$orderCount,
         'order_comments' => 'FTP Order',
         'order_status' => $newOrderStatus,
         'dropship_fee' => str_replace('"','',$arrFees['Drop Ship']),
