@@ -47,7 +47,7 @@ $overridingCategories = "# APT KDZ CGA CGK SJT ";//added space and has so strpos
 //$productFeed = "http://www.kerussosales.com/deepershopping/deepershopping.txt";
 
 //New File
-$productFeed = "http://www.kerusso.com/inventory/WebSaleableInventory.csv";
+$productFeed = "http://feed.kerussomarketing.com/inventory/WebSaleableInventory.csv";
 
 $arrLines = file($productFeed, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
