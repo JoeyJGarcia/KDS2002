@@ -14,7 +14,7 @@ $validSizes = " SM MD LG XL 2X 3X 4X 5X 6X 3T 4T 5T";
 //$productFeed = "http://www.kerussosales.com/deepershopping/deepershopping.txt";
 
 //New File
-$productFeed = "http://www.kerusso.com/inventory/WebSaleableInventory.csv";
+$productFeed = "http://feed.kerussomarketing.com/inventory/WebSaleableInventory.csv";
 
 $arrLines = file($productFeed, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
